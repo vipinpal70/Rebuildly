@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&family=Merriweather:ital,wght@0,700;1,400&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Rajdhani:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --navy: #07101f;
+  --navy-mid: #0c1829;
+  --navy-card: #111e35;
+  --blue: #1e56d9;
+  --blue-bright: #2d6af5;
+  --blue-glow: #5b9aff;
+  --blue-pale: #e8f0fe;
+  --cyan: #00b4d8;
+  --border-dark: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(91, 154, 255, 0.25);
+}
+
+/* Body stays palette-neutral — each generated site paints its own background
+   and text colour on the root <main> via the derived theme. Forcing a dark bg
+   here previously broke every light archetype (Clinical / Ivory / Editorial). */
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism & Card Utilities */
+.glass-card {
+  background: rgba(17, 30, 53, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(91, 154, 255, 0.35);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 64px rgba(30, 86, 217, 0.25);
+}
+
+.glass-nav {
+  background: rgba(7, 16, 31, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Gradient Utilities */
+.gradient-text-glow {
+  background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-btn-primary {
+  background: linear-gradient(135deg, #1e56d9 0%, #2d6af5 100%);
+  box-shadow: 0 8px 24px rgba(30, 86, 217, 0.35);
+  transition: all 0.25s ease;
+}
+
+.gradient-btn-primary:hover {
+  background: linear-gradient(135deg, #2d6af5 0%, #3b82f6 100%);
+  box-shadow: 0 12px 32px rgba(45, 106, 245, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Grid & Lighting Effects */
+.hero-grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+  background-size: 36px 36px;
+}
+
+.hairline-gradient {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12) 20%, rgba(255, 255, 255, 0.12) 80%, transparent);
+}
+
+/* Custom Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+@keyframes glowSpotlight {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-pulse-dot {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.animate-spotlight {
+  animation: glowSpotlight 8s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.35);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.55);
+}

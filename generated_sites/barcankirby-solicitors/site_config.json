@@ -1,0 +1,389 @@
+{
+  "slug": "barcankirby-solicitors",
+  "business_id": "294adf02-abc0-43ed-b5fc-f5c5e05159ab",
+  "name": "Barcan+Kirby Solicitors",
+  "category": "Personal Injury Lawyers, Immigration Attorneys, CPA/Accounting Firms",
+  "niche": "LEGAL_SERVICES",
+  "city": "Bristol",
+  "country": "UK",
+  "address": "Prince House, Prince St, Bristol BS1 4PS, UK",
+  "phone": "0117 366 7385",
+  "email": "",
+  "website": "https://barcankirby.co.uk/contact/bristol-city-centre/?utm_source=gmaps&utm_medium=organic&utm_campaign=bristolcitycentre",
+  "google_rating": 4.8,
+  "review_count": 357,
+  "modernization_score": 30,
+  "preview_url": "http://localhost:3000/sites/barcankirby-solicitors",
+  "layout_tree": {
+    "seed": 149108985117265604202753046403404019352,
+    "palette": {
+      "name": "Cormorant Parchment Luxury",
+      "archetype": "EDITORIAL_ELEGANCE",
+      "bg": "#f7f5f0",
+      "surface": "#ffffff",
+      "text": "#1a1a1a",
+      "subtext": "#555555",
+      "primary": "#991b1b",
+      "primary_hover": "#7f1d1d",
+      "accent": "#d97706",
+      "border": "#e5e0d8",
+      "badge_bg": "#fef3c7",
+      "badge_text": "#92400e",
+      "heading_font": "Cormorant Garamond",
+      "body_font": "Manrope",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_MINIMAL_EDITORIAL",
+      "services": "SERVICES_CAROUSEL_CARDS",
+      "faq": "FAQ_FLOATING_BUBBLES",
+      "cta": "CTA_MINIMAL_QUOTE",
+      "reviews": "REVIEWS_CAROUSEL_SWIPE",
+      "workflow": "WORKFLOW_BENTO_PROCESS"
+    },
+    "section_order": [
+      "hero",
+      "services",
+      "workflow",
+      "gallery",
+      "team",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "design_system": {
+    "archetype": "EDITORIAL_ELEGANCE",
+    "palette_name": "Cormorant Parchment Luxury",
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Manrope",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap",
+    "colors": {
+      "name": "Cormorant Parchment Luxury",
+      "archetype": "EDITORIAL_ELEGANCE",
+      "bg": "#f7f5f0",
+      "surface": "#ffffff",
+      "text": "#1a1a1a",
+      "subtext": "#555555",
+      "primary": "#991b1b",
+      "primary_hover": "#7f1d1d",
+      "accent": "#d97706",
+      "border": "#e5e0d8",
+      "badge_bg": "#fef3c7",
+      "badge_text": "#92400e",
+      "heading_font": "Cormorant Garamond",
+      "body_font": "Manrope",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "tagline": "When life fractures, clarity matters more than speed",
+  "heroSubtitle": "Barcan+Kirby have spent decades untangling family disputes and injury claims for Bristol clients who needed someone to think clearly when everything felt broken. We listen first, advise second.",
+  "badgeText": "FAMILY LAW & PERSONAL INJURY LAW \u2022 BRISTOL",
+  "stats": [
+    {
+      "number": "4.8",
+      "label": "CLIENT RATING"
+    },
+    {
+      "number": "357",
+      "label": "CLIENT REVIEWS"
+    },
+    {
+      "number": "09:00 \u2013 17:15",
+      "label": "OFFICE HOURS"
+    },
+    {
+      "number": "Bristol City Centre",
+      "label": "LOCATION"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "sparkles",
+      "title": "High-Quality Professional Advice",
+      "description": "Dedicated solicitors delivering expert legal guidance with a common-sense approach, putting your best interests first at every stage."
+    },
+    {
+      "icon": "shield",
+      "title": "Specialist Expertise",
+      "description": "Decades of experience across family law, personal injury, employment, property and estate planning with proven settlement results."
+    },
+    {
+      "icon": "award",
+      "title": "Fixed-Fee Packages",
+      "description": "Cost-effective legal support with transparent fixed-fee packages that never compromise on quality or outcomes."
+    },
+    {
+      "icon": "heart",
+      "title": "Client-Focused Care",
+      "description": "Core commitment to understanding your needs and delivering tailored legal solutions for your specific circumstances."
+    },
+    {
+      "icon": "zap",
+      "title": "Collaborative Approach",
+      "description": "Non-confrontational dispute resolution and mediation services designed to achieve the best outcomes efficiently."
+    },
+    {
+      "icon": "clock",
+      "title": "Convenient City Centre Location",
+      "description": "Located in Bristol city centre at Prince House with full accessibility including lift access for wheelchair users."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Initial Enquiry",
+      "description": "Contact us by phone on 0117 325 2929 or complete our online enquiry form with details of your legal matter."
+    },
+    {
+      "step": "02",
+      "title": "Consultation",
+      "description": "Meet with one of our specialist solicitors at our Bristol city centre office to discuss your circumstances and legal needs."
+    },
+    {
+      "step": "03",
+      "title": "Legal Advice & Strategy",
+      "description": "Receive tailored professional advice with a fixed-fee package quote and clear explanation of the best approach for your case."
+    },
+    {
+      "step": "04",
+      "title": "Resolution & Support",
+      "description": "Our team handles your matter professionally, keeping you informed throughout until successful resolution or settlement."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What should I do about debts when getting divorced?",
+      "answer": "Sorting out debts during divorce is as important as separating other assets. Our divorce solicitors can advise you on managing loan repayments, credit card bills, and ensuring your financial security is protected throughout the separation process."
+    },
+    {
+      "question": "Do you offer fixed-fee legal services?",
+      "answer": "Yes. We offer fixed-fee packages across our services without ever compromising on quality. This provides cost-effective legal support with transparent pricing so you know exactly what to expect."
+    },
+    {
+      "question": "Can you help with personal injury claims?",
+      "answer": "Yes. Our personal injury lawyers handle a range of claims including medical negligence and cosmetic treatment injuries. We work to achieve the best settlement possible for your case."
+    },
+    {
+      "question": "What family law services do you provide?",
+      "answer": "We offer comprehensive family law support including divorce and separation, child law, financial settlements, TOLATA advice for non-married couples, and mediation services tailored to your circumstances."
+    },
+    {
+      "question": "Is your Bristol office accessible?",
+      "answer": "Yes. Our office is located on the 2nd floor of Prince House with full accessibility. There is a lift to enable wheelchair users to access the ground floor entrance and upper floors."
+    },
+    {
+      "question": "How do I book an appointment?",
+      "answer": "You can call us on 0117 325 2929 during office hours (09:00 \u2013 17:15) or complete our online enquiry form and a member of our team will get back to you as soon as possible."
+    }
+  ],
+  "services": [
+    "Divorce & Separation",
+    "Family Law Services",
+    "Personal Injury Claims",
+    "Wills, Trusts & Probate",
+    "Employment Law",
+    "Residential Property Services"
+  ],
+  "detailedServices": [
+    {
+      "title": "Divorce & Separation",
+      "category": "FAMILY LAW",
+      "priceFrom": "",
+      "description": "Expert legal guidance through marriage dissolution, civil partnership dissolution, and relationship breakdown with specialist divorce solicitors offering collaborative and non-confrontational approaches.",
+      "features": [
+        "Financial settlement advice",
+        "Children arrangements",
+        "Fixed-fee packages available",
+        "Mediation services"
+      ]
+    },
+    {
+      "title": "Family Law Services",
+      "category": "FAMILY LAW",
+      "priceFrom": "",
+      "description": "Comprehensive family law support covering child law, relationship disputes, and family circumstances with decades of experience protecting clients' interests.",
+      "features": [
+        "Child law advice",
+        "TOLATA guidance for non-married couples",
+        "Property ownership disputes",
+        "Specialist family solicitors"
+      ]
+    },
+    {
+      "title": "Personal Injury Claims",
+      "category": "PERSONAL INJURY",
+      "priceFrom": "",
+      "description": "Dedicated personal injury lawyers handling claims including medical negligence, cosmetic treatment injuries, and other personal injury matters with proven settlement results.",
+      "features": [
+        "Medical negligence claims",
+        "Beauty treatment injuries",
+        "Professional claim representation",
+        "Proven settlement track record"
+      ]
+    },
+    {
+      "title": "Wills, Trusts & Probate",
+      "category": "ESTATE PLANNING",
+      "priceFrom": "",
+      "description": "Professional estate planning and probate services to help you plan for your future and protect your assets through properly structured wills and trusts.",
+      "features": [
+        "Will drafting",
+        "Trust administration",
+        "Probate guidance",
+        "Estate planning advice"
+      ]
+    },
+    {
+      "title": "Employment Law",
+      "category": "EMPLOYMENT LAW",
+      "priceFrom": "",
+      "description": "Specialist employment law advice for employees covering workplace rights, disputes, and contractual matters with practical, common-sense guidance.",
+      "features": [
+        "Employee rights advice",
+        "Workplace dispute resolution",
+        "Contract guidance",
+        "Expert employment solicitors"
+      ]
+    },
+    {
+      "title": "Residential Property Services",
+      "category": "PROPERTY LAW",
+      "priceFrom": "",
+      "description": "Comprehensive residential property legal services including house purchases, transfers, and property-related disputes with experienced conveyancing solicitors.",
+      "features": [
+        "House purchase support",
+        "Property transfers",
+        "Ownership disputes",
+        "Fixed-fee conveyancing options"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "Divorce Settlement",
+      "relativeTime": "3 months ago",
+      "rating": 5,
+      "text": "Barcan and Kirby helped me navigate my divorce with professionalism and care. Their collaborative approach made a stressful situation manageable, and I received a fair financial settlement. Highly recommended."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Personal Injury Claim",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "After my workplace injury, their employment and personal injury team were excellent. They explained everything clearly and achieved a great settlement. The fixed-fee arrangement was transparent and fair."
+    },
+    {
+      "author": "Emma L.",
+      "avatarLetter": "E",
+      "resultBadge": "Property Conveyancing",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "First-time home buyer and was nervous about the process. The team at Barcan and Kirby made it straightforward and stress-free. Their Bristol city centre location was convenient and they were always responsive."
+    },
+    {
+      "author": "Michael P.",
+      "avatarLetter": "M",
+      "resultBadge": "Estate Planning",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "Had my will and trust reviewed by their expert solicitors. They provided practical advice and peace of mind knowing my estate is properly planned. Professional, knowledgeable, and genuinely helpful."
+    }
+  ],
+  "team": [
+    {
+      "name": "Georgina Bryant",
+      "role": "Partner",
+      "credentials": "",
+      "bio": "A trusted member of the team at Barcan+Kirby Solicitors, serving clients across Bristol.",
+      "photo": "https://barcankirby.co.uk/wp-content/uploads/2019/10/Barcan-Kirby-1251_Georgina-Bryant.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Oliver Kent",
+      "role": "Associate",
+      "credentials": "",
+      "bio": "A trusted member of the team at Barcan+Kirby Solicitors, serving clients across Bristol.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Emily Williamson",
+      "role": "Personal Injury Lawyer",
+      "credentials": "",
+      "bio": "A trusted member of the team at Barcan+Kirby Solicitors, serving clients across Bristol.",
+      "photo": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Our welcoming space"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern facilities"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80",
+      "caption": "Friendly, expert team"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
+      "caption": "Consultations that listen"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=900&q=80",
+      "caption": "Contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Comfort-first care"
+    }
+  ],
+  "hours": [
+    {
+      "day": "Monday",
+      "time": "09:00 \u2013 17:15"
+    },
+    {
+      "day": "Tuesday",
+      "time": "09:00 \u2013 17:15"
+    },
+    {
+      "day": "Wednesday",
+      "time": "09:00 \u2013 17:15"
+    },
+    {
+      "day": "Thursday",
+      "time": "09:00 \u2013 17:15"
+    },
+    {
+      "day": "Friday",
+      "time": "09:00 \u2013 17:15"
+    }
+  ],
+  "highlights": [
+    "Specialist family law solicitors with decades of experience",
+    "Personal injury lawyers with proven settlement track record",
+    "Fixed-fee legal packages without compromising quality",
+    "Accessible Bristol city centre office location",
+    "Collaborative and mediation-focused dispute resolution",
+    "4.8-star rated by 357 clients"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJ0UQ6BdaNcUgRrPkG3L4hLR4",
+  "map_embed_url": "https://www.google.com/maps?q=Prince+House%2C+Prince+St%2C+Bristol+BS1+4PS%2C+UK&output=embed"
+}

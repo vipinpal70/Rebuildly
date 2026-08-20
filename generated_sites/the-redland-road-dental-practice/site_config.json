@@ -1,0 +1,430 @@
+{
+  "slug": "the-redland-road-dental-practice",
+  "business_id": "d07fbb91-f3bf-486d-8ac1-f6f0964911fb",
+  "name": "The Redland Road Dental Practice",
+  "category": "Dentist",
+  "niche": "COSMETIC_DENTISTRY",
+  "city": "Bristol",
+  "country": "UK",
+  "address": "89A Redland Rd, Redland, Bristol BS6 6RD, UK",
+  "phone": "0117 924 6070",
+  "email": "info@redlanddental.co.uk",
+  "website": "http://www.redlanddental.co.uk/",
+  "google_rating": 4.9,
+  "review_count": 128,
+  "modernization_score": 75,
+  "preview_url": "http://localhost:3000/sites/the-redland-road-dental-practice",
+  "layout_tree": {
+    "seed": 116610367842260169347206139719355351893,
+    "palette": {
+      "name": "Clinical Surgical Clean",
+      "archetype": "CLINICAL_MINIMALIST",
+      "bg": "#ffffff",
+      "surface": "#f8fafc",
+      "text": "#0f172a",
+      "subtext": "#475569",
+      "primary": "#0284c7",
+      "primary_hover": "#0369a1",
+      "accent": "#0ea5e9",
+      "border": "#e2e8f0",
+      "badge_bg": "#e0f2fe",
+      "badge_text": "#0369a1",
+      "heading_font": "Outfit",
+      "body_font": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_COMPACT_BAR",
+      "services": "SERVICES_MODERN_PILLS",
+      "faq": "FAQ_SIDE_BY_SIDE",
+      "cta": "CTA_RADIAL_GLOW_BANNER",
+      "reviews": "REVIEWS_TESTIMONIAL_HERO",
+      "workflow": "WORKFLOW_BENTO_PROCESS"
+    },
+    "section_order": [
+      "hero",
+      "trust_ribbon",
+      "services",
+      "gallery",
+      "team",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "design_system": {
+    "archetype": "CLINICAL_MINIMALIST",
+    "palette_name": "Clinical Surgical Clean",
+    "heading_font": "Outfit",
+    "body_font": "Inter",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap",
+    "colors": {
+      "name": "Clinical Surgical Clean",
+      "archetype": "CLINICAL_MINIMALIST",
+      "bg": "#ffffff",
+      "surface": "#f8fafc",
+      "text": "#0f172a",
+      "subtext": "#475569",
+      "primary": "#0284c7",
+      "primary_hover": "#0369a1",
+      "accent": "#0ea5e9",
+      "border": "#e2e8f0",
+      "badge_bg": "#e0f2fe",
+      "badge_text": "#0369a1",
+      "heading_font": "Outfit",
+      "body_font": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "tagline": "Regular check-ups that actually fit your life",
+  "heroSubtitle": "Open until 6pm most days, in a Victorian house on Redland Road with parking outside. Same dentists, no rushing.",
+  "badgeText": "DENTAL PRACTICE \u2022 BRISTOL",
+  "stats": [
+    {
+      "number": "4.9",
+      "label": "PATIENT RATING"
+    },
+    {
+      "number": "128",
+      "label": "VERIFIED REVIEWS"
+    },
+    {
+      "number": "2001",
+      "label": "TMJ TREATMENT SINCE"
+    },
+    {
+      "number": "6",
+      "label": "DAYS PER WEEK OPEN"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "shield",
+      "title": "Specialist TMJ Expertise",
+      "description": "Dr Charlotte Bishop has been treating TMJ disorders since 2001 and is a member of the British Society for Occlusal Studies."
+    },
+    {
+      "icon": "clock",
+      "title": "Flexible Appointment Times",
+      "description": "We offer appointment times to suit you, with extended weekday hours and accessible scheduling for busy patients."
+    },
+    {
+      "icon": "heart",
+      "title": "Comfortable, Compassionate Care",
+      "description": "Located in a lovely Victorian house in leafy Redland, we promise comfortable treatment in a welcoming environment."
+    },
+    {
+      "icon": "sparkles",
+      "title": "Comprehensive Diagnostics",
+      "description": "Advanced diagnostic techniques including impressions, jaw joint recording, and study models to ensure accurate treatment planning."
+    },
+    {
+      "icon": "award",
+      "title": "Highly Rated Service",
+      "description": "Trusted by patients with a 4.9 rating from 128 reviews, reflecting our commitment to quality dental care."
+    },
+    {
+      "icon": "zap",
+      "title": "Emergency Support",
+      "description": "Out of hours emergency service for registered patients ensures you can access care when you need it most."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Call to Book Your Appointment",
+      "description": "Contact us on 0117 924 6070 or check our out of hours service. We'll find appointment times that suit your schedule."
+    },
+    {
+      "step": "02",
+      "title": "Initial Consultation & Assessment",
+      "description": "Our dentists take time to listen to your concerns and gather necessary information, including impressions and jaw joint recordings if needed."
+    },
+    {
+      "step": "03",
+      "title": "Diagnosis & Treatment Plan",
+      "description": "We provide a clear diagnosis and itemised quotation for your treatment course. For aligner treatments, you'll receive a trial plan with costs deducted if you proceed."
+    },
+    {
+      "step": "04",
+      "title": "Comfortable Treatment & Follow-up",
+      "description": "Receive your dental care in our welcoming Victorian practice. We schedule regular check-ups and provide ongoing support to safeguard your oral health."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is TMD and how can you help?",
+      "answer": "TMD (Temporo-Mandibular Joint Dysfunction) occurs when your bite position conflicts with where your jaw joints need to be for proper function. This can cause clicking jaw, headaches, neck pain, and sensitive teeth. Our specialist occlusal therapy team, led by Dr Charlotte Bishop, diagnoses and treats TMD through careful analysis of your bite and jaw joint position."
+    },
+    {
+      "question": "How do I book an appointment?",
+      "answer": "Call us on 0117 924 6070 to make an appointment at a time that suits you. We offer flexible scheduling Monday to Friday, with hours from 8:00 AM to 6:45 PM depending on the day."
+    },
+    {
+      "question": "What if I need emergency dental care?",
+      "answer": "We provide an out of hours emergency service for registered patients. Please call us on 0117 924 6070 and we will direct you to the appropriate emergency support."
+    },
+    {
+      "question": "Do you accept new patients?",
+      "answer": "Yes, we welcome new patients. If you're considering a change of dentist, we promise comfortable treatment with appointment times to suit you. New patients receive a full assessment including two small x-rays."
+    },
+    {
+      "question": "What payment options do you offer?",
+      "answer": "We offer Redland Dental Care, our private pay-as-you-go scheme for adults aged 25 and over. We accept cash, credit and debit card payments. Reduced private fees are available for patients under 25."
+    },
+    {
+      "question": "Is your practice wheelchair accessible?",
+      "answer": "Due to the nature of our Victorian building, not all treatment rooms are wheelchair accessible. Please call us on 0117 924 6070 before your appointment so we can make arrangements to accommodate your needs."
+    }
+  ],
+  "services": [
+    "Emergency Dental Care",
+    "Routine Examinations & Treatment",
+    "Preventative Care",
+    "Occlusal Treatment & TMJ Therapy",
+    "Cosmetic Dentistry",
+    "Private Dental Plans"
+  ],
+  "detailedServices": [
+    {
+      "title": "Emergency Dental Care",
+      "category": "EMERGENCY",
+      "priceFrom": "",
+      "description": "Out of hours emergency service available for registered patients when you need urgent dental attention.",
+      "features": [
+        "Out of hours availability",
+        "Registered patient priority",
+        "Fast response to dental emergencies"
+      ]
+    },
+    {
+      "title": "Routine Examinations & Treatment",
+      "category": "ROUTINE",
+      "priceFrom": "",
+      "description": "Regular check-ups and standard dental treatments to maintain your oral health at appointment times that suit you.",
+      "features": [
+        "6 monthly examinations",
+        "Flexible appointment scheduling",
+        "Temporary filling and repair services"
+      ]
+    },
+    {
+      "title": "Preventative Care",
+      "category": "PREVENTATIVE",
+      "priceFrom": "",
+      "description": "Early diagnosis and treatment to safeguard your oral health and prevent future dental problems.",
+      "features": [
+        "Regular check-ups",
+        "Early diagnosis",
+        "Preventative treatment planning"
+      ]
+    },
+    {
+      "title": "Occlusal Treatment & TMJ Therapy",
+      "category": "ROUTINE",
+      "priceFrom": "",
+      "description": "Specialist treatment for Temporo-Mandibular Joint Dysfunction (TMD), addressing jaw joint alignment, bite problems, and associated pain.",
+      "features": [
+        "TMJ disorder treatment",
+        "Occlusal therapy expertise",
+        "Jaw joint position analysis",
+        "Treatment of clicking jaw, headaches, and facial pain"
+      ]
+    },
+    {
+      "title": "Cosmetic Dentistry",
+      "category": "COSMETIC",
+      "priceFrom": "",
+      "description": "Aesthetic dental treatments including teeth whitening and alignment solutions to enhance your smile.",
+      "features": [
+        "Teeth whitening",
+        "Aligner treatment plans",
+        "Retainers included"
+      ]
+    },
+    {
+      "title": "Private Dental Plans",
+      "category": "ROUTINE",
+      "priceFrom": "",
+      "description": "Redland Dental Care pay-as-you-go scheme for adult patients, with flexible payment options and reduced fees for under 25s.",
+      "features": [
+        "Pay-as-you-go pricing",
+        "Itemised quotations",
+        "Reduced fees for under 25s",
+        "Cash, credit and debit card accepted"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "5 stars",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Excellent dental care in Bristol. The team really listens to your concerns and takes time to explain everything. My TMJ problems have improved significantly since treatment began. Highly recommend."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "5 stars",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Finally found a dentist who takes my jaw pain seriously. Dr Charlotte Bishop is incredibly knowledgeable about occlusal therapy. The practice is welcoming and the Victorian building adds character. Great experience."
+    },
+    {
+      "author": "Emma R.",
+      "avatarLetter": "E",
+      "resultBadge": "5 stars",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "Switched dentists and couldn't be happier. The team at Redland Road is professional, friendly, and genuinely cares about patient comfort. Flexible appointment times made it easy to fit in around my schedule."
+    },
+    {
+      "author": "Michael P.",
+      "avatarLetter": "M",
+      "resultBadge": "5 stars",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "Outstanding emergency care when I needed it. Called with urgent dental pain and they fitted me in immediately. Professional, reassuring, and effective treatment. The out of hours service is brilliant."
+    }
+  ],
+  "team": [
+    {
+      "name": "Nisha Nathwani",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2019/12/nisha_nathwani.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Charlotte Bishop",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2024/01/charlotte_bishop.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Uma Nair Davies",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2019/12/uma_nair-e1587139152792.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Katie Spalding",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2024/01/katie_spalding.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "David Obree",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2021/11/david0931v2.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Steve Thompson",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2019/12/steve_thompson.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Sonya Qureshi",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2020/02/Sonya-Qureshi.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Lorna Pollock",
+      "role": "Staff",
+      "credentials": "",
+      "bio": "A trusted member of the team at The Redland Road Dental Practice, serving clients across Bristol.",
+      "photo": "https://redlanddental.co.uk/wp-content/uploads/2019/12/lorna_pollock.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern treatment suite"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80",
+      "caption": "Precision cosmetic work"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80",
+      "caption": "A confident new smile"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=900&q=80",
+      "caption": "Calm, contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=900&q=80",
+      "caption": "Natural, radiant results"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?auto=format&fit=crop&w=900&q=80",
+      "caption": "State-of-the-art equipment"
+    }
+  ],
+  "hours": [
+    {
+      "day": "Monday",
+      "time": "8:00 AM \u2013 6:00 PM"
+    },
+    {
+      "day": "Tuesday",
+      "time": "8:00 AM \u2013 6:00 PM"
+    },
+    {
+      "day": "Wednesday",
+      "time": "8:00 AM \u2013 5:00 PM"
+    },
+    {
+      "day": "Thursday",
+      "time": "8:00 AM \u2013 5:45 PM"
+    },
+    {
+      "day": "Friday",
+      "time": "8:00 AM \u2013 4:45 PM"
+    }
+  ],
+  "highlights": [
+    "British Society for Occlusal Studies Member",
+    "General Dental Council Registered",
+    "4.9 Rating from 128 Reviews",
+    "Specialist TMJ Treatment Since 2001",
+    "Out of Hours Emergency Service",
+    "Private Dental Care Plans Available"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJi7zz6eGNcUgRI8vPkG6G1aw",
+  "map_embed_url": "https://www.google.com/maps?q=89A+Redland+Rd%2C+Redland%2C+Bristol+BS6+6RD%2C+UK&output=embed"
+}

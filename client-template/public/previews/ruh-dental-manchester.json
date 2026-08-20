@@ -1,0 +1,400 @@
+{
+  "slug": "ruh-dental-manchester",
+  "business_id": "9fac8503-9d37-446d-9c7c-e847fc3d7d2b",
+  "name": "Ruh Dental - Manchester",
+  "category": "Dentist",
+  "niche": "COSMETIC_DENTISTRY",
+  "city": "Manchester",
+  "country": "UK",
+  "address": "Unit 5G, The Avenue Spinningfields, Manchester M3 3FL, UK",
+  "phone": "0161 348 8000",
+  "email": "harrods@ruhdental.com",
+  "website": "https://ruhdental.com/",
+  "google_rating": 4.9,
+  "review_count": 332,
+  "modernization_score": 30,
+  "preview_url": "http://localhost:3000/sites/ruh-dental-manchester",
+  "layout_tree": {
+    "seed": 263060098657678678050480474698355885555,
+    "palette": {
+      "name": "Obsidian Cyber Glow",
+      "archetype": "CYBER_GLOW_TECH",
+      "bg": "#09090b",
+      "surface": "#121215",
+      "text": "#f4f4f5",
+      "subtext": "#a1a1aa",
+      "primary": "#8b5cf6",
+      "primary_hover": "#7c3aed",
+      "accent": "#06b6d4",
+      "border": "rgba(139, 92, 246, 0.3)",
+      "badge_bg": "rgba(6, 182, 212, 0.15)",
+      "badge_text": "#22d3ee",
+      "heading_font": "Rajdhani",
+      "body_font": "Plus Jakarta Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_CREAM_HERITAGE",
+      "services": "SERVICES_3COL_CARDS",
+      "faq": "FAQ_BORDERED_BOXES",
+      "cta": "CTA_WARM_WELLNESS",
+      "reviews": "REVIEWS_MASONRY_GRID",
+      "workflow": "WORKFLOW_4STEP_CARDS"
+    },
+    "section_order": [
+      "hero",
+      "trust_ribbon",
+      "services",
+      "gallery",
+      "usps",
+      "team",
+      "workflow",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "design_system": {
+    "archetype": "CYBER_GLOW_TECH",
+    "palette_name": "Obsidian Cyber Glow",
+    "heading_font": "Rajdhani",
+    "body_font": "Plus Jakarta Sans",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap",
+    "colors": {
+      "name": "Obsidian Cyber Glow",
+      "archetype": "CYBER_GLOW_TECH",
+      "bg": "#09090b",
+      "surface": "#121215",
+      "text": "#f4f4f5",
+      "subtext": "#a1a1aa",
+      "primary": "#8b5cf6",
+      "primary_hover": "#7c3aed",
+      "accent": "#06b6d4",
+      "border": "rgba(139, 92, 246, 0.3)",
+      "badge_bg": "rgba(6, 182, 212, 0.15)",
+      "badge_text": "#22d3ee",
+      "heading_font": "Rajdhani",
+      "body_font": "Plus Jakarta Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "tagline": "Invisible braces. Visible results. Fast.",
+  "heroSubtitle": "Top 1% Invisalign provider in Europe. Straighter teeth without the wait \u2014 most patients see movement in weeks, not months.",
+  "badgeText": "COSMETIC & GENERAL DENTISTRY \u2022 MANCHESTER",
+  "stats": [
+    {
+      "number": "3,000+",
+      "label": "INVISALIGN CASES COMPLETED"
+    },
+    {
+      "number": "10,000+",
+      "label": "SMILES ENHANCED"
+    },
+    {
+      "number": "4.9",
+      "label": "GOOGLE RATING"
+    },
+    {
+      "number": "332",
+      "label": "FIVE-STAR REVIEWS"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "sparkles",
+      "title": "Top 1% Invisalign Provider in Europe",
+      "description": "Recognised for exceptional experience and consistently outstanding Invisalign results with over 3,000 happy patients."
+    },
+    {
+      "icon": "award",
+      "title": "Original Composite Bonding Specialists",
+      "description": "Pioneers of advanced freehand composite bonding techniques with over 10,000 smiles enhanced."
+    },
+    {
+      "icon": "shield",
+      "title": "100% Invisalign Money-Back Guarantee",
+      "description": "Complete peace of mind with 8-week money-back guarantee if your teeth are not straighter."
+    },
+    {
+      "icon": "heart",
+      "title": "Minimally Invasive Approach",
+      "description": "Aesthetically driven treatments designed to straighten, enhance and restore smiles naturally."
+    },
+    {
+      "icon": "zap",
+      "title": "Same-Day Smile Transformations",
+      "description": "Composite bonding delivers instant, painless results with no drilling or injections required."
+    },
+    {
+      "icon": "clock",
+      "title": "Evening & Weekend Appointments",
+      "description": "Flexible scheduling to fit your lifestyle with convenient appointment times available."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Free Consultation",
+      "description": "Book a free initial consultation with one of our highly qualified dentists to discuss your smile goals and assess your needs."
+    },
+    {
+      "step": "02",
+      "title": "Personalised Treatment Plan",
+      "description": "We create a bespoke treatment plan tailored to your smile transformation goals, whether Align, Enhance, or Replace."
+    },
+    {
+      "step": "03",
+      "title": "Treatment Execution",
+      "description": "Receive your chosen treatment\u2014from Invisalign clear braces to composite bonding or dental implants\u2014with expert precision and care."
+    },
+    {
+      "step": "04",
+      "title": "Enjoy Your New Smile",
+      "description": "Experience your smile transformation with predictable, confident outcomes and complete peace of mind."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "How long does Invisalign treatment take?",
+      "answer": "Most Invisalign cases can be completed within 6 months, depending on the complexity of your case. The treatment is completely digitally planned which improves accuracy and predictability."
+    },
+    {
+      "question": "Is Invisalign noticeable?",
+      "answer": "No. Invisalign uses clear, removable braces that straighten your teeth discreetly. You can straighten your teeth without anyone ever knowing."
+    },
+    {
+      "question": "What does composite bonding fix?",
+      "answer": "Composite bonding can fix chipped, uneven, stained, or misshapen teeth. It's an instant, painless solution that reshapes and brightens your smile in just one visit."
+    },
+    {
+      "question": "How long does composite bonding last?",
+      "answer": "Composite bonding provides long-lasting results. The exact duration depends on your care and lifestyle, but it offers a durable enhancement to your smile."
+    },
+    {
+      "question": "What teeth whitening options are available?",
+      "answer": "We offer both in-clinic professional whitening and customised at-home whitening kits with professional-grade gel and custom-made trays for even application."
+    },
+    {
+      "question": "Do you offer free consultations?",
+      "answer": "Yes. We offer free initial consultations with one of our highly qualified dentists to discuss your smile goals and create a personalised treatment plan."
+    }
+  ],
+  "services": [
+    "Invisalign Clear Braces",
+    "Composite Bonding",
+    "Teeth Whitening",
+    "Porcelain Veneers",
+    "Dental Implants",
+    "Free Smile Consultation"
+  ],
+  "detailedServices": [
+    {
+      "title": "Invisalign Clear Braces",
+      "category": "TEETH ALIGNMENT",
+      "priceFrom": "",
+      "description": "Removable clear braces that straighten teeth discreetly and efficiently. Most cases completed within 6 months with digital planning for improved accuracy.",
+      "features": [
+        "100% money-back guarantee if teeth not straighter in 8 weeks",
+        "Minimal visits to the dentist",
+        "Discreet and efficient straightening"
+      ]
+    },
+    {
+      "title": "Composite Bonding",
+      "category": "COSMETIC ENHANCEMENT",
+      "priceFrom": "",
+      "description": "Advanced freehand composite bonding to reshape, brighten, and perfect your smile. Tooth-coloured resin artistically sculpted for natural results in one visit.",
+      "features": [
+        "No drilling, no injections",
+        "Same-day results",
+        "Fixes chips, uneven, stained or misshapen teeth"
+      ]
+    },
+    {
+      "title": "Teeth Whitening",
+      "category": "TEETH BRIGHTENING",
+      "priceFrom": "",
+      "description": "Professional teeth whitening treatments designed to remove stains and lift discolouration. Custom-made trays with professional-grade whitening gel for long-lasting results.",
+      "features": [
+        "Custom-made professional trays",
+        "In-clinic or at-home options",
+        "Clinically proven results"
+      ]
+    },
+    {
+      "title": "Porcelain Veneers",
+      "category": "SMILE RESTORATION",
+      "priceFrom": "",
+      "description": "Enhance teeth with porcelain veneers as part of the comprehensive smile makeover plan. Aesthetic restoration for natural-looking results.",
+      "features": [
+        "Aesthetically driven approach",
+        "Natural appearance",
+        "Long-lasting enhancement"
+      ]
+    },
+    {
+      "title": "Dental Implants",
+      "category": "TOOTH REPLACEMENT",
+      "priceFrom": "",
+      "description": "Replace missing or broken teeth with dental implants. Part of the comprehensive smile restoration approach for complete confidence.",
+      "features": [
+        "Replaces missing teeth",
+        "Restores broken teeth",
+        "Predictable outcomes"
+      ]
+    },
+    {
+      "title": "Free Smile Consultation",
+      "category": "CONSULTATION",
+      "priceFrom": "Free",
+      "description": "Initial consultation with highly qualified dentists to discuss your smile goals and create a personalised treatment plan.",
+      "features": [
+        "Free initial consultation",
+        "Highly qualified dentists",
+        "Personalised treatment planning"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "Invisalign Transformation",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Absolutely thrilled with my Invisalign results at R\u00fch Dental Manchester. The team was so professional and my teeth are now perfectly straight. The money-back guarantee gave me complete confidence from day one."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Composite Bonding",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Had composite bonding done to fix a chipped tooth and I couldn't believe the results. No drilling, no pain, and I walked out with a perfect smile the same day. Highly recommend!"
+    },
+    {
+      "author": "Emma L.",
+      "avatarLetter": "E",
+      "resultBadge": "Teeth Whitening",
+      "relativeTime": "2 weeks ago",
+      "rating": 5,
+      "text": "The professional teeth whitening at R\u00fch Dental made such a difference. My smile is noticeably brighter and the results have lasted. The custom trays are so comfortable to use at home."
+    },
+    {
+      "author": "Michael P.",
+      "avatarLetter": "M",
+      "resultBadge": "Smile Makeover",
+      "relativeTime": "5 weeks ago",
+      "rating": 5,
+      "text": "Had the full smile makeover plan with Invisalign and composite bonding. The dentists really understood my vision and delivered exactly what I wanted. My confidence has completely transformed."
+    }
+  ],
+  "team": [
+    {
+      "name": "Dr Billal Arshad",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Ravi Boojawon",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Liv Schorah",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Sulaiman Arshad",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Alisha Anderson",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Amit Mistry",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Nina Ainsworth",
+      "role": "Clinician",
+      "credentials": "",
+      "bio": "A trusted member of the team at Ruh Dental - Manchester, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern treatment suite"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80",
+      "caption": "Precision cosmetic work"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80",
+      "caption": "A confident new smile"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=900&q=80",
+      "caption": "Calm, contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=900&q=80",
+      "caption": "Natural, radiant results"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?auto=format&fit=crop&w=900&q=80",
+      "caption": "State-of-the-art equipment"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "4.9\u2605 Rating from 332 Google Reviews",
+    "Top 1% Invisalign Provider in Europe",
+    "3,000+ Successful Invisalign Cases",
+    "10,000+ Smiles Enhanced with Composite Bonding",
+    "100% Invisalign Money-Back Guarantee",
+    "Free Initial Consultations Available"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJ3VU6Fyyxe0gRx_kTCWgGGJQ",
+  "map_embed_url": "https://www.google.com/maps?q=Unit+5G%2C+The+Avenue+Spinningfields%2C+Manchester+M3+3FL%2C+UK&output=embed"
+}

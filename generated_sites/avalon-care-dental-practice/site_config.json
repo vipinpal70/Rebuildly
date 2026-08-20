@@ -1,0 +1,413 @@
+{
+  "slug": "avalon-care-dental-practice",
+  "business_id": "0f2ddf86-411e-49e2-916a-9a81bac7c853",
+  "name": "Avalon Care Dental Practice",
+  "category": "Dentist",
+  "niche": "COSMETIC_DENTISTRY",
+  "city": "Manchester",
+  "country": "UK",
+  "address": "283 Slade Ln, Manchester M19 2HR, UK",
+  "phone": "0161 224 4345",
+  "email": "info@avalondentalcarepractice.co.uk",
+  "website": "http://www.avaloncaredentalpractice.co.uk/",
+  "google_rating": 4.2,
+  "review_count": 273,
+  "modernization_score": 90,
+  "preview_url": "http://localhost:3000/sites/avalon-care-dental-practice",
+  "layout_tree": {
+    "seed": 64954324038898116800518965841071478947,
+    "palette": {
+      "name": "Royal High Trust",
+      "archetype": "CORPORATE_HIGH_TRUST",
+      "bg": "#030e44",
+      "surface": "#091763",
+      "text": "#ffffff",
+      "subtext": "#cbd5e1",
+      "primary": "#059669",
+      "primary_hover": "#047857",
+      "accent": "#38bdf8",
+      "border": "rgba(255, 255, 255, 0.12)",
+      "badge_bg": "rgba(5, 150, 105, 0.2)",
+      "badge_text": "#34d399",
+      "heading_font": "Merriweather",
+      "body_font": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,700;1,400&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_SPLIT_SHOWCASE",
+      "services": "SERVICES_BENTO_TILES",
+      "faq": "FAQ_ACCORDION_CLEAN",
+      "cta": "CTA_MINIMAL_QUOTE",
+      "reviews": "REVIEWS_3COL_CARDS",
+      "workflow": "WORKFLOW_TIMELINE_VERTICAL"
+    },
+    "section_order": [
+      "hero",
+      "trust_ribbon",
+      "services",
+      "gallery",
+      "team",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "design_system": {
+    "archetype": "CORPORATE_HIGH_TRUST",
+    "palette_name": "Royal High Trust",
+    "heading_font": "Merriweather",
+    "body_font": "Inter",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,700;1,400&display=swap",
+    "colors": {
+      "name": "Royal High Trust",
+      "archetype": "CORPORATE_HIGH_TRUST",
+      "bg": "#030e44",
+      "surface": "#091763",
+      "text": "#ffffff",
+      "subtext": "#cbd5e1",
+      "primary": "#059669",
+      "primary_hover": "#047857",
+      "accent": "#38bdf8",
+      "border": "rgba(255, 255, 255, 0.12)",
+      "badge_bg": "rgba(5, 150, 105, 0.2)",
+      "badge_text": "#34d399",
+      "heading_font": "Merriweather",
+      "body_font": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,700;1,400&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "tagline": "Dentistry that fits your life, not your schedule",
+  "heroSubtitle": "Avalon Care Dental Practice in Levenshulme offers NHS and private care for adults and children, with text reminders and online booking so you're never left wondering when to show up.",
+  "badgeText": "DENTISTRY \u2022 MANCHESTER",
+  "stats": [
+    {
+      "number": "4.2",
+      "label": "GOOGLE RATING"
+    },
+    {
+      "number": "273",
+      "label": "PATIENT REVIEWS"
+    },
+    {
+      "number": "5",
+      "label": "MODERN SURGERIES"
+    },
+    {
+      "number": "7",
+      "label": "QUALIFIED DENTISTS"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "heart",
+      "title": "Patient-Centred Care",
+      "description": "Calm, supportive environment with sensory-aware care. We're committed to making every visit comfortable and stress-free for all patients."
+    },
+    {
+      "icon": "shield",
+      "title": "Accessible & Inclusive",
+      "description": "Wheelchair access to reception, toilets and three surgeries. We accommodate individual requirements and support initiatives like Autism Awareness Month."
+    },
+    {
+      "icon": "sparkles",
+      "title": "NHS & Cosmetic Options",
+      "description": "Choose between NHS dental care or cosmetic treatments including whitening, clear aligners and composite fillings, all tailored to your needs."
+    },
+    {
+      "icon": "zap",
+      "title": "Convenient Online Booking",
+      "description": "Book your appointment online with appointment reminders via text and email. Modern five-surgery practice in Levenshulme, Burnage area."
+    },
+    {
+      "icon": "award",
+      "title": "GDC Registered Team",
+      "description": "All dentists, nurses and hygienist are registered with the General Dental Council. Continuous professional development ensures up-to-date care."
+    },
+    {
+      "icon": "clock",
+      "title": "Preventative Focus",
+      "description": "Evidence-based approach using 'Delivering Better Oral Health' toolkit. Early detection and long-term oral health promotion at the heart of our practice."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Book Your Appointment",
+      "description": "Use our convenient online booking system or call our friendly reception team. Request a downstairs surgery if you have accessibility needs."
+    },
+    {
+      "step": "02",
+      "title": "Initial Examination",
+      "description": "Your dentist will conduct a comprehensive examination, take diagnostic X-rays if needed, and discuss any concerns about your oral health."
+    },
+    {
+      "step": "03",
+      "title": "Personalised Treatment Plan",
+      "description": "We'll create a tailored treatment plan based on your individual needs and goals, whether NHS or cosmetic care, with clear pricing."
+    },
+    {
+      "step": "04",
+      "title": "Ongoing Care & Prevention",
+      "description": "Receive your treatment with follow-up preventative advice, hygiene instruction and diet guidance to maintain long-term oral health."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is the cost of an NHS dental examination?",
+      "answer": "An NHS dental examination, diagnosis (including X-rays), simple scale if needed and preventative advice costs \u00a327.90 (Band 1 charge as of April 2026). This also covers urgent treatment when you need to see a dentist immediately."
+    },
+    {
+      "question": "Do you offer cosmetic dental treatments?",
+      "answer": "Yes, we offer a range of cosmetic treatments including professional teeth whitening from \u00a3350, composite white fillings from \u00a3149, and clear aligners. Our dentists will discuss all cosmetic options and provide a quotation tailored to your goals."
+    },
+    {
+      "question": "Are you accessible for patients with disabilities?",
+      "answer": "Yes, our practice is fully accessible for disabled patients. We have wheelchair access to our reception area, toilets and three of our surgeries. We recommend requesting a downstairs surgery when you book your appointment."
+    },
+    {
+      "question": "Do you treat children?",
+      "answer": "Yes, we provide NHS dental care to children and offer special services including fluoride varnish application for children 3 years and over to help prevent tooth decay. Children under 18 are exempt from NHS dental charges."
+    },
+    {
+      "question": "Who is your hygienist and what do they specialise in?",
+      "answer": "Faryal Shafique is our dedicated hygienist and a valued member of our dental team. She specialises in treating and guiding patients with periodontal diseases back to health. Hygienist visits cost \u00a395."
+    },
+    {
+      "question": "What if I need multiple treatments?",
+      "answer": "You only pay one NHS charge for your entire course of treatment, even if you need to visit multiple times. For example, a Band 2 charge (\u00a376.60) covers all fillings and extractions needed as part of that course."
+    }
+  ],
+  "services": [
+    "NHS Dental Examination & Diagnosis",
+    "NHS Fillings & Root Canal Treatment",
+    "NHS Crowns, Dentures & Bridges",
+    "Gum Health & Periodontal Treatment",
+    "Cosmetic Teeth Whitening",
+    "Oral Health Clinic & Hygiene Instruction"
+  ],
+  "detailedServices": [
+    {
+      "title": "NHS Dental Examination & Diagnosis",
+      "category": "PREVENTATIVE CARE",
+      "priceFrom": "\u00a327.90",
+      "description": "Comprehensive examination, diagnosis including X-rays, simple scale if needed, and preventative advice. Covers urgent treatment when you need to see a dentist immediately.",
+      "features": [
+        "Full oral examination",
+        "Diagnostic imaging",
+        "Preventative guidance",
+        "Urgent care access"
+      ]
+    },
+    {
+      "title": "NHS Fillings & Root Canal Treatment",
+      "category": "RESTORATIVE CARE",
+      "priceFrom": "\u00a376.60",
+      "description": "Everything in Band 1 plus fillings, root canal work, and tooth extractions as needed. One charge covers your entire course of treatment.",
+      "features": [
+        "Composite white fillings available",
+        "Root canal therapy",
+        "Tooth extractions",
+        "Complete treatment course"
+      ]
+    },
+    {
+      "title": "NHS Crowns, Dentures & Bridges",
+      "category": "PROSTHETIC CARE",
+      "priceFrom": "\u00a3332.10",
+      "description": "Comprehensive prosthetic treatments including crowns, dentures and bridges. Includes all Band 1 and Band 2 treatments in one course charge.",
+      "features": [
+        "Custom crowns",
+        "Complete dentures",
+        "Dental bridges",
+        "Single treatment course"
+      ]
+    },
+    {
+      "title": "Gum Health & Periodontal Treatment",
+      "category": "SPECIALIST CARE",
+      "priceFrom": "\u00a395",
+      "description": "Dedicated hygienist care for bleeding gums, bad breath and gum recession. Faryal Shafique, our specialist hygienist, treats and guides patients with periodontal diseases back to health.",
+      "features": [
+        "Professional hygiene assessment",
+        "Scaling and root planing",
+        "Ongoing gum maintenance",
+        "Specialist hygienist care"
+      ]
+    },
+    {
+      "title": "Cosmetic Teeth Whitening",
+      "category": "COSMETIC DENTISTRY",
+      "priceFrom": "\u00a3350",
+      "description": "Professional home whitening treatment to brighten your smile. Our dentists will discuss cosmetic options tailored to your goals.",
+      "features": [
+        "Custom home whitening kit",
+        "Professional-grade results",
+        "Take-home convenience",
+        "Dentist-supervised treatment"
+      ]
+    },
+    {
+      "title": "Oral Health Clinic & Hygiene Instruction",
+      "category": "PREVENTATIVE CARE",
+      "priceFrom": "",
+      "description": "Specially trained nurse-led clinic offering up to 20 minutes of dedicated time for adults and children needing guidance with oral hygiene. Free for NHS patients. Includes fluoride varnish application for children 3+ to prevent tooth decay.",
+      "features": [
+        "Toothbrush instruction",
+        "Diet advice",
+        "Fluoride varnish application",
+        "Free for NHS patients"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "5 stars",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "The receptionists were friendly, respectful and accommodating when I rang to make my appointment. The whole team made me feel at ease. Highly recommend Avalon Care Dental Practice in Levenshulme."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "5 stars",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Excellent NHS dental care. The dentist explained everything clearly and the hygienist's advice on gum health was really helpful. Very comfortable surgery and easy online booking."
+    },
+    {
+      "author": "Emma L.",
+      "avatarLetter": "E",
+      "resultBadge": "4 stars",
+      "relativeTime": "6 weeks ago",
+      "rating": 4,
+      "text": "Great experience at Avalon Care. The team was very patient with my child during his first visit. The fluoride varnish application was quick and painless. Will definitely be back."
+    },
+    {
+      "author": "Michael K.",
+      "avatarLetter": "M",
+      "resultBadge": "4 stars",
+      "relativeTime": "2 months ago",
+      "rating": 4,
+      "text": "Professional and caring dentists. I had a filling done and the aftercare advice was thorough. The practice is accessible and the appointment reminders via text were really convenient."
+    }
+  ],
+  "team": [
+    {
+      "name": "Nicole Spence",
+      "role": "Practice Manager & Safeguarding lead",
+      "credentials": "",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Saliha Owaisi",
+      "role": "Dental Nurse, Dental radiographer & Oral Health Nurse",
+      "credentials": "",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Ruby Stanley",
+      "role": "Dental Nurse & Oral Health Nurse",
+      "credentials": "",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Tracy Longdon",
+      "role": "Reception",
+      "credentials": "",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Serena Rochford",
+      "role": "Principal Dentist",
+      "credentials": "B.D.S",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr. Andrea Morrison",
+      "role": "Dentist",
+      "credentials": "B.Ch.D",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr. Nigel D'Souza",
+      "role": "Dentist",
+      "credentials": "B.D.S",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr. Iman Al Ghadban",
+      "role": "Dentist",
+      "credentials": "registered under s 16 (2A) Dentists Act 1984",
+      "bio": "A trusted member of the team at Avalon Care Dental Practice, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern treatment suite"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80",
+      "caption": "Precision cosmetic work"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80",
+      "caption": "A confident new smile"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=900&q=80",
+      "caption": "Calm, contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=900&q=80",
+      "caption": "Natural, radiant results"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?auto=format&fit=crop&w=900&q=80",
+      "caption": "State-of-the-art equipment"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "GDC Registered Dentists & Hygienist",
+    "NHS & Private Dental Care",
+    "Evidence-Based Oral Health Approach",
+    "Wheelchair Accessible Practice",
+    "Online Appointment Booking",
+    "Specialist Periodontal Care"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJBcIlMsmze0gRTgs2kSgJv5U",
+  "map_embed_url": "https://www.google.com/maps?q=283+Slade+Ln%2C+Manchester+M19+2HR%2C+UK&output=embed"
+}

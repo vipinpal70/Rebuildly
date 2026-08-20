@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+*.pytest_cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node / Next.js (client-template has its own nested .gitignore too)
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# OS / editor
+.DS_Store
+
+# Claude Code local (personal, not shared)
+.claude/settings.local.json

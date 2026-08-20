@@ -1,0 +1,200 @@
+Vipin Pal
+Delhi, India | vipinpal7060@gmail.com | +91 7060298070
+Professional Summary
+Python Developer with hands-on experience building algorithmic trading systems,
+market data pipelines, broker API integrations, and automation tools. Active
+trader in Indian derivatives, Forex (XAUUSD), and crypto futures with practical
+knowledge of exposure management, leverage, margin concepts, and market risk.
+Strong SQL and Python skills for monitoring, analytics, ETL, and operational
+automation. Experienced working under pressure during live market events and
+collaborating across engineering teams to maintain reliable trading systems.
+Core Competencies
+• Python • SQL • Pandas • NumPy • Risk Monitoring • Market Data Processing
+• Algorithmic Trading • Broker API Integration • Trading Automation
+• Position & Exposure Analysis • ETL Pipelines • Alerting Systems
+• MongoDB • MySQL • AWS • Docker • Git
+Professional Experience
+Python Developer – Aspire Now Global (Jul 2025 – Present)
+
+Built algorithmic trading platforms integrating multiple broker REST APIs for
+automated strategy deployment.
+Developed AI-assisted trading analytics and quantitative backtesting platform.
+Built automation workflows reducing manual operational effort and
+improving monitoring.
+
+Designed backend services emphasizing reliability, data integrity, and API
+security.
+Python Developer – Angel's Virtual World (Jan 2024 – Jul 2025)
+
+Architected automated trading systems for Indian equities and cryptocurrency
+across multiple brokers.
+Built real-time ETL pipelines for market data using Python and Pandas.
+Backtested 50+ quantitative strategies and deployed 10+ live automated
+strategies.
+
+Developed Telegram-based real-time trading alerts and monitoring.
+
+
+Integrated secure credential management using HashiCorp Vault and AWS
+Secrets Manager.
+
+Worked with SQL and MongoDB to manage trading, strategy, and market
+datasets.
+Relevant Trading Knowledge
+• Active trading experience in NIFTY & BANKNIFTY Futures and Options, XAUUSD
+Forex, and Crypto Spot/Perpetual Futures.
+• Familiar with margin, leverage, exposure, liquidation, open interest, and risk
+management.
+• Experienced responding to live market volatility and enforcing predefined risk
+limits.
+Technical Skills
+Python, SQL, Pandas, NumPy, REST APIs, MongoDB, MySQL, Redis, Docker, AWS,
+Git, MetaTrader5, Pine Script, TA-Lib, TradingView, Node.js
+Education
+MCA, VIT Bhopal (2024)
+BCA, DAV PG College, CCSU (2022)
+
+
+
+
+
+
+
+
+Your initial monthly API cost
+
+For your lead-generation project, I would start like this:
+
+Google Places API
+        +
+PageSpeed Insights API
+        ↓
+Website Lead Finder
+Small testing phase
+
+Suppose:
+
+2,000 businesses/month
+
+You can potentially keep the Google Places cost at:
+
+$0/month
+
+if you stay within the applicable free caps and structure your requests carefully.
+
+PageSpeed:
+
+$0/month
+
+
+
+
+             Google Places
+                  ↓
+          Basic discovery
+                  ↓
+          10,000 businesses
+                  ↓
+         ┌────────┴────────┐
+         ↓                 ↓
+    Has website?       No website
+         ↓                 ↓
+      YES             discard
+         ↓
+       7,000
+         ↓
+     Website crawler
+         ↓
+   Basic website audit
+         ↓
+       3,000
+         ↓
+   PageSpeed analysis
+         ↓
+       1,000
+         ↓
+     AI analysis
+         ↓
+      Top 200
+         ↓
+    Sales outreach
+
+
+
+Don't use PageSpeed for every website initially
+
+This is another important optimization.
+
+You can perform a cheap local audit first using Python.
+
+For example:
+
+requests
+BeautifulSoup
+Playwright
+DNS
+SSL
+HTML parser
+
+Check:
+
+HTTPS?
+Mobile viewport?
+Title?
+Meta description?
+H1?
+Canonical?
+Schema?
+OpenGraph?
+Images?
+Image sizes?
+WordPress?
+Old JS libraries?
+Old CSS?
+Broken links?
+Contact form?
+Booking?
+Chatbot?
+Google Analytics?
+Google Tag Manager?
+
+Then only send the promising websites to PageSpeed.
+
+Example:
+
+10,000 websites
+       ↓
+Python audit
+       ↓
+6,000 outdated
+       ↓
+PageSpeed
+       ↓
+6,000 reports
+       ↓
+AI scoring
+       ↓
+500 high-value leads
+7. Your real monthly cost will NOT be these two APIs
+
+This is important.
+
+For the system you described, your cost stack will eventually look more like:
+
+Service	Initial cost
+Google Places	$0–$160+
+PageSpeed	$0
+Website crawler	$0
+Python	$0
+PostgreSQL	$0–$25
+VPS	~$5–$20
+AI API	Variable
+Email service	Variable
+Domain	~$1–$2/month equivalent
+CRM	$0 initially
+
+
+So you could realistically build the first version for around $10–$30/month, 
+depending on the infrastructure you choose and how much AI/email automation you use.
+
+

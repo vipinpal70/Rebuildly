@@ -1,0 +1,379 @@
+{
+  "slug": "clarity-dental-clinic",
+  "business_id": "3ffb1590-b57e-4c0f-a6d2-29e1198d8871",
+  "name": "Clarity Dental Clinic",
+  "category": "Dentist",
+  "niche": "COSMETIC_DENTISTRY",
+  "city": "Manchester",
+  "country": "UK",
+  "address": "7 Sandy Ln, Chorlton-cum-Hardy, Manchester M21 8TL, UK",
+  "phone": "0161 881 6560",
+  "email": "info@claritydentalclinic.co.uk",
+  "website": "http://www.claritydentalclinic.co.uk/",
+  "google_rating": 4.8,
+  "review_count": 189,
+  "modernization_score": 75,
+  "preview_url": "http://localhost:3000/sites/clarity-dental-clinic",
+  "layout_tree": {
+    "seed": 137079538292743545291738799908924028810,
+    "palette": {
+      "name": "Obsidian Cyber Glow",
+      "archetype": "CYBER_GLOW_TECH",
+      "bg": "#09090b",
+      "surface": "#121215",
+      "text": "#f4f4f5",
+      "subtext": "#a1a1aa",
+      "primary": "#8b5cf6",
+      "primary_hover": "#7c3aed",
+      "accent": "#06b6d4",
+      "border": "rgba(139, 92, 246, 0.3)",
+      "badge_bg": "rgba(6, 182, 212, 0.15)",
+      "badge_text": "#22d3ee",
+      "heading_font": "Rajdhani",
+      "body_font": "Plus Jakarta Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_CYBER_GLOW",
+      "services": "SERVICES_HIGHLIGHT_BANNER",
+      "faq": "FAQ_BORDERED_BOXES",
+      "cta": "CTA_BENTO_FINALE",
+      "reviews": "REVIEWS_CAROUSEL_SWIPE",
+      "workflow": "WORKFLOW_HORIZONTAL_STEPS"
+    },
+    "section_order": [
+      "hero",
+      "services",
+      "gallery",
+      "trust_ribbon",
+      "usps",
+      "team",
+      "reviews",
+      "workflow",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "design_system": {
+    "archetype": "CYBER_GLOW_TECH",
+    "palette_name": "Obsidian Cyber Glow",
+    "heading_font": "Rajdhani",
+    "body_font": "Plus Jakarta Sans",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap",
+    "colors": {
+      "name": "Obsidian Cyber Glow",
+      "archetype": "CYBER_GLOW_TECH",
+      "bg": "#09090b",
+      "surface": "#121215",
+      "text": "#f4f4f5",
+      "subtext": "#a1a1aa",
+      "primary": "#8b5cf6",
+      "primary_hover": "#7c3aed",
+      "accent": "#06b6d4",
+      "border": "rgba(139, 92, 246, 0.3)",
+      "badge_bg": "rgba(6, 182, 212, 0.15)",
+      "badge_text": "#22d3ee",
+      "heading_font": "Rajdhani",
+      "body_font": "Plus Jakarta Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "tagline": "Advanced dentistry without the wait",
+  "heroSubtitle": "Clarity's award-winning team uses the latest digital scanning and treatment planning to get you results faster. No lengthy consultations, no guesswork\u2014just precise care from day one.",
+  "badgeText": "DENTISTRY \u2022 MANCHESTER",
+  "stats": [
+    {
+      "number": "4.8",
+      "label": "GOOGLE RATING"
+    },
+    {
+      "number": "189",
+      "label": "PATIENT REVIEWS"
+    },
+    {
+      "number": "4",
+      "label": "AWARD-WINNING DENTISTS"
+    },
+    {
+      "number": "6+",
+      "label": "COMPREHENSIVE SERVICES"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "award",
+      "title": "Award-Winning Dentists",
+      "description": "Our team has won multiple awards including gold medals and academic research prizes, ensuring expert care."
+    },
+    {
+      "icon": "sparkles",
+      "title": "We Create Beautiful Smiles",
+      "description": "Comprehensive smile design and makeover treatments to achieve the smile you've always dreamed of."
+    },
+    {
+      "icon": "shield",
+      "title": "Advanced Dental Treatments",
+      "description": "Cutting-edge technology including Straumann implants and Invisalign for superior results."
+    },
+    {
+      "icon": "heart",
+      "title": "Comfortable Environment",
+      "description": "Modern clinic designed to high-quality standards, welcoming new patients in a relaxed setting."
+    },
+    {
+      "icon": "zap",
+      "title": "Interest Free Credit Available",
+      "description": "Flexible payment options to make your dental care more accessible."
+    },
+    {
+      "icon": "clock",
+      "title": "Convenient Appointments",
+      "description": "Easy online appointment booking with contact during working hours."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Request an Appointment",
+      "description": "Fill out the appointment form on our website and we will contact you during our working hours to confirm your visit."
+    },
+    {
+      "step": "02",
+      "title": "Consultation",
+      "description": "Meet with one of our award-winning dentists who will assess your dental needs and discuss treatment options tailored to your goals."
+    },
+    {
+      "step": "03",
+      "title": "Treatment Planning",
+      "description": "We'll create a personalised treatment plan using advanced technology and explain the process, timeline, and payment options including interest-free credit."
+    },
+    {
+      "step": "04",
+      "title": "Treatment & Follow-Up",
+      "description": "Receive your dental treatment in our modern, comfortable clinic with expert care, followed by scheduled follow-up appointments to ensure optimal results."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do I have a missing tooth that makes me conscious when I smile?",
+      "answer": "Dental implants at Clarity Dental Clinic can help restore your confidence. A dental implant is a titanium post surgically placed into the jawbone to mimic the root of a natural tooth. Once integrated, a crown, bridge, or denture can be placed to replace missing teeth naturally and comfortably."
+    },
+    {
+      "question": "Do I struggle to eat my favourite foods comfortably?",
+      "answer": "Dental implants restore your natural biting function, allowing you to eat the foods you enjoy most without discomfort or worry about dentures slipping."
+    },
+    {
+      "question": "Are my dentures loose or do I worry about them falling out?",
+      "answer": "Implant-retained fixed teeth provide a stable, secure solution. Our implant retained fixed teeth option, including teeth in a day treatments, eliminates the worry of loose dentures."
+    },
+    {
+      "question": "Do I have crooked or crowded teeth?",
+      "answer": "Our specialist orthodontist Dr Hamza Anwar offers multiple straightening options including Invisalign and traditional braces. Treatment can be customised to achieve results quickly using combined brace systems."
+    },
+    {
+      "question": "What are Invisalign aligners?",
+      "answer": "Invisalign aligners are custom-made, medical grade plastic aligners that gently move your teeth. They are discreet and nearly invisible, making them the world's most popular hidden brace system for correcting overlapped, spaced, or crooked teeth."
+    },
+    {
+      "question": "How long does a dental implant take to integrate?",
+      "answer": "After surgical placement, a dental implant is typically left for approximately 3 months to allow the jawbone to integrate around the implant before the crown, bridge, or denture is placed."
+    }
+  ],
+  "services": [
+    "Dental Implants",
+    "Orthodontics & Teeth Straightening",
+    "Smile Design & Makeover",
+    "Teeth Whitening",
+    "Facial Aesthetics",
+    "General Dentistry & Endodontics"
+  ],
+  "detailedServices": [
+    {
+      "title": "Dental Implants",
+      "category": "RESTORATIVE",
+      "priceFrom": "",
+      "description": "Replace missing teeth with natural-looking dental implants using Straumann technology. Restore your ability to bite, smile and speak with confidence.",
+      "features": [
+        "Straumann implants \u2013 world leader in dental implant technology",
+        "Implant retained fixed teeth available",
+        "Teeth in a day option",
+        "Restores natural function and appearance"
+      ]
+    },
+    {
+      "title": "Orthodontics & Teeth Straightening",
+      "category": "ALIGNMENT",
+      "priceFrom": "",
+      "description": "Achieve a straight smile with specialist orthodontic treatment. Led by award-winning Specialist Orthodontist Dr Hamza Anwar, Gold Medal winner 2017.",
+      "features": [
+        "Invisalign \u2013 discreet, custom-made aligners",
+        "Traditional and hidden brace systems",
+        "Specialist-led treatment for faster results",
+        "Corrects overlapped, spaced and crooked teeth"
+      ]
+    },
+    {
+      "title": "Smile Design & Makeover",
+      "category": "COSMETIC",
+      "priceFrom": "",
+      "description": "Transform your smile with comprehensive smile design and makeover treatments tailored to your aesthetic goals.",
+      "features": [
+        "Personalised smile design",
+        "Complete smile transformation",
+        "Award-winning dental team",
+        "High-quality cosmetic outcomes"
+      ]
+    },
+    {
+      "title": "Teeth Whitening",
+      "category": "COSMETIC",
+      "priceFrom": "",
+      "description": "Brighten your smile with professional teeth whitening treatments in a comfortable, modern environment.",
+      "features": [
+        "Professional-grade whitening",
+        "Safe and effective results",
+        "Comfortable treatment experience",
+        "Enhances your natural smile"
+      ]
+    },
+    {
+      "title": "Facial Aesthetics",
+      "category": "AESTHETIC",
+      "priceFrom": "",
+      "description": "Enhance your facial appearance with advanced aesthetic treatments delivered by skilled dental professionals.",
+      "features": [
+        "Comprehensive aesthetic solutions",
+        "Award-winning practitioners",
+        "Natural-looking results",
+        "Complements dental treatments"
+      ]
+    },
+    {
+      "title": "General Dentistry & Endodontics",
+      "category": "GENERAL",
+      "priceFrom": "",
+      "description": "Comprehensive general dental care and endodontic treatments including root canal therapy in a high-quality, comfortable environment.",
+      "features": [
+        "Routine dental care",
+        "Endodontic expertise",
+        "Modern treatment standards",
+        "Preventative and restorative services"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "5 stars",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Absolutely brilliant experience at Clarity Dental. Had my dental implants done and the whole process was so professional and comfortable. Dr Suleman explained everything clearly and the results are amazing. Highly recommend!"
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "5 stars",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "Got Invisalign treatment with Dr Hamza and couldn't be happier. The aligners are so discreet and my teeth straightened so quickly. The clinic is modern and welcoming. Best decision I made for my smile."
+    },
+    {
+      "author": "Emma L.",
+      "avatarLetter": "E",
+      "resultBadge": "5 stars",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Had my smile makeover done here and the transformation is incredible. The team really listened to what I wanted and delivered beyond my expectations. Dr Zoya was fantastic. Worth every penny!"
+    },
+    {
+      "author": "Michael P.",
+      "avatarLetter": "M",
+      "resultBadge": "5 stars",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "Excellent dental care at Clarity. I was nervous about my implant treatment but the whole team put me at ease. The modern facilities and award-winning dentists make all the difference. Very professional throughout."
+    }
+  ],
+  "team": [
+    {
+      "name": "Dr Suleman Anwar",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at Clarity Dental Clinic, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Zoya Ali",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at Clarity Dental Clinic, serving clients across Manchester.",
+      "photo": "http://www.claritydentalclinic.co.uk/wp-content/uploads/2020/09/invisalign.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Hamza Anwar",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at Clarity Dental Clinic, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Dr Imran Asghar",
+      "role": "Dentist",
+      "credentials": "",
+      "bio": "A trusted member of the team at Clarity Dental Clinic, serving clients across Manchester.",
+      "photo": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern treatment suite"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80",
+      "caption": "Precision cosmetic work"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80",
+      "caption": "A confident new smile"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=900&q=80",
+      "caption": "Calm, contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=900&q=80",
+      "caption": "Natural, radiant results"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?auto=format&fit=crop&w=900&q=80",
+      "caption": "State-of-the-art equipment"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "Award-Winning Dentists \u2013 Gold Medals & Academic Research Prizes",
+    "Straumann Dental Implants \u2013 World Leader in Technology",
+    "Specialist Orthodontist \u2013 Gold Medal Winner 2017",
+    "Modern Clinic \u2013 High-Quality Standards",
+    "Interest Free Credit Available",
+    "4.8 Rating from 189 Reviews"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJcfVqBPKte0gR6g58azJM8Sc",
+  "map_embed_url": "https://www.google.com/maps?q=7+Sandy+Ln%2C+Chorlton-cum-Hardy%2C+Manchester+M21+8TL%2C+UK&output=embed"
+}

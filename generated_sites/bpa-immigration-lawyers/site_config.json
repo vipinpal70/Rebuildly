@@ -1,0 +1,335 @@
+{
+  "slug": "bpa-immigration-lawyers",
+  "business_id": "4bbff6c0-b298-4d94-ac32-46db59623d61",
+  "name": "BPA Immigration Lawyers",
+  "category": "Personal Injury Lawyers, Immigration Attorneys, CPA/Accounting Firms",
+  "niche": "LEGAL_SERVICES",
+  "city": "Bristol",
+  "country": "UK",
+  "address": "Unit F19, Kestrel court, Harbour Rd, Portishead, Bristol BS20 7AN, UK",
+  "phone": "0330 808 9067",
+  "email": "",
+  "website": "http://www.bpaimmigrationlawyers.com/",
+  "google_rating": 4.2,
+  "review_count": 66,
+  "modernization_score": 30,
+  "preview_url": "http://localhost:3000/sites/bpa-immigration-lawyers",
+  "layout_tree": {
+    "seed": 81789142604730854839155345602339497320,
+    "palette": {
+      "name": "Clinical Surgical Clean",
+      "archetype": "CLINICAL_MINIMALIST",
+      "bg": "#ffffff",
+      "surface": "#f8fafc",
+      "text": "#0f172a",
+      "subtext": "#475569",
+      "primary": "#0284c7",
+      "primary_hover": "#0369a1",
+      "accent": "#0ea5e9",
+      "border": "#e2e8f0",
+      "badge_bg": "#e0f2fe",
+      "badge_text": "#0369a1",
+      "heading_font": "Outfit",
+      "body_font": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_CYBER_GLOW",
+      "services": "SERVICES_CAROUSEL_CARDS",
+      "faq": "FAQ_2COL_GRID",
+      "cta": "CTA_STICKY_BOTTOM_BAR",
+      "reviews": "REVIEWS_FEATURED_SPOTLIGHT",
+      "workflow": "WORKFLOW_BENTO_PROCESS"
+    },
+    "section_order": [
+      "hero",
+      "usps",
+      "services",
+      "gallery",
+      "team",
+      "workflow",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "design_system": {
+    "archetype": "CLINICAL_MINIMALIST",
+    "palette_name": "Clinical Surgical Clean",
+    "heading_font": "Outfit",
+    "body_font": "Inter",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap",
+    "colors": {
+      "name": "Clinical Surgical Clean",
+      "archetype": "CLINICAL_MINIMALIST",
+      "bg": "#ffffff",
+      "surface": "#f8fafc",
+      "text": "#0f172a",
+      "subtext": "#475569",
+      "primary": "#0284c7",
+      "primary_hover": "#0369a1",
+      "accent": "#0ea5e9",
+      "border": "#e2e8f0",
+      "badge_bg": "#e0f2fe",
+      "badge_text": "#0369a1",
+      "heading_font": "Outfit",
+      "body_font": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "tagline": "Immigration cases that turn on detail. We handle yours like it's the only one we have.",
+  "heroSubtitle": "When the Home Office says no, we know how to challenge it. BPA has argued appeals before the Upper Tribunal and won waivers others thought impossible.",
+  "badgeText": "IMMIGRATION LAW \u2022 BRISTOL",
+  "stats": [
+    {
+      "number": "50+",
+      "label": "YEARS COMBINED EXPERIENCE"
+    },
+    {
+      "number": "4.2",
+      "label": "AVERAGE CLIENT RATING"
+    },
+    {
+      "number": "66",
+      "label": "CLIENT REVIEWS"
+    },
+    {
+      "number": "UK & US",
+      "label": "SERVICE COVERAGE"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "heart",
+      "title": "Immigration Law With Heart",
+      "description": "We believe immigration proceedings are more than just a process\u2014they're a turning point in someone's life. Every case is rooted in something deeply personal."
+    },
+    {
+      "icon": "award",
+      "title": "Over 50 Years of Combined Experience",
+      "description": "Trusted immigration law firm in the UK and US, bringing decades of expertise, insight, and strategy to even the most complex cases."
+    },
+    {
+      "icon": "shield",
+      "title": "Authorised at the Highest Level",
+      "description": "Fully authorised for immigration advice, offering the same level of care and expertise to clients across the United States and beyond."
+    },
+    {
+      "icon": "sparkles",
+      "title": "Clarity & Unmatched Expertise",
+      "description": "We bring legal know-how alongside empathy and strategic insight, ensuring clients feel well-equipped to navigate immigration law's fine points."
+    },
+    {
+      "icon": "zap",
+      "title": "Nation-Wide Network of Attorneys",
+      "description": "Access to accomplished immigration lawyers ready to fight for your case with passion and dedication across the United States."
+    },
+    {
+      "icon": "clock",
+      "title": "Proactive & Long-Term Partnerships",
+      "description": "We establish enduring relationships with clients, anticipating issues before they arise and quickly resolving them when they do."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Initial Consultation",
+      "description": "Meet with our experienced immigration attorneys to discuss your case, circumstances, and goals. We take time to understand your unique story and the deeply personal aspects of your immigration journey."
+    },
+    {
+      "step": "02",
+      "title": "Case Assessment & Strategy",
+      "description": "We conduct a thorough review of your situation, identify potential pathways, and develop a strategic plan tailored to your needs\u2014whether family reunification, removal defense, compliance, or appeals."
+    },
+    {
+      "step": "03",
+      "title": "Documentation & Preparation",
+      "description": "Our team prepares all necessary documentation, applications, and supporting materials, ensuring everything is accurate, up-to-date, and aligned with federal immigration law."
+    },
+    {
+      "step": "04",
+      "title": "Representation & Ongoing Support",
+      "description": "We represent you throughout the process, from submission through interviews, hearings, or appeals. We maintain long-term partnerships, anticipating issues and resolving them with expertise and dedication."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is family-based immigration?",
+      "answer": "Family-based immigration is one of the most common and meaningful paths to lawful permanent residence (green card status) in the United States. It allows you to bring loved ones to the country or adjust the immigration status of family members already here, though the process involves emotional complexity, legal nuance, and sometimes long waiting periods."
+    },
+    {
+      "question": "What does deportation or removal mean?",
+      "answer": "Deportation, or removal, is the legal process through which the U.S. government seeks to remove a non-citizen from the country. Reasons can include visa overstays, entering without documentation, criminal charges, or alleged immigration fraud. It is one of the most stressful legal situations a person can face."
+    },
+    {
+      "question": "What is immigration compliance?",
+      "answer": "Immigration compliance involves ensuring that your immigration status, applications, and documentation remain accurate, up-to-date, and aligned with federal law at all times. It also includes knowing your rights, responsibilities, and the steps to take when your situation changes."
+    },
+    {
+      "question": "How can BPA help if I'm facing removal?",
+      "answer": "BPA Immigration Lawyers U.S. offers calm, strategic, and unwavering legal guidance through full-service deportation defense. We have a nation-wide network of accomplished attorneys ready to fight for your right to remain in the U.S., whether you've been placed in removal proceedings, detained, or fear deportation may be imminent."
+    },
+    {
+      "question": "Do you handle complex and appealed cases?",
+      "answer": "Yes. We specialise in appeals, waivers, and complex cases including visa refusals, inadmissibility issues, and humanitarian relief applications. No two immigration stories are the same, and we take the time to understand your unique circumstances."
+    },
+    {
+      "question": "Can BPA help U.S. organisations with immigration compliance?",
+      "answer": "Yes. If you're an organisation employing foreign nationals, staying compliant with evolving immigration law is essential. BPA provides tailored, proactive legal counsel to help you protect your interests and prevent complications."
+    }
+  ],
+  "services": [
+    "Family-Based Immigration",
+    "Deportation & Removal Defense",
+    "Compliance & Legal Counsel",
+    "Appeals, Waivers & Complex Cases",
+    "Visa Applications & Status",
+    "Asylum & Humanitarian Relief"
+  ],
+  "detailedServices": [
+    {
+      "title": "Family-Based Immigration",
+      "category": "FAMILY REUNIFICATION",
+      "priceFrom": "",
+      "description": "Reunite families and build futures through lawful permanent residence pathways. We guide you through every step of bringing loved ones to the United States or adjusting the immigration status of family members already here.",
+      "features": [
+        "Green card sponsorship and petitions",
+        "Emotional and legal guidance throughout the process",
+        "Navigation of complex waiting periods and requirements"
+      ]
+    },
+    {
+      "title": "Deportation & Removal Defense",
+      "category": "REMOVAL PROCEEDINGS",
+      "priceFrom": "",
+      "description": "Calm, strategic, and unwavering legal guidance for individuals and families facing removal from the United States. We offer full-service deportation defense with a nation-wide network of accomplished attorneys ready to fight for your right to remain.",
+      "features": [
+        "Defense against removal proceedings",
+        "Representation if detained by immigration authorities",
+        "Deep experience with visa overstays, entry violations, and complex cases"
+      ]
+    },
+    {
+      "title": "Compliance & Legal Counsel",
+      "category": "ONGOING SUPPORT",
+      "priceFrom": "",
+      "description": "Strategic guidance to help individuals, professionals, and organizations confidently navigate U.S. immigration law. Proactive legal counsel tailored to your visa responsibilities, changing circumstances, and employment of foreign nationals.",
+      "features": [
+        "Immigration status management and documentation review",
+        "Long-term attorney partnerships for anticipating issues",
+        "Compliance with evolving federal immigration law"
+      ]
+    },
+    {
+      "title": "Appeals, Waivers & Complex Cases",
+      "category": "ADVANCED REPRESENTATION",
+      "priceFrom": "",
+      "description": "Expert handling of complex immigration matters, refusals, and humanitarian relief applications. We bring over 50 years of combined experience to cases that require strategic insight and deep legal knowledge.",
+      "features": [
+        "Visa refusal appeals and challenges",
+        "Waiver applications for inadmissibility",
+        "Humanitarian protection and asylum representation"
+      ]
+    },
+    {
+      "title": "Visa Applications & Status",
+      "category": "VISA SERVICES",
+      "priceFrom": "",
+      "description": "Comprehensive support for visa applications and immigration status matters. Whether pursuing new job opportunities or starting fresh, we ensure your application is well-prepared and strategically positioned.",
+      "features": [
+        "Work visa and employment-based immigration",
+        "Visa application preparation and submission",
+        "Status adjustment and documentation support"
+      ]
+    },
+    {
+      "title": "Asylum & Humanitarian Relief",
+      "category": "PROTECTION SERVICES",
+      "priceFrom": "",
+      "description": "Compassionate and strategic representation for clients seeking protection through humanitarian relief and asylum pathways. We understand the deeply personal nature of these cases and fight for your right to safety.",
+      "features": [
+        "Asylum claim preparation and representation",
+        "Inadmissibility waivers and appeals",
+        "Humanitarian relief and protection applications"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "Family Reunification",
+      "relativeTime": "3 months ago",
+      "rating": 5,
+      "text": "BPA helped us navigate the family-based immigration process to bring my sister to the US. The team was incredibly patient and explained every step clearly. They made what felt overwhelming feel manageable. Highly recommended."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Deportation Defense",
+      "relativeTime": "5 months ago",
+      "rating": 5,
+      "text": "When I faced removal proceedings, I didn't know where to turn. BPA's attorneys stood by me every step of the way. Their expertise and compassion made all the difference. I'm grateful to still be here."
+    },
+    {
+      "author": "Priya K.",
+      "avatarLetter": "P",
+      "resultBadge": "Compliance & Counsel",
+      "relativeTime": "2 months ago",
+      "rating": 4,
+      "text": "As a professional managing changing immigration circumstances, BPA provided the strategic guidance I needed. They're proactive, responsive, and truly understand the complexities of US immigration law."
+    },
+    {
+      "author": "Michael R.",
+      "avatarLetter": "M",
+      "resultBadge": "Visa Appeals",
+      "relativeTime": "6 months ago",
+      "rating": 4,
+      "text": "My visa was refused and I felt lost. BPA took on my appeal and fought hard for me. Their knowledge of immigration law and unwavering commitment gave me hope when I had none."
+    }
+  ],
+  "team": [],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Our welcoming space"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern facilities"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80",
+      "caption": "Friendly, expert team"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
+      "caption": "Consultations that listen"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=900&q=80",
+      "caption": "Contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Comfort-first care"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "Authorised at the Highest Level for Immigration Advice",
+    "Over 50 Years of Combined Industry Experience",
+    "Trusted Immigration Law Firm in the UK and US",
+    "Full-Service Representation Across All Immigration Matters",
+    "Nation-Wide Network of Accomplished Attorneys",
+    "4.2-Star Rating from 66 Client Reviews"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJ6TFwic-NcUgRseXdTF360ho",
+  "map_embed_url": "https://www.google.com/maps?q=Unit+F19%2C+Kestrel+court%2C+Harbour+Rd%2C+Portishead%2C+Bristol+BS20+7AN%2C+UK&output=embed"
+}

@@ -1,0 +1,334 @@
+{
+  "slug": "the-temple-practice",
+  "business_id": "1699afb4-7c5b-47a5-bbfc-9fade8b1cd38",
+  "name": "The Temple Practice",
+  "category": "Dentist",
+  "niche": "COSMETIC_DENTISTRY",
+  "city": "Leeds",
+  "country": "UK",
+  "address": "375-377 Harrogate Rd, Moortown, Leeds LS17 6DW, UK",
+  "phone": "0113 268 0886",
+  "email": "contact@templepractice.com",
+  "website": "http://www.templepractice.com/",
+  "google_rating": 4.8,
+  "review_count": 250,
+  "modernization_score": 65,
+  "preview_url": "http://localhost:3000/sites/the-temple-practice",
+  "layout_tree": {
+    "seed": 5968405518803466846376672740579295512,
+    "palette": {
+      "name": "Warm Organic Ivory",
+      "archetype": "WARM_ORGANIC_WELLNESS",
+      "bg": "#faf8f5",
+      "surface": "#ffffff",
+      "text": "#1c1917",
+      "subtext": "#78716c",
+      "primary": "#164e63",
+      "primary_hover": "#155e75",
+      "accent": "#c2410c",
+      "border": "#e7e5e4",
+      "badge_bg": "#ecfdf5",
+      "badge_text": "#047857",
+      "heading_font": "Lora",
+      "body_font": "DM Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,600;0,700;1,400&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_OFFSET_BRUTALIST",
+      "services": "SERVICES_MODERN_PILLS",
+      "faq": "FAQ_BORDERED_BOXES",
+      "cta": "CTA_CARD_FLOATING",
+      "reviews": "REVIEWS_CAROUSEL_SWIPE",
+      "workflow": "WORKFLOW_BENTO_PROCESS"
+    },
+    "section_order": [
+      "hero",
+      "services",
+      "workflow",
+      "gallery",
+      "team",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "design_system": {
+    "archetype": "WARM_ORGANIC_WELLNESS",
+    "palette_name": "Warm Organic Ivory",
+    "heading_font": "Lora",
+    "body_font": "DM Sans",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,600;0,700;1,400&display=swap",
+    "colors": {
+      "name": "Warm Organic Ivory",
+      "archetype": "WARM_ORGANIC_WELLNESS",
+      "bg": "#faf8f5",
+      "surface": "#ffffff",
+      "text": "#1c1917",
+      "subtext": "#78716c",
+      "primary": "#164e63",
+      "primary_hover": "#155e75",
+      "accent": "#c2410c",
+      "border": "#e7e5e4",
+      "badge_bg": "#ecfdf5",
+      "badge_text": "#047857",
+      "heading_font": "Lora",
+      "body_font": "DM Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,600;0,700;1,400&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "tagline": "Dentistry that feels like it's made for you, not the other way around",
+  "heroSubtitle": "Since 1972, we've been building smiles that look like they belong to the person wearing them. No two mouths are the same, and yours shouldn't be treated like they are.",
+  "badgeText": "DENTISTRY \u2022 LEEDS",
+  "stats": [
+    {
+      "number": "50+",
+      "label": "YEARS ESTABLISHED"
+    },
+    {
+      "number": "4.8",
+      "label": "AVERAGE RATING"
+    },
+    {
+      "number": "250",
+      "label": "PATIENT REVIEWS"
+    },
+    {
+      "number": "2",
+      "label": "CONVENIENT LOCATIONS"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "award",
+      "title": "Leading Since 1972",
+      "description": "Over 50 years of excellence in dentistry, trusted by generations of patients across West Yorkshire."
+    },
+    {
+      "icon": "heart",
+      "title": "Patient-Centred Philosophy",
+      "description": "We prioritise your comfort and well-being, listening to your concerns and creating customised treatment plans for your unique dental goals."
+    },
+    {
+      "icon": "sparkles",
+      "title": "Natural Smile Design",
+      "description": "We embrace the unique character and individual beauty of every patient, moving beyond one-size-fits-all perfection."
+    },
+    {
+      "icon": "shield",
+      "title": "Skilled & Experienced Team",
+      "description": "Highly qualified dentists, therapists, and hygienists stay up-to-date with the latest advancements to deliver exceptional results."
+    },
+    {
+      "icon": "clock",
+      "title": "Convenient Locations",
+      "description": "Practices in Leeds and Brighouse make accessing quality dental care easier than ever for patients of all ages."
+    },
+    {
+      "icon": "zap",
+      "title": "Relaxing Environment",
+      "description": "Our dental practices are designed with your comfort in mind, creating a calm and soothing atmosphere for a stress-free experience."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Initial Consultation",
+      "description": "Book your appointment and meet with our team. We listen to your concerns, discuss your dental goals, and assess your current oral health."
+    },
+    {
+      "step": "02",
+      "title": "Personalised Treatment Plan",
+      "description": "Based on your consultation, we create a customised treatment plan tailored to your unique needs and smile goals."
+    },
+    {
+      "step": "03",
+      "title": "Expert Treatment",
+      "description": "Our skilled dentists and specialists deliver your treatment using advanced techniques and state-of-the-art technology in a relaxing environment."
+    },
+    {
+      "step": "04",
+      "title": "Ongoing Care & Support",
+      "description": "We provide follow-up appointments, maintenance care, and preventive guidance to ensure your smile stays healthy and beautiful long-term."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Why is preventive care important?",
+      "answer": "Prevention is the key to long-term dental health. Regular check-ups, professional cleanings, and patient education help detect problems early, ensuring timely intervention and reducing the need for extensive treatments."
+    },
+    {
+      "question": "What if I'm nervous about visiting the dentist?",
+      "answer": "Our compassionate team is experienced in providing gentle dentistry for anxious patients. We create a comfortable environment and offer various sedation options to help alleviate your fears and ensure a stress-free experience."
+    },
+    {
+      "question": "Do you treat children as well as adults?",
+      "answer": "Yes, we offer a wide range of services for all ages. From paediatric dentistry with preventive treatments and education for children, to cosmetic and restorative options for adults, we ensure every family member receives the highest level of care."
+    },
+    {
+      "question": "What is involved in a smile makeover?",
+      "answer": "A smile makeover requires careful planning and may address concerns like chipped teeth, crooked teeth, gaps, or discolouration. Our skilled cosmetic dentists work with you to improve both aesthetics and oral health, with transformative results that are well worth the investment."
+    },
+    {
+      "question": "How does Invisalign compare to other orthodontic options?",
+      "answer": "Invisalign offers a discreet, comfortable way to straighten your teeth. Our team can discuss how Invisalign and other advanced orthodontic solutions compare to help you choose the best option for your smile goals."
+    },
+    {
+      "question": "Are dental implants a good solution for missing teeth?",
+      "answer": "Yes, dental implants are the most advanced solution available today for replacing natural teeth. They restore both function and confidence, offering a durable, natural-looking result."
+    }
+  ],
+  "services": [
+    "General & Cosmetic Dentistry",
+    "Smile Makeovers",
+    "Invisalign & Orthodontics",
+    "Dental Implants",
+    "Veneers, Dentures & Bridges",
+    "Endodontics & Specialist Treatments"
+  ],
+  "detailedServices": [
+    {
+      "title": "General & Cosmetic Dentistry",
+      "category": "PREVENTIVE & RESTORATIVE",
+      "priceFrom": "",
+      "description": "Comprehensive preventive care, routine check-ups, professional cleanings, and restorative treatments including fillings, crowns, and bridges to maintain and restore your smile.",
+      "features": [
+        "Regular check-ups and professional cleanings",
+        "Early problem detection and prevention",
+        "Durable, aesthetically pleasing restorations"
+      ]
+    },
+    {
+      "title": "Smile Makeovers",
+      "category": "COSMETIC",
+      "priceFrom": "",
+      "description": "Transform your smile with our skilled cosmetic dentists who address chipped teeth, crooked teeth, gaps, discolouration, and other aesthetic concerns through carefully planned treatments.",
+      "features": [
+        "Personalised smile design",
+        "Treatment of crowding and alignment issues",
+        "Composite bonding and whitening"
+      ]
+    },
+    {
+      "title": "Invisalign & Orthodontics",
+      "category": "ORTHODONTICS",
+      "priceFrom": "",
+      "description": "Comfortably and discreetly straighten your teeth for the smile of your dreams using advanced orthodontic solutions including Invisalign treatment.",
+      "features": [
+        "Discrete teeth straightening",
+        "Advanced alignment technology",
+        "Customised treatment plans"
+      ]
+    },
+    {
+      "title": "Dental Implants",
+      "category": "RESTORATIVE",
+      "priceFrom": "",
+      "description": "The most advanced solution available today for the replacement of natural teeth, restoring function and confidence with high-quality implant procedures.",
+      "features": [
+        "Natural-looking tooth replacement",
+        "Permanent solution for missing teeth",
+        "Restored chewing function and confidence"
+      ]
+    },
+    {
+      "title": "Veneers, Dentures & Bridges",
+      "category": "RESTORATIVE",
+      "priceFrom": "",
+      "description": "Enhance your smile with thin, custom-made replacement teeth surfaces, or regain confidence with high-quality dentures and bridges tailored to your needs.",
+      "features": [
+        "Custom-made aesthetic solutions",
+        "Improved smile appearance",
+        "Restored functionality"
+      ]
+    },
+    {
+      "title": "Endodontics & Specialist Treatments",
+      "category": "SPECIALIST",
+      "priceFrom": "",
+      "description": "Preserve your natural smile with expert endodontic care, teeth whitening, facial peels, and non-surgical aesthetic treatments for a youthful, refreshed appearance.",
+      "features": [
+        "Root canal and endodontic expertise",
+        "Advanced skin renewal treatments",
+        "Non-surgical facial rejuvenation options"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "Smile Transformation",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Had my smile makeover at The Temple Practice in Leeds and couldn't be happier. The team listened to exactly what I wanted and delivered amazing results. The whole experience was comfortable and professional."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Invisalign Treatment",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Fantastic service from start to finish. My Invisalign treatment has completely transformed my teeth. The staff at Brighouse are knowledgeable, friendly, and really put you at ease."
+    },
+    {
+      "author": "Emma L.",
+      "avatarLetter": "E",
+      "resultBadge": "Family Dentistry",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "We've been taking the whole family to The Temple Practice for years. The dentists are brilliant with the children, and the relaxing environment makes visits stress-free for everyone."
+    },
+    {
+      "author": "Michael D.",
+      "avatarLetter": "M",
+      "resultBadge": "Dental Implants",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "Had my dental implants done at Temple Practice and the results are outstanding. Professional team, state-of-the-art technology, and exceptional care throughout the entire process. Highly recommend."
+    }
+  ],
+  "team": [],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern treatment suite"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80",
+      "caption": "Precision cosmetic work"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80",
+      "caption": "A confident new smile"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=900&q=80",
+      "caption": "Calm, contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=900&q=80",
+      "caption": "Natural, radiant results"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?auto=format&fit=crop&w=900&q=80",
+      "caption": "State-of-the-art equipment"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "Leading Dentistry Since 1972",
+    "4.8 Rating from 250 Reviews",
+    "Experienced Dentists & Therapists",
+    "Multiple Convenient Locations",
+    "Patient-Centred Philosophy",
+    "State-of-the-Art Technology"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJE_U2d8ZbeUgR8z5mb5Ocrv4",
+  "map_embed_url": "https://www.google.com/maps?q=375-377+Harrogate+Rd%2C+Moortown%2C+Leeds+LS17+6DW%2C+UK&output=embed"
+}

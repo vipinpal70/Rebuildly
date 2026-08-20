@@ -1,0 +1,407 @@
+{
+  "slug": "insight-law",
+  "business_id": "2ce60778-b86a-4b8c-8173-fe325544bd63",
+  "name": "Insight Law",
+  "category": "Personal Injury Lawyers, Immigration Attorneys, CPA/Accounting Firms",
+  "niche": "LEGAL_SERVICES",
+  "city": "Bristol",
+  "country": "UK",
+  "address": "Second Floor, Langford Lodge, 109 Pembroke Rd, Clifton, Bristol BS8 3EU, UK",
+  "phone": "0117 925 6257",
+  "email": "conveyancing@insight-law.co.uk",
+  "website": "http://www.insight-law.co.uk/",
+  "google_rating": 4.9,
+  "review_count": 118,
+  "modernization_score": 65,
+  "preview_url": "http://localhost:3000/sites/insight-law",
+  "layout_tree": {
+    "seed": 259989397964707258342092712367034446999,
+    "palette": {
+      "name": "Obsidian Cyber Glow",
+      "archetype": "CYBER_GLOW_TECH",
+      "bg": "#09090b",
+      "surface": "#121215",
+      "text": "#f4f4f5",
+      "subtext": "#a1a1aa",
+      "primary": "#8b5cf6",
+      "primary_hover": "#7c3aed",
+      "accent": "#06b6d4",
+      "border": "rgba(139, 92, 246, 0.3)",
+      "badge_bg": "rgba(6, 182, 212, 0.15)",
+      "badge_text": "#22d3ee",
+      "heading_font": "Rajdhani",
+      "body_font": "Plus Jakarta Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_COMPACT_BAR",
+      "services": "SERVICES_MODERN_PILLS",
+      "faq": "FAQ_BORDERED_BOXES",
+      "cta": "CTA_BENTO_FINALE",
+      "reviews": "REVIEWS_3COL_CARDS",
+      "workflow": "WORKFLOW_BENTO_PROCESS"
+    },
+    "section_order": [
+      "hero",
+      "trust_ribbon",
+      "services",
+      "gallery",
+      "team",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "design_system": {
+    "archetype": "CYBER_GLOW_TECH",
+    "palette_name": "Obsidian Cyber Glow",
+    "heading_font": "Rajdhani",
+    "body_font": "Plus Jakarta Sans",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap",
+    "colors": {
+      "name": "Obsidian Cyber Glow",
+      "archetype": "CYBER_GLOW_TECH",
+      "bg": "#09090b",
+      "surface": "#121215",
+      "text": "#f4f4f5",
+      "subtext": "#a1a1aa",
+      "primary": "#8b5cf6",
+      "primary_hover": "#7c3aed",
+      "accent": "#06b6d4",
+      "border": "rgba(139, 92, 246, 0.3)",
+      "badge_bg": "rgba(6, 182, 212, 0.15)",
+      "badge_text": "#22d3ee",
+      "heading_font": "Rajdhani",
+      "body_font": "Plus Jakarta Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-2xl",
+    "btn_radius": "rounded-xl"
+  },
+  "tagline": "Your property move, handled from offer to completion \u2014 no surprises, no delays",
+  "heroSubtitle": "We manage the paperwork and the timeline so you can focus on moving in. Most clients complete within 8\u201312 weeks.",
+  "badgeText": "PROPERTY LAW & CONVEYANCING \u2022 BRISTOL",
+  "stats": [
+    {
+      "number": "4.9",
+      "label": "GOOGLE RATING"
+    },
+    {
+      "number": "118",
+      "label": "CLIENT REVIEWS"
+    },
+    {
+      "number": "3",
+      "label": "CORE SPECIALISMS"
+    },
+    {
+      "number": "2",
+      "label": "OFFICE LOCATIONS"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "sparkles",
+      "title": "We Talk Property",
+      "description": "Specialists in residential, commercial and buy to let property law. We pride ourselves on open, friendly and detailed discussions with every client."
+    },
+    {
+      "icon": "shield",
+      "title": "Go the Extra Mile",
+      "description": "Our commitment to exceptional service means we deliver the results you expect and the support you need throughout your property transaction."
+    },
+    {
+      "icon": "heart",
+      "title": "Personal Service",
+      "description": "We understand the stress involved in buying or selling property. Our focus on communication ensures an efficient and reliable experience."
+    },
+    {
+      "icon": "zap",
+      "title": "Experienced Team",
+      "description": "Carefully selected specialists with extensive experience in property law. Our people make all the difference in delivering outstanding results."
+    },
+    {
+      "icon": "award",
+      "title": "Market Knowledge",
+      "description": "Knowledgeable and well-connected, we have a greater understanding of the property market to serve your needs better."
+    },
+    {
+      "icon": "clock",
+      "title": "Clear Communication",
+      "description": "We don't hide behind paperwork. We speak to you as often as you need, keeping you informed at every stage of your transaction."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Initial Consultation",
+      "description": "Contact us for a detailed discussion about your property needs. We listen carefully to understand your specific situation and requirements."
+    },
+    {
+      "step": "02",
+      "title": "Legal Assessment",
+      "description": "Our specialists review your property transaction and provide clear, tailored legal advice. We explore the intricacies of your case and explain everything in plain language."
+    },
+    {
+      "step": "03",
+      "title": "Transaction Management",
+      "description": "We handle all legal documentation and liaise with all parties involved. You'll receive regular updates and we maintain clear communication throughout the process."
+    },
+    {
+      "step": "04",
+      "title": "Completion & Beyond",
+      "description": "We guide you through to completion and ensure all legal requirements are satisfied. Our service doesn't end at completion \u2013 we're here if you need further support."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What areas do you cover for conveyancing services?",
+      "answer": "We operate from offices in Bristol and Cardiff, and offer professional property conveyancing services nationwide. Whether you're local or further afield, we provide the same expert service and personal touch."
+    },
+    {
+      "question": "Do you handle buy to let property transactions?",
+      "answer": "Yes, we specialise in buy to let conveyancing. Our team understands the specific legal requirements and documentation needed for investment property acquisitions and can guide you through the process."
+    },
+    {
+      "question": "Can you help with commercial property matters?",
+      "answer": "Absolutely. We have specialists in commercial property law who handle complex business transactions and understand the intricacies of commercial requirements. We provide tailored legal solutions for companies of all sizes."
+    },
+    {
+      "question": "How much communication can I expect during my transaction?",
+      "answer": "Communication is a priority for us. We speak to you as often as you need and don't hide behind paperwork. We focus on keeping you informed and reducing the stress of your property transaction."
+    },
+    {
+      "question": "Are you specialists in residential conveyancing?",
+      "answer": "Yes, residential conveyancing is one of our core specialisms. Our experienced team handles everything from first-time buyer support to complex residential transactions with clear communication throughout."
+    },
+    {
+      "question": "What makes Insight Law different from other property law firms?",
+      "answer": "We genuinely 'talk property' and build strong relationships with our clients from day one. We understand the stress involved in property transactions and focus on delivering an efficient, reliable service with personal attention to your specific needs."
+    }
+  ],
+  "services": [
+    "Residential Conveyancing",
+    "Commercial Property Law",
+    "Buy to Let Conveyancing",
+    "Property Transaction Management",
+    "Legal Property Advice",
+    "Nationwide Property Services"
+  ],
+  "detailedServices": [
+    {
+      "title": "Residential Conveyancing",
+      "category": "RESIDENTIAL PROPERTY",
+      "priceFrom": "",
+      "description": "Expert residential property conveyancing services for homebuyers and sellers. Our experienced team handles all aspects of residential transactions with clear communication and attention to detail.",
+      "features": [
+        "First-time buyer support",
+        "Property purchase & sale",
+        "Detailed client communication"
+      ]
+    },
+    {
+      "title": "Commercial Property Law",
+      "category": "COMMERCIAL PROPERTY",
+      "priceFrom": "",
+      "description": "Specialist commercial property legal services for complex business transactions. We understand commercial requirements and provide tailored solutions for your business needs.",
+      "features": [
+        "Commercial transactions",
+        "Complex deal structures",
+        "Market-aware advice"
+      ]
+    },
+    {
+      "title": "Buy to Let Conveyancing",
+      "category": "INVESTMENT PROPERTY",
+      "priceFrom": "",
+      "description": "Dedicated buy to let property services for landlords and investors. We guide you through the legal requirements and documentation for investment property acquisitions.",
+      "features": [
+        "Landlord support",
+        "Investment property transactions",
+        "Regulatory compliance"
+      ]
+    },
+    {
+      "title": "Property Transaction Management",
+      "category": "CONVEYANCING",
+      "priceFrom": "",
+      "description": "Full end-to-end management of your property transaction. From initial enquiries through completion, we handle the legal complexities so you can focus on your move.",
+      "features": [
+        "Complete transaction handling",
+        "Regular progress updates",
+        "Efficient completion process"
+      ]
+    },
+    {
+      "title": "Legal Property Advice",
+      "category": "PROPERTY CONSULTATION",
+      "priceFrom": "",
+      "description": "Bespoke legal advice on property matters for both individuals and companies. Our specialists provide detailed guidance tailored to your specific situation.",
+      "features": [
+        "Personalised consultation",
+        "Expert analysis",
+        "Clear recommendations"
+      ]
+    },
+    {
+      "title": "Nationwide Property Services",
+      "category": "REMOTE SERVICES",
+      "priceFrom": "",
+      "description": "Professional property conveyancing services available beyond our Bristol and Cardiff offices. We serve clients nationwide with the same expert service and personal touch.",
+      "features": [
+        "National coverage",
+        "Local expertise",
+        "Flexible service delivery"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "First-time buyer",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Insight Law made our first home purchase so much easier. The team was incredibly responsive and explained everything clearly. We felt supported throughout the entire conveyancing process."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Property investor",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Excellent service for my buy to let purchase. The solicitors understood exactly what I needed and handled all the legal complexities. Highly recommend for investment property work."
+    },
+    {
+      "author": "Emma H.",
+      "avatarLetter": "E",
+      "resultBadge": "Home seller",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "Professional and efficient from start to finish. The team kept me updated at every stage and made the selling process straightforward. Great communication throughout."
+    },
+    {
+      "author": "David P.",
+      "avatarLetter": "D",
+      "resultBadge": "Commercial client",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "Insight Law handled our commercial property transaction with expertise and care. They understood our business requirements and delivered a seamless legal process. Excellent team."
+    }
+  ],
+  "team": [
+    {
+      "name": "Simon Fox",
+      "role": "Managing Director / Head of Commercial Team",
+      "credentials": "Solicitor qualified 1997",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://www.insight-law.co.uk/wp-content/uploads/2020/01/Simon-Fox-3.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Lucy Mason",
+      "role": "Director / Head of Residential Team",
+      "credentials": "Solicitor qualified 2013",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://www.insight-law.co.uk/wp-content/uploads/2020/09/lucy-mason-final-3929.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Jonathan Smart",
+      "role": "Business Development Director",
+      "credentials": "Qualified solicitor",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Olivia Kitchen",
+      "role": "Director / Buy-To-Let Team",
+      "credentials": "Solicitor qualified 2016",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://www.insight-law.co.uk/wp-content/uploads/2020/01/Olivia-Kitchen.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Ellie Simpson",
+      "role": "Manager / Accounts Team",
+      "credentials": "Diploma from Institute of Legal Finance and Management (Pass with Merit, 2012)",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://www.insight-law.co.uk/wp-content/uploads/2020/01/Ellie-Simpson_New-26-copy-scaled.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Dilys Hart",
+      "role": "Practice Manager",
+      "credentials": "",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Jessica Kingston",
+      "role": "Associate Solicitor",
+      "credentials": "",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Luci-May Williams",
+      "role": "Associate Solicitor",
+      "credentials": "",
+      "bio": "A trusted member of the team at Insight Law, serving clients across Bristol.",
+      "photo": "https://www.insight-law.co.uk/wp-content/uploads/2020/09/Luci-May-Williams-1.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Our welcoming space"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern facilities"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80",
+      "caption": "Friendly, expert team"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
+      "caption": "Consultations that listen"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=900&q=80",
+      "caption": "Contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Comfort-first care"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "Specialists in Residential Conveyancing",
+    "Commercial Property Law Experts",
+    "Buy to Let Specialists",
+    "Nationwide Service Coverage",
+    "4.9 Stars from 118 Reviews",
+    "Croesyceiliog Rugby Club Sponsors"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJyw3lJKWNcUgRzMyfET6ILZw",
+  "map_embed_url": "https://www.google.com/maps?q=Second+Floor%2C+Langford+Lodge%2C+109+Pembroke+Rd%2C+Clifton%2C+Bristol+BS8+3EU%2C+UK&output=embed"
+}

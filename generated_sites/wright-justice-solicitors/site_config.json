@@ -1,0 +1,371 @@
+{
+  "slug": "wright-justice-solicitors",
+  "business_id": "a98083ac-d8ee-43b4-84f5-0f97259429fd",
+  "name": "Wright Justice Solicitors",
+  "category": "Personal Injury Lawyers, Immigration Attorneys, CPA/Accounting Firms",
+  "niche": "LEGAL_SERVICES",
+  "city": "Nottingham",
+  "country": "UK",
+  "address": "394 Alfreton Rd, Nottingham NG7 5NE, UK",
+  "phone": "0115 786 6333",
+  "email": "",
+  "website": "http://www.wrightjustice.co.uk/",
+  "google_rating": 4.9,
+  "review_count": 45,
+  "modernization_score": 65,
+  "preview_url": "http://localhost:3000/sites/wright-justice-solicitors",
+  "layout_tree": {
+    "seed": 275572967494127478873953194067389549476,
+    "palette": {
+      "name": "Cormorant Parchment Luxury",
+      "archetype": "EDITORIAL_ELEGANCE",
+      "bg": "#f7f5f0",
+      "surface": "#ffffff",
+      "text": "#1a1a1a",
+      "subtext": "#555555",
+      "primary": "#991b1b",
+      "primary_hover": "#7f1d1d",
+      "accent": "#d97706",
+      "border": "#e5e0d8",
+      "badge_bg": "#fef3c7",
+      "badge_text": "#92400e",
+      "heading_font": "Cormorant Garamond",
+      "body_font": "Manrope",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_SPLIT_SHOWCASE",
+      "services": "SERVICES_ICON_BOXES",
+      "faq": "FAQ_BORDERED_BOXES",
+      "cta": "CTA_BENTO_FINALE",
+      "reviews": "REVIEWS_CAROUSEL_SWIPE",
+      "workflow": "WORKFLOW_BENTO_PROCESS"
+    },
+    "section_order": [
+      "hero",
+      "trust_ribbon",
+      "services",
+      "gallery",
+      "team",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "design_system": {
+    "archetype": "EDITORIAL_ELEGANCE",
+    "palette_name": "Cormorant Parchment Luxury",
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Manrope",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap",
+    "colors": {
+      "name": "Cormorant Parchment Luxury",
+      "archetype": "EDITORIAL_ELEGANCE",
+      "bg": "#f7f5f0",
+      "surface": "#ffffff",
+      "text": "#1a1a1a",
+      "subtext": "#555555",
+      "primary": "#991b1b",
+      "primary_hover": "#7f1d1d",
+      "accent": "#d97706",
+      "border": "#e5e0d8",
+      "badge_bg": "#fef3c7",
+      "badge_text": "#92400e",
+      "heading_font": "Cormorant Garamond",
+      "body_font": "Manrope",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+    },
+    "hero_image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80",
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "tagline": "Your immigration case understood. Your family's future protected.",
+  "heroSubtitle": "Wright Justice listens to the full story before advising on next steps. Whether you're navigating visa applications, sponsorship routes, or family disputes, their Nottingham-based team treats each case as the singular, complicated matter it truly is.",
+  "badgeText": "IMMIGRATION LAW & FAMILY LAW \u2022 NOTTINGHAM",
+  "stats": [
+    {
+      "number": "4.9",
+      "label": "GOOGLE RATING"
+    },
+    {
+      "number": "45",
+      "label": "CLIENT REVIEWS"
+    },
+    {
+      "number": "3",
+      "label": "OFFICE LOCATIONS"
+    },
+    {
+      "number": "100%",
+      "label": "TRANSPARENT PRICING"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "shield",
+      "title": "Candid Legal Approach",
+      "description": "We provide honest, straightforward legal advice focused on better understanding and better outcomes for every client."
+    },
+    {
+      "icon": "award",
+      "title": "Qualified & Experienced Solicitors",
+      "description": "Our team of qualified and experienced solicitors has the right skills and expertise for your legal representation across multiple practice areas."
+    },
+    {
+      "icon": "sparkles",
+      "title": "Right to Justice",
+      "description": "We firmly believe everyone has the right to justice. We're committed to helping you get the justice you deserve."
+    },
+    {
+      "icon": "zap",
+      "title": "Multi-Location Convenience",
+      "description": "Offices in Birmingham, Leicester, and Nottingham with video and audio conference facilities for clients preferring to meet from home."
+    },
+    {
+      "icon": "heart",
+      "title": "Exceptional Client Service",
+      "description": "Our commitment to providing exceptional services to individual and corporate clients is unmatched across the Midlands."
+    },
+    {
+      "icon": "clock",
+      "title": "Transparent Pricing",
+      "description": "Fair and reasonable pricing with no hidden extras. We provide detailed cost breakdowns and explain all charges upfront."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Initial Consultation",
+      "description": "Call our Nottingham office on 0115 786 6333 to book an appointment. Discuss your legal matter with a qualified solicitor and receive initial advice on your situation."
+    },
+    {
+      "step": "02",
+      "title": "Fee Assessment & Transparency",
+      "description": "At your first meeting, we advise you on fees and funding. We explain how we calculate charges and provide a detailed breakdown of estimated total costs with no hidden extras."
+    },
+    {
+      "step": "03",
+      "title": "Legal Document Preparation",
+      "description": "Our experienced solicitors prepare your legal documents\u2014whether sponsorship declarations, deed polls, statutory declarations, or power of attorney documents\u2014with precision and professionalism."
+    },
+    {
+      "step": "04",
+      "title": "Execution & Completion",
+      "description": "We execute all documents properly, ensuring they meet legal requirements. We guide you through signing and submission to the relevant authorities or organizations."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is a Sponsorship Declaration and do I need one?",
+      "answer": "A Sponsorship Declaration is a statement showing the immigration authorities your willingness and ability to support a visitor from abroad during their UK visit. If you're sponsoring someone to visit the UK, this document is one of the most important submissions with their visa application. We can prepare this for you."
+    },
+    {
+      "question": "Can I change my name as an adult?",
+      "answer": "Yes, as an adult you can change your name to anything you wish, provided you are not using it to defraud someone. However, organizations may require evidence of your name change. We prepare Deed Polls on your behalf to provide this legal documentation."
+    },
+    {
+      "question": "Can I change my child's name?",
+      "answer": "Yes, our team can prepare the necessary legal documentation to change your child's name. We handle all the paperwork to ensure the name change is properly recorded and recognized."
+    },
+    {
+      "question": "What is a Statutory Declaration?",
+      "answer": "A Statutory Declaration is a written statement of facts signed in the presence of a Solicitor, Notary Public, Justice of the Peace, or Commissioner of Oaths. It is a solemn affirmation in written format used for legal and official purposes. Wright Justice Solicitors can prepare and execute this for you."
+    },
+    {
+      "question": "What does a Power of Attorney allow me to do?",
+      "answer": "A Power of Attorney is a legal document that authorizes one or more people to handle your financial affairs and/or make decisions about your personal welfare. This is useful when you cannot make decisions about your estate or due to vulnerable circumstances. We can help you establish this."
+    },
+    {
+      "question": "How transparent are your fees?",
+      "answer": "We have a fair and reasonable pricing policy with no hidden extras. At your first meeting, we advise you on fees and funding, explain how we calculate charges, and provide a detailed breakdown of estimated total costs including disbursements, barrister fees, court fees, and external resources. VAT is payable on our invoices."
+    }
+  ],
+  "services": [
+    "Sponsorship Declaration for Visitors",
+    "Deed Poll Services",
+    "Statutory Declaration",
+    "Power of Attorney",
+    "Family Law Services",
+    "Immigration Law Services"
+  ],
+  "detailedServices": [
+    {
+      "title": "Sponsorship Declaration for Visitors",
+      "category": "IMMIGRATION",
+      "priceFrom": "",
+      "description": "Prepare sponsorship declarations to demonstrate your willingness and ability to support visitors from abroad during their UK visit. This critical document strengthens visitor visa applications to the immigration authorities.",
+      "features": [
+        "Professional preparation of sponsorship statements",
+        "Support for visitor visa applications",
+        "Clear demonstration of financial capability"
+      ]
+    },
+    {
+      "title": "Deed Poll Services",
+      "category": "LEGAL DOCUMENTS",
+      "priceFrom": "",
+      "description": "Change your name or your child's name legally with our professional Deed Poll preparation. We handle all documentation to ensure your name change is recognized by organizations and authorities.",
+      "features": [
+        "Adult name change documentation",
+        "Child name change services",
+        "Organizational recognition support"
+      ]
+    },
+    {
+      "title": "Statutory Declaration",
+      "category": "LEGAL DOCUMENTS",
+      "priceFrom": "",
+      "description": "Prepare and execute statutory declarations\u2014solemn written statements of facts signed in the presence of a qualified solicitor. Essential for legal proceedings and official submissions.",
+      "features": [
+        "Professional witnessing and execution",
+        "Legally binding written statements",
+        "Support for official submissions"
+      ]
+    },
+    {
+      "title": "Power of Attorney",
+      "category": "ESTATE PLANNING",
+      "priceFrom": "",
+      "description": "Establish a legal Power of Attorney to authorize trusted individuals to manage your financial affairs and personal welfare decisions when you cannot do so yourself.",
+      "features": [
+        "Financial affairs management authorization",
+        "Personal welfare decision-making",
+        "Protection for vulnerable circumstances"
+      ]
+    },
+    {
+      "title": "Family Law Services",
+      "category": "FAMILY LAW",
+      "priceFrom": "",
+      "description": "Comprehensive family law representation with transparent, fair pricing. We provide detailed cost breakdowns and explain all fees and disbursements upfront at your first consultation.",
+      "features": [
+        "Fair and reasonable pricing policy",
+        "Transparent cost estimation",
+        "Detailed breakdown of all charges including court fees"
+      ]
+    },
+    {
+      "title": "Immigration Law Services",
+      "category": "IMMIGRATION",
+      "priceFrom": "",
+      "description": "Expert immigration law support with clear fee structures and transparent funding options. We explain how charges are calculated and provide detailed cost estimates before proceeding.",
+      "features": [
+        "Fair and reasonable pricing",
+        "Transparent fee calculation",
+        "Comprehensive disbursement explanations"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "Immigration visa approved",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Excellent service from Wright Justice Solicitors. They helped me prepare my visitor sponsorship declaration and explained everything clearly. My application was approved without any issues. Highly recommended for immigration matters in Nottingham."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Deed Poll completed",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Professional and straightforward service. I needed a Deed Poll for a name change and the team at Wright Justice made the entire process simple and stress-free. Great value and no hidden costs."
+    },
+    {
+      "author": "Emma R.",
+      "avatarLetter": "E",
+      "resultBadge": "Family law resolved",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "Wright Justice Solicitors provided excellent family law support. The solicitors were candid and focused on achieving the best outcome for my situation. Their transparent pricing approach gave me confidence throughout the process."
+    },
+    {
+      "author": "Michael K.",
+      "avatarLetter": "M",
+      "resultBadge": "Power of Attorney established",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "Very impressed with the team's expertise and professionalism. They guided me through setting up a Power of Attorney with clear explanations and no jargon. Felt genuinely supported every step of the way."
+    }
+  ],
+  "team": [
+    {
+      "name": "Mr. M Tahir Abdullah",
+      "role": "Director and Principal Solicitor",
+      "credentials": "MA, LLM, LLB (Hons)",
+      "bio": "A trusted member of the team at Wright Justice Solicitors, serving clients across Nottingham.",
+      "photo": "https://www.wrightjustice.co.uk/image/OurTeam/mtahirabdullah.png",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Mr. Chaudhry",
+      "role": "Solicitor",
+      "credentials": "MA, LLB",
+      "bio": "A trusted member of the team at Wright Justice Solicitors, serving clients across Nottingham.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Umar",
+      "role": "Solicitor",
+      "credentials": "LLB (Hons)",
+      "bio": "A trusted member of the team at Wright Justice Solicitors, serving clients across Nottingham.",
+      "photo": "https://www.wrightjustice.co.uk/image/UmarMadni.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Afsaan Sharif",
+      "role": "Consultant immigration solicitor",
+      "credentials": "LLB (Hons)",
+      "bio": "A trusted member of the team at Wright Justice Solicitors, serving clients across Nottingham.",
+      "photo": "https://www.wrightjustice.co.uk/image/woman.png",
+      "is_real_photo": true,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Our welcoming space"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern facilities"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80",
+      "caption": "Friendly, expert team"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
+      "caption": "Consultations that listen"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=900&q=80",
+      "caption": "Contemporary interior"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
+      "caption": "Comfort-first care"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "Midlands' Leading Law Firm",
+    "Qualified & Experienced Solicitors",
+    "Transparent Pricing Policy",
+    "Multi-Location Offices",
+    "Video & Audio Conference Available",
+    "Fair & Reasonable Fees"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJEZSfkuzBeUgRD4bdSw0-ZRE",
+  "map_embed_url": "https://www.google.com/maps?q=394+Alfreton+Rd%2C+Nottingham+NG7+5NE%2C+UK&output=embed"
+}
