@@ -1,142 +1,177 @@
 # Lead Quality & Conversion Improvement Plan
 
-> **System:** Opportunity Finder
-> **Goal:** Increase lead *quality* (right business, right pain, reachable decision-maker) and *conversion rate* (reply → call → closed deal), and expand coverage across more countries and business categories without diluting quality.
-> **Builds on:** `Idea-plan.md` (core system) and `docs/04_scoring_matrix.md` (Modernization Need Score). This document does not replace those — it adds a lead-quality layer, a contact-enrichment layer, an expansion roadmap, and a conversion layer on top.
+> **System:** Rebuildly
+> **Goal:** Increase lead *quality* (right business, right pain, reachable decision-maker) and *conversion rate* (reply → call → closed deal), and expand coverage across more countries/categories without diluting quality.
+> **Method:** This version is grounded in the actual codebase (`src/`, `config/settings.py`, `src/storage/models.py`), not just the aspirational `Idea-plan.md` / `docs/`. Every recommendation below references the real file it touches, so this is directly actionable rather than conceptual.
+
+## Implementation Status
+
+| Section | Status |
+| :--- | :--- |
+| 1. Auto-populate decision-maker contact | ✅ Shipped — `src/outreach/contact_resolver.py`, wired into `enrich_lead` (`admin.py`) and both draft generators (`crm.py`) |
+| 2. Composite Lead Quality Score | ✅ Shipped — `buying_power_score` (`scoring_matrix.py`), `contactability_score`/`composite_lead_score` (`contact_resolver.py`), `has_review_widget` scoring gap fixed, migration `002_lead_quality_scoring` applied |
+| 3. Click-signal fast-follow | ✅ Shipped — `click_tracker.py` queues the WhatsApp draft + escalates to `HOT_ENGAGED` on repeat clicks; `telegram_bot.py` alert now embeds the ready-to-send message + wa.me link |
+| 4. Deliverability hardening (real MX lookup, domain warmup) | ⬜ Not started — needs a new dependency (`dnspython`) and/or a paid sending-domain tool |
+| 5. Category & country expansion | ⬜ Not started — operator-driven (run more discovery jobs); the `TRADES` imagery bucket in `business_researcher.py` is still unbuilt |
+| 6. Multi-source enrichment fallback (Hunter.io/Apollo.io/LinkedIn) | ⬜ Not started — needs paid API credentials; only relevant for the remainder after Section 1's team-page resolution finds nothing |
+| 7. Funnel instrumentation (REPLIED/MEETING_BOOKED) | ✅ Shipped — new outreach_status values recognized end-to-end (`crm.py`, `OutreachStudioModal.tsx` outcome buttons, `crm/page.tsx` badges/filters) |
+
+Sections 1–3 and 7 are live in the codebase (backend + CRM frontend). Sections 4–6 remain as documented recommendations requiring new tooling/credentials or operator judgment calls the code can't make on its own.
 
 ---
 
-## 1. Why Leads Currently Underperform (Diagnosis)
+## 0. Reality Check — What's Actually Built vs. What's Documented
 
-The current pipeline (`Google Places → Crawler/Auditor → Modernization Score → Outreach`) is good at finding businesses with *bad websites*, but a bad website alone is not a good lead. Three gaps typically cause weak conversion:
+`Idea-plan.md` and `docs/` describe the target system. The real code is further along in some ways and further behind in others. This matters because it changes what "improve leads" should mean in practice.
 
-1. **No buying-power / intent signal.** A 4.3★ business with 12 reviews and a 4.3★ business with 400 reviews get treated the same if both have outdated sites — but only the second one can comfortably afford a $1,500–$5,000 project.
-2. **No decision-maker contact data.** `outreach_leads.contact_email` / `linkedin_url` are in the schema but nothing in the pipeline populates them — outreach likely falls back to generic `info@` addresses, which get filtered by gatekeepers or spam folders.
-3. **No feedback loop from outreach results back into targeting.** Without tracking reply/close rate *by category and city*, the system can't learn which segments are actually worth scaling.
+| Capability | Reality | Where |
+| :--- | :--- | :--- |
+| **Discovery** | Google Places text search only. Filters `google_rating < 4.2` or `review_count < 30` (config-driven), and **discards any business without an existing website** (the model needs a site to audit). No multi-source enrichment. | `src/discovery/places_client.py`, `config/settings.py` |
+| **Discovery targeting** | Not a scheduled multi-country/multi-category matrix — it's a manual, one-shot admin job: pick one `category` + a list of `cities`, click run. Defaults are `category="Dentist"`, `cities=["Manchester"]`. | `src/api/admin.py:53-56, 399-426` |
+| **Scoring** | Real 0–100 `ModernizationScoringEngine` matching the docs closely — **except** `has_review_widget` is detected by the crawler and stored on every audit row, but is never added to the score. It's dead weight in the data model right now. | `src/scorer/scoring_matrix.py`, `src/crawler/seo_parser.py:65` |
+| **Buying-power / firmographic scoring** | Does not exist. The only quality filter is the blanket 4.2★/30-review floor at discovery time — a lead with exactly 30 reviews and one with 500 reviews score identically. | — |
+| **Preview/content generation** | Genuinely strong. `BusinessResearcher` scrapes the prospect's real website (including following to a `/team` or `/about` page), grounds an LLM call strictly in that content, and has real anti-hallucination guards (never invents staff, prices, or reviews). This is the system's actual differentiator. | `src/scraper/business_researcher.py` |
+| **Decision-maker contact** | **This is the biggest gap.** `OutreachLeadModel.contact_name` / `contact_email` / `linkedin_url` exist in the schema and have a working write path (`OutreachRepository.create_or_update_outreach_lead`), but **nothing in the pipeline ever populates them.** Every outreach draft defaults `contact = contact_name or f"Team at {name}"` — so every cold email currently opens with "Hi Team at Smith & Co Dental" instead of an owner's name. | `src/outreach/content_generator.py:31`, `src/outreach/repository.py` |
+| **The near-miss** | `BusinessResearcher._build_team()` *already* extracts real people's names **and job titles** (Partner, Director, Founder, Practice Manager, etc.) from the client's own team page, for use in the generated preview site. That data just never gets fed back into the outreach draft as the decision-maker contact. This is a near-zero-cost fix (Section 2). | `src/scraper/business_researcher.py:350-433` |
+| **Outreach copy** | Real 4-channel generator (LinkedIn / Email / WhatsApp / Call script), with an LLM path (Claude/OpenAI) and a template fallback. Good personalization on audit findings; weak personalization on the human being contacted (see above). | `src/outreach/content_generator.py`, `src/outreach/llm_sales_agent.py` |
+| **Deliverability** | `EmailVerifier` checks email syntax, does a weak domain-resolves check (`socket.gethostbyname`, not a real MX lookup), and scans outgoing copy for spam trigger words. No sending-domain warmup, no bounce tracking, no reputation monitoring. | `src/outreach/email_verifier.py` |
+| **Engagement signal** | `ClickTracker` correctly captures `preview_clicked`, `click_count`, `last_clicked_at` when a prospect opens their preview site, and pushes a Telegram alert. But the signal dead-ends there — no automated next action is triggered by a hot click. | `src/outreach/click_tracker.py` |
+| **Funnel logging** | `OutreachLogModel` timestamps every channel action (`LINKEDIN_COPIED`, `MANUAL_EMAIL_SENT`, `WA_OPENED`, `CALLED`, `LINK_CLICKED`) — good raw data. But there's no "REPLIED" or "MEETING_BOOKED" action type, so inbound response can't currently be distinguished from outbound activity in the data. | `src/storage/models.py:117-129` |
+| **Validated niche so far** | The live evidence (`generated_sites/`) is UK dental practices and solicitors, mostly Manchester — matching the admin defaults above. This is the proven foothold, not a hypothetical — expansion should branch from it deliberately, not replace it. | `generated_sites/*` |
 
-The fixes below target exactly these three gaps, then layer on country/category expansion.
-
----
-
-## 2. Redefine "Good Lead": Composite Lead Quality Score
-
-Keep the existing Modernization Need Score (0–100) exactly as-is — it's a solid technical-deficiency signal. Combine it with two new sub-scores into a **Composite Lead Quality Score**:
-
-| Sub-score | What it measures | Signals to pull | Weight |
-| :--- | :--- | :--- | :---: |
-| **Modernization Need Score** (existing) | How broken/outdated the site is | Mobile UX, SSL, speed, SEO, schema, booking, chat, legacy stack | 40% |
-| **Buying Power Score** (new) | Can they actually afford $1.5k–$5k? | Review count (proxy for volume), years in business (Places `business_status` + founding signals), price level (Places `price_level` field where available), number of locations, staff count via LinkedIn company page | 35% |
-| **Contactability Score** (new) | Can we actually reach a real decision-maker? | Owner/founder name found, verified email found, LinkedIn profile found, direct phone (not call-center) found | 25% |
-
-**Practical thresholds to add to `docs/04_scoring_matrix.md`:**
-- Require **≥ 50 Google reviews** as a hard floor before a lead enters Tier 1/2 outreach — low review count usually means low revenue, regardless of site quality.
-- Require **at least one enriched contact channel** (email or LinkedIn) before a lead leaves the "NEW" pipeline stage — sending outreach to `info@` inboxes should be the fallback, not the default.
-- Add a `days_since_last_review` signal — a business with no new reviews in 12+ months may be inactive/closing, wasting outreach effort even if the score is high.
-
-This turns the funnel from "find broken websites" into "find broken websites *belonging to businesses that can pay and that we can actually reach*" — the actual lever for conversion rate.
+**Bottom line:** the highest-leverage improvements are not "add enrichment tooling" (a lot of that scaffolding already exists) — they're **wire up the data that's already being collected**, then extend scoring and targeting on top.
 
 ---
 
-## 3. Multi-Source Discovery (Don't Rely on Google Places Alone)
+## 1. Fix #1 (Do This First): Auto-Populate the Decision-Maker Contact
 
-Google Places API is a great starting point but has blind spots (rate limits/cost at scale, and it doesn't give you a contact name). Layer in enrichment sources after discovery, not instead of it:
+This is the single change most likely to move reply rate, because it's the difference between:
+> "Hi Team at Smith & Co Dental, I noticed your website..."
 
-| Stage | Tool / API | Purpose | Approx. Cost |
-| :--- | :--- | :--- | :--- |
-| 1. Discovery | Google Places API (existing) | Business name, category, city, rating, review count, phone, website | ~$0.017–$0.032/request |
-| 2. Tech pre-filter | BuiltWith API or Wappalyzer API | Detect CMS/tech stack *before* running a full Playwright crawl — skip businesses already on modern stacks (Webflow, Shopify Plus, custom React) to save crawl budget | ~$0–$295/mo (has a free tier) |
-| 3. Contact enrichment | Hunter.io or Apollo.io | Find verified owner/manager email by domain + name pattern | ~$49–$99/mo |
-| 4. Decision-maker ID | LinkedIn (manual/Sales Navigator) | Confirm actual owner/practice manager, get LinkedIn profile URL for Step 1 outreach | ~$99/mo (Sales Navigator Core) |
-| 5. Firmographic signal | Google Places `price_level`, review velocity, photo count | Rough proxy for business size/activity without paid tools | Free (already-available fields) |
+and:
 
-**Action for the pipeline:** insert a `src/enrichment` module between the Discovery Module and the Crawler/Auditor Module so contact data and buying-power signals are attached to the `businesses` row *before* the audit runs — that way Tier-1 alerts arrive already outreach-ready instead of triggering a second manual lookup step.
+> "Hi Sarah, I noticed Smith & Co Dental's stellar 4.8★ rating..."
 
-**Schema addition to `docs/02_database_schema.md`:** add `owner_name`, `enriched_email`, `enriched_email_confidence`, `linkedin_company_url`, `review_velocity_90d` to the `businesses` or a new `enrichment` table, and add `source_channel`, `first_response_at`, `meeting_booked_at` to `outreach_leads` so conversion can actually be measured by stage (see Section 6).
+**What exists:** `BusinessResearcher._build_team()` already returns `[{name, role, credentials, ...}]` extracted and verified against the real team page.
 
----
+**What's missing:** nothing selects the *right* person from that list and writes them into `OutreachLeadModel.contact_name` before drafts are generated.
 
-## 4. Country Expansion Strategy
+**Concrete change:**
+1. In `enrich_lead` (`src/api/admin.py:441`), after `research = await BusinessResearcher().research_business(b, audit)`, rank `research["team"]` by a role-priority list (`Owner`, `Founder`, `Managing Partner`, `Practice Manager`, `Director`, `Partner`, then anyone else) and take the top match.
+2. Call `OutreachRepository.create_or_update_outreach_lead(OutreachLeadDTO(business_id=..., contact_name=<picked name>))` so it's persisted, not just used once.
+3. Pass that `contact_name` through to `content_generator.generate_all_drafts_with_llm(..., contact_name=...)` when drafts are (re)generated.
+4. When no named person is found (team page absent or anonymous), fall back to the current "Team at {name}" — don't block the pipeline on it.
 
-Keep the existing five countries (USA, UK, Australia, Germany, France) as the core, but treat them as **Tier 1**, and evaluate expansion candidates as **Tier 2** based on: English-language ease for outreach, cold-outreach legal risk, purchasing power, and competition density.
-
-| Tier | Country | Why | Outreach Legal Note |
-| :--- | :--- | :--- | :--- |
-| **Tier 1 (current)** | USA | Largest market, huge tier-2 city pool, dollar pricing | CAN-SPAM: opt-out based, low friction for email. TCPA restricts unsolicited SMS/calls — get permission before texting. |
-| **Tier 1** | UK | High English proficiency, strong SMB density | PECR/UK GDPR allows B2B email to a role-based address if relevant to their job ("soft opt-in"), needs clear opt-out. |
-| **Tier 1** | Australia | Less saturated than US/UK, high avg. deal size | Spam Act 2003 is consent-based — lean on LinkedIn-first, use "existing relationship" carefully. |
-| **Tier 1** | France | Large SMB base, good $/€ per project | CPCE Art. L34-5 explicitly *permits* B2B cold email if content relates to the recipient's professional function + opt-out included — favorable compared to Germany. |
-| **Tier 1 — caution** | Germany | High-value clients, but riskiest for cold email | German UWG (unfair competition law) is interpreted strictly against unsolicited *any* email, even B2B, without a prior relationship. **Recommend LinkedIn + phone as primary channels here, de-prioritize cold email.** |
-| **Tier 2 — add next** | Ireland | Native English, common-law GDPR interpretation similar to UK, far less freelancer competition than UK/US | Same PECR-style soft opt-in as UK. |
-| **Tier 2 — add next** | Canada | High purchasing power, English/French bilingual market | CASL is the *strictest* anti-spam law in the list — requires implied or express consent. Treat as LinkedIn-first, or only email businesses with an existing/implied relationship (e.g., they engaged with content first). |
-| **Tier 2 — test** | Netherlands | Very high English proficiency, strong SMB digital-spend culture | GDPR applies but B2B legitimate-interest email is commonly used; keep opt-out clear. |
-| **Tier 2 — test, high LTV** | UAE (Dubai / Abu Dhabi) | English is the default business language, very high-ticket clinics/law firms/real estate, WhatsApp-first culture matches your existing WhatsApp channel step well | No GDPR-equivalent restriction on B2B cold outreach currently; WhatsApp Business outreach converts very well here. |
-| **Tier 2 — small but easy** | New Zealand | Same playbook as Australia, minimal competition | Unsolicited Electronic Messages Act — consent-based, same caution as AU. |
-
-**Recommendation:** don't spread thin across 10 countries at once. Run the current 5, but re-weight Germany toward LinkedIn/phone instead of cold email, and pilot **Ireland + UAE** next (Ireland = easiest legal/language fit, UAE = highest deal size and best channel fit for your existing WhatsApp step).
+This requires no new API keys, no new third-party tool, and reuses data the system already scrapes and vets for hallucination. It should ship before any Hunter.io/Apollo.io-style tool spend (Section 6) — those are for the *remaining* businesses where no team page exists at all.
 
 ---
 
-## 5. Business Category Expansion
+## 2. Composite Lead Quality Score (extends `scoring_matrix.py`)
 
-Current niches (Medical, Legal/Financial, Home Services, Real Estate/Hospitality) are the right foundation. Rank expansion categories by **(a) customer LTV, (b) likelihood the owner is non-technical/older-generation (→ outdated site), (c) reliance on local search + booking for new customers, (d) Google review density (needed for the scoring pipeline to work at all).**
+Keep `ModernizationScoringEngine`'s 0–100 technical score as-is, but stop treating "passed the 4.2★/30-review floor" as good enough to mean "good lead." Add two cheap sub-scores that use data the system *already has in the `businesses` row* — no new API calls required:
 
-| Priority | Category | Why it fits the model |
+| Sub-score | Signal (already in `BusinessModel`) | Logic |
+| :--- | :--- | :--- |
+| **Buying Power** | `review_count`, `google_rating` | Bucket review_count (e.g. 30–99 / 100–299 / 300+) as a rough proxy for transaction volume/revenue — a 300+ review dental practice can absorb a $2–5k project far more comfortably than one at the 30-review floor. |
+| **Contactability** | `outreach_leads.contact_name`, `contact_email`, `linkedin_url` (post Section 1 fix) | 0 if none found, partial if only a scraped generic email, full if a named decision-maker was matched. |
+
+**Two immediate, low-effort scoring fixes while touching this file:**
+- Wire `audit.has_review_widget` into `ModernizationScoringEngine.evaluate_lead` (it's collected, stored, and displayed in the admin panel already — `src/api/admin.py:73` — just never scored). Matches the docs' `+5 pts` weight.
+- Enforce a **hard floor before a lead is allowed into Tier 1/2 outreach**: at least a partial Contactability score. Right now a fully technical-only Tier-1 lead with zero contact data can enter the outreach queue and just... sit there, because there's no name to put in the draft.
+
+---
+
+## 3. Close the Loop on the Buying-Intent Signal You Already Capture
+
+`ClickTracker.record_preview_click` (`src/outreach/click_tracker.py`) is genuinely good instrumentation — most cold-outreach systems don't track this at all. Right now it:
+- Marks `preview_clicked = True`, increments `click_count`, sets `last_clicked_at`
+- Flips `outreach_status` to `VIEWED`
+- Sends a Telegram alert to Vipin
+
+**What it should also do:** a prospect actively opening their personalized preview is the strongest buying-intent signal in the whole funnel — stronger than the Modernization Score itself. Right now the only next action is a manual "Vipin sees a Telegram ping and decides what to do." Add an automated fast-follow triggered directly in `record_preview_click`:
+- On first click: auto-queue the WhatsApp/SMS draft that's already generated (per `content_generator.py`) to go out within minutes, not whenever Vipin next checks his phone — response-to-engagement speed is one of the highest-leverage conversion levers in cold outreach generally.
+- On repeat clicks (`click_count >= 2`) or a click after `CALLED`/`EMAIL_SENT`: bump the lead to a distinct high-priority status (e.g. `HOT_ENGAGED`) so it visibly jumps the admin queue instead of blending into the general `VIEWED` bucket.
+
+---
+
+## 4. Deliverability Hardening (`email_verifier.py`)
+
+The existing `EmailVerifier` (syntax regex + `socket.gethostbyname` + spam-word scan) is a reasonable first-pass smoke test, but two gaps matter as volume grows past a handful of manual sends per day:
+- `socket.gethostbyname` checks that the *domain* resolves to an A record — it is not actually an MX lookup, so it can pass domains with no mail server and miss the point of the check. A proper MX lookup (e.g. via `dnspython`) is a small, contained fix in the same file.
+- No sending-domain reputation management exists at all: no SPF/DKIM/DMARC verification, no bounce/complaint tracking, no warm-up schedule. This isn't a code gap so much as an infrastructure gap — as outreach volume increases, route sending through a dedicated warmed domain + a tool built for it (Instantly.ai or Smartlead, ~$37–97/mo) rather than scaling raw SMTP from the main domain, to protect deliverability on the outreach domain generally.
+
+---
+
+## 5. Category & Country Expansion
+
+The proven foothold today is **UK dental + legal, Manchester-centric** (Section 0). Since discovery is a manual per-job trigger (`category` + `cities` list, one call at a time — `src/api/admin.py:53-56`), "expansion" concretely means running more of these jobs in a deliberate order, not flipping a config flag. A simple prioritized run-list beats scattershot triggering.
+
+### Category priority (beyond current Dentist/Solicitor jobs)
+
+Ranked by (a) customer lifetime value, (b) likelihood the owner is non-technical → outdated site, (c) reliance on local search + booking, (d) Google review density (needed for the 30-review discovery floor to even return leads):
+
+| Priority | Category | Why |
 | :---: | :--- | :--- |
-| **High** | Chiropractors, Orthodontists, Med Spas / Cosmetic Dermatology | High per-visit and lifetime value, booking-dependent, frequently outdated WordPress sites |
-| **High** | Family Law, Estate Planning, Bankruptcy Attorneys | Emotionally urgent searches → conversion hinges on trust signals your scoring already targets (reviews widget, fast mobile site, live chat) |
-| **High** | Plumbers, Electricians, Garage Door, Pest Control | Extremely local-search-dependent, owner-operated, high review count, easy to audit at scale |
-| **High** | Financial Advisors / Wealth Management, Mortgage Brokers | High-ticket relationships, strong trust-signal need, often legacy sites |
-| **Medium** | Auto Body / Detailing / Tire Shops | High review density, good LTV, but slightly lower urgency than medical/legal |
-| **Medium** | Boutique Gyms, Pilates/Yoga Studios | Recurring membership model rewards booking/CRM upgrades heavily — good fit for Package 2 (AI chatbot + scheduling) |
-| **Medium** | Senior/Home Care Agencies, Assisted Living | High trust requirement, high LTV per client, but longer sales cycles (B2B2C, sometimes institutional buyers) |
-| **Lower priority** | Restaurants, Retail | Lower per-project willingness to pay, high competition from cheap template vendors — deprioritize unless upmarket/fine-dining |
+| **High** | Chiropractors, Orthodontists, Med Spas / Cosmetic Dermatology | Same booking-dependent, trust-driven profile as the proven dental niche — reuses the same preview-generation strengths (`business_researcher.py` already has dental-adjacent imagery/niche detection built in). |
+| **High** | Family Law, Estate Planning, Immigration, Accounting/CPA | Same profile as the proven solicitor niche; `business_researcher.py` already has a `LEGAL_SERVICES` niche and imagery path. |
+| **High** | Plumbers, Electricians, Garage Door, Pest Control | Extremely local-search-dependent, owner-operated, high review density — easy to audit at scale, but needs a new imagery/niche bucket added to `business_researcher.py`'s `NICHE_GALLERY`/`HERO_IMAGES` (currently dental/legal/medspa/HVAC only — HVAC exists, trades generally don't). |
+| **Medium** | Financial Advisors, Mortgage Brokers | High-ticket, trust-driven — good fit, no niche imagery yet. |
+| **Medium** | Boutique Gyms, Pilates/Yoga Studios | Recurring-membership model rewards the booking/chat upsell (Package 2) heavily. |
+| **Lower priority** | Restaurants, Retail | Lower willingness to pay, heavy competition from cheap template vendors — skip unless upmarket. |
 
-**Rollout order:** add 2–3 "High priority" categories per country per month rather than all at once, so the enrichment + scoring pipeline can be validated on real reply data before scaling further (see Section 6).
+Practical note: before running a "High" category job, check `business_researcher.py`'s `_industry_sector()` / `NICHE_GALLERY` mapping (lines ~440–476) — categories outside dental/legal/medspa/HVAC currently fall through to the generic `DEFAULT` imagery, which is fine but less polished than the dental/legal previews. Worth a small imagery-bucket addition before scaling a new category, since preview quality is the product's actual edge.
 
----
+### Country expansion
 
-## 6. Conversion Rate: What Actually Moves Reply → Close
+Current jobs are UK-only. `docs/` and `Idea-plan.md` name USA/UK/Australia/Germany/France as the target set, but nothing in code differentiates outreach by country yet — the same 4-channel template runs regardless of jurisdiction. Before running discovery jobs in a new country, the operator (not the code) needs to apply different judgment per market:
 
-The existing multi-touch sequence (LinkedIn → Email → LinkedIn follow-up → WhatsApp/SMS) is sound. These additions target the *conversion* rate specifically, not just outreach volume:
-
-1. **Speed-to-lead:** Get the diagnostic preview + first outreach touch out within 24–48 hours of a Tier-1 Telegram alert. Freshness matters — the review pattern or business activity you scored is a moving target.
-2. **Hyper-local personalization:** Reference the business's actual city, a specific recent review, or a named local competitor that outranks them ("Dr. Smith's clinic two blocks away is getting 3x your online bookings because…"). Generic "I noticed your website is outdated" pitches convert far worse.
-3. **Lead with a free diagnostic, not a sales pitch:** Frame first contact as "here's a free 2-minute scorecard of your site" (which you've already built via the Scoring Engine) rather than "I can build you a website." Lowers the reply barrier significantly.
-4. **Category-specific social proof:** Once you close 1–2 clients in a niche, build a mini case study ("helped a dental practice in Nashville go from 15 to 40 booking-form leads/month") and use it in the *next* niche+city outreach — proof compounds per vertical.
-5. **Risk reversal in pricing:** Consider a structure like "50% deposit only after mockup approval" or a PageSpeed 90+ guarantee — reduces the biggest objection (trust with an unknown freelancer) for non-technical owners.
-6. **Local-hours availability for calls:** Even from India, block 2–3 overlapping-hours slots per target region (e.g., early morning IST = evening US Eastern) via Calendly so a "yes" doesn't stall waiting for a meeting slot.
-7. **Instrument the funnel, not just the outcome.** Add stage timestamps (`contacted_at`, `first_response_at`, `meeting_booked_at`, `closed_at`) to `outreach_leads` so you can compute reply rate and close rate **per category, per city, per channel** — then kill the bottom-performing segments after ~50 leads and double down on winners. Right now the schema only has a single `outreach_status` field with no stage timing, so you can see *that* a lead responded but not *how fast* or *at what step the funnel is leaking*.
+| Tier | Country | Note |
+| :--- | :--- | :--- |
+| **Proven** | UK | Live evidence in `generated_sites/`. PECR/UK GDPR allows B2B email to a role-relevant address ("soft opt-in") with a clear opt-out. |
+| **Next, low-risk** | Ireland | Same common-law-style soft opt-in as UK, English-native, far less freelancer competition than UK/US — the easiest next market with the current pipeline unchanged. |
+| **Next** | USA | Large tier-2-city pool. CAN-SPAM is opt-out based (low friction); TCPA restricts unsolicited SMS/calls specifically — the WhatsApp/SMS draft channel should require explicit permission-first framing for US leads, which the current `content_generator.py` WhatsApp draft doesn't distinguish by country today. |
+| **Next** | France | CPCE Art. L34-5 explicitly permits B2B cold email when content relates to the recipient's professional role + opt-out — favorable relative to Germany. |
+| **Caution** | Germany | High-value clients, but German UWG is interpreted strictly against unsolicited email even B2B without a prior relationship. Until the outreach sequencing is country-aware in code, **manually route Germany leads to LinkedIn/phone channels only** and skip the auto-generated cold email draft for them. |
+| **Test later** | Australia, UAE | AU: Spam Act 2003, consent-based — treat similarly to Germany (LinkedIn-first) until validated. UAE: no equivalent restriction, WhatsApp-first culture fits the existing WhatsApp draft channel unusually well, and deal sizes run high — worth a small pilot once Ireland/USA are validated. |
 
 ---
 
-## 7. 30 / 60 / 90-Day Rollout
+## 6. Multi-Source Enrichment — Only for the Remainder
 
-**Days 1–30 — Instrument & Tighten**
-- Add enrichment module (owner name, email, LinkedIn) between Discovery and Crawler stages.
-- Add Buying Power + Contactability sub-scores to the scoring engine; enforce the 50-review floor.
-- Add funnel-stage timestamp columns to `outreach_leads`.
-- Re-route Germany outreach to LinkedIn/phone-first sequencing.
-- Launch 2–3 new "High priority" categories (start with Chiropractors/Med Spas + Family Law) in 2 existing tier-2 cities per country, ~50 leads/segment, to get real conversion data.
+After Section 1's fix, some businesses still won't have a discoverable team page (no `/team` or `/about` page, or an anonymous one). For *that* remainder only, add a fallback enrichment step rather than a blanket tool subscription:
 
-**Days 31–60 — Learn & Expand**
-- Pull reply/meeting/close rates by category × city × channel. Kill the bottom ~30% of segments by reply rate.
-- Double down on the top 2–3 performing segments with higher volume.
-- Pilot Ireland (email-friendly) and UAE (WhatsApp-friendly) as Tier 2 country tests, 30–50 leads each.
-- Produce first category-specific case study/proof asset from an early closed client.
+| Tool | Purpose | Cost |
+| :--- | :--- | :--- |
+| Hunter.io or Apollo.io | Verified owner/manager email by domain + name-pattern guessing, when no team page exists | ~$49–99/mo |
+| LinkedIn (manual or Sales Navigator) | Confirm the actual owner for the LinkedIn-DM channel (Step 1 of the existing multi-touch sequence in `Idea-plan.md`) | ~$99/mo optional |
 
-**Days 61–90 — Scale What Works**
-- Scale outreach volume in the proven winning segments (target 15–20 personalized touches/day as per existing plan, but concentrated on validated categories/cities).
-- Formalize a referral ask from closed clients into adjacent categories in the same city.
-- Revisit whether outsourcing initial outreach execution (VA) is viable now that segments/messaging are validated — keep scoring/audit/dev work in-house per the original plan's micro-agency roadmap.
+Don't reach for BuiltWith/Wappalyzer tech-stack pre-filtering yet — at current volume (manual, one job at a time) the crawler/auditor cost isn't the bottleneck; contactability is.
 
 ---
 
-## 8. Summary of Concrete Changes vs. Current Plan
+## 7. Funnel Instrumentation — Distinguish Inbound from Outbound
 
-- **Add** a Buying Power Score and Contactability Score alongside the existing Modernization Need Score → Composite Lead Quality Score.
-- **Add** an enrichment stage (Hunter.io/Apollo.io + LinkedIn + BuiltWith/Wappalyzer) before outreach, so contact fields in `outreach_leads` are actually populated.
-- **Add** hard floors: ≥50 reviews, at least one enriched contact channel, recent review activity.
-- **Re-sequence** Germany toward LinkedIn/phone-first due to stricter cold-email law; keep France/UK/US/AU email-inclusive.
-- **Expand** categories in priority order: Chiropractors/Med Spas, Family Law/Estate Planning, Plumbers/Electricians/Pest Control, Financial Advisors — before lower-LTV categories like restaurants/retail.
-- **Pilot** Ireland and UAE as the next two country markets, based on outreach-channel fit.
-- **Instrument** the outreach funnel with stage timestamps so conversion decisions are data-driven per segment, not assumption-driven.
+`OutreachLogModel` already timestamps every action, which is more than most systems have. The gap is that all current `action` values (`LINKEDIN_COPIED`, `MANUAL_EMAIL_SENT`, `WA_OPENED`, `CALLED`, `LINK_CLICKED`) are things *you* did — there's no logged action for "they replied" or "meeting booked." Add two action types (`REPLIED`, `MEETING_BOOKED`) so a simple query grouped by category/city/channel can compute real reply and meeting rates — right now that can only be inferred indirectly from `outreach_status = CONVERTED`, which loses the funnel shape (where leads drop off) entirely.
+
+---
+
+## 8. 30 / 60 / 90-Day Rollout
+
+**Days 1–30 — Wire up what's already collected**
+- Ship Section 1 (decision-maker contact auto-population) — highest ROI, no new tooling.
+- Fix `has_review_widget` scoring gap; add the Contactability hard floor to Tier 1/2 (Section 2).
+- Ship the click-signal fast-follow + `HOT_ENGAGED` status (Section 3).
+- Add `REPLIED`/`MEETING_BOOKED` action logging (Section 7).
+- Run one new "High priority" category job (Chiropractors or Family Law) in Manchester + one more UK tier-2 city, using the now-improved contact/scoring pipeline, and compare reply rate against the historical dental/legal baseline.
+
+**Days 31–60 — Validate Ireland, harden deliverability**
+- Pilot Ireland with the same dental/legal categories (lowest-risk market expansion, code unchanged).
+- Add the real MX lookup to `EmailVerifier` (Section 4); evaluate a dedicated warmed sending domain if email volume justifies it.
+- Add a `TRADES` imagery bucket to `business_researcher.py` before running a plumbers/electricians job.
+- Pull reply/meeting rates by category × city from the new logging; kill or scale based on real numbers.
+
+**Days 61–90 — Scale proven segments, test USA**
+- Scale the winning categories/cities from Days 31–60.
+- Run first USA tier-2-city job (per `Idea-plan.md`'s target list), with the TCPA-aware permission-first WhatsApp/SMS framing applied manually until it's encoded in `content_generator.py`.
+- Add Hunter.io/Apollo.io fallback enrichment (Section 6) only for the subset still missing contact data after the team-page fix.
+- Revisit Germany: still LinkedIn/phone-only until outreach sequencing is country-aware in code.

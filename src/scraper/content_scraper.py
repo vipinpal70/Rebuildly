@@ -19,11 +19,18 @@ class WebContentScraper:
             "Accept-Language": "en-US,en;q=0.5"
         }
 
-    async def scrape_website(self, url: Optional[str], max_items: int = 15) -> Dict[str, Any]:
+    async def scrape_website(self, url: Optional[str], max_items: int = 15, deep_headings: bool = False) -> Dict[str, Any]:
         """Scrapes existing website content. Returns structured text payload.
 
         max_items caps how many headings/paragraphs are kept — bump it when reading a
-        dedicated team/about page that may list many people."""
+        dedicated team/about page that may list many people. deep_headings extends
+        heading capture from h1-h3 to h1-h6 — many WordPress page-builder themes
+        (SiteOrigin, Elementor, Divi, etc.) render team member names as h4/h5/h6
+        "sub-headline" widgets rather than real paragraphs, so a team-page scrape
+        that only reads h1-h3 can come back with zero names despite the page
+        visually listing a full team. Left off by default since broadening it
+        everywhere risks pulling nav/widget clutter into homepage heading-derived
+        heuristics (e.g. tagline picking) that were tuned against h1-h3 only."""
         if not url or not url.startswith("http"):
             return self._empty_result(url)
 
@@ -35,12 +42,12 @@ class WebContentScraper:
                     return self._empty_result(url)
 
                 html = response.text
-                return self._parse_html(html, str(response.url), max_items)
+                return self._parse_html(html, str(response.url), max_items, deep_headings)
         except Exception as e:
             logger.warning(f"Failed to scrape website {url}: {e}")
             return self._empty_result(url)
 
-    async def scrape_rendered(self, url: Optional[str], max_items: int = 40) -> Optional[Dict[str, Any]]:
+    async def scrape_rendered(self, url: Optional[str], max_items: int = 40, deep_headings: bool = False) -> Optional[Dict[str, Any]]:
         """Render a page in a headless browser and scroll it so lazy-loaded content
         (especially team headshots that only appear after JS runs) is materialised, then
         parse it with the same extractor as the static path. Returns None when a browser
@@ -84,7 +91,7 @@ class WebContentScraper:
                     )
                 finally:
                     await browser.close()
-            parsed = self._parse_html(html, final_url, max_items)
+            parsed = self._parse_html(html, final_url, max_items, deep_headings)
             for b in (bg_images or []):
                 src = b.get("src")
                 if src:
@@ -227,7 +234,7 @@ class WebContentScraper:
                     phones.append(num)
         return {"emails": emails, "phones": phones}
 
-    def _parse_html(self, html: str, url: str, max_items: int = 15) -> Dict[str, Any]:
+    def _parse_html(self, html: str, url: str, max_items: int = 15, deep_headings: bool = False) -> Dict[str, Any]:
         soup = BeautifulSoup(html, "html.parser")
 
         # Capture internal links + contacts first — nav/header/footer (stripped next) hold them.
@@ -251,9 +258,11 @@ class WebContentScraper:
         if og_tag and og_tag.get("content"):
             og_image = urljoin(url, og_tag["content"].strip())
 
-        # Extract headings
+        # Extract headings. h4-h6 are opt-in (deep_headings) — see scrape_website's
+        # docstring for why: many page-builder themes put team member names there.
+        heading_tags = ["h1", "h2", "h3", "h4", "h5", "h6"] if deep_headings else ["h1", "h2", "h3"]
         headings = []
-        for h in soup.find_all(["h1", "h2", "h3"]):
+        for h in soup.find_all(heading_tags):
             text = h.get_text().strip()
             if text and len(text) > 3:
                 headings.append(text)

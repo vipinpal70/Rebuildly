@@ -10,12 +10,16 @@ import { TopStrip, Header, Footer } from './sections/Chrome';
 
 interface DynamicClientSiteProps {
   siteConfig: any;
+  /** Set only by the /sites/{slug}/v/{n} historical route — renders a small
+   * fixed banner so an old version is never mistaken for the live site,
+   * whether it's the admin or a client following a shared link. */
+  versionBanner?: { versionNumber: number; createdAt: string | null; currentUrl: string };
 }
 
 // Thin orchestrator: derive the theme once, then render whichever section
 // variants the generator selected (in the order it chose). All visual identity
 // lives in the theme + individual section components — nothing is hardcoded here.
-export default function DynamicClientSite({ siteConfig }: DynamicClientSiteProps) {
+export default function DynamicClientSite({ siteConfig, versionBanner }: DynamicClientSiteProps) {
   const [isBookingOpen, setBookingOpen] = useState(false);
 
   const design = siteConfig.design_system || {};
@@ -45,6 +49,18 @@ export default function DynamicClientSite({ siteConfig }: DynamicClientSiteProps
       >
         {design.google_fonts_url && <link rel="stylesheet" href={design.google_fonts_url} />}
 
+        {versionBanner && (
+          <div className="sticky top-0 z-60 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-xs font-semibold text-center bg-amber-500 text-amber-950">
+            <span>
+              Viewing version {versionBanner.versionNumber}
+              {versionBanner.createdAt ? ` · ${new Date(versionBanner.createdAt).toLocaleDateString()}` : ''} — this is not the current version.
+            </span>
+            <a href={versionBanner.currentUrl} className="underline underline-offset-2 hover:opacity-80">
+              View current version →
+            </a>
+          </div>
+        )}
+
         <TopStrip />
         <Header />
 
@@ -55,8 +71,13 @@ export default function DynamicClientSite({ siteConfig }: DynamicClientSiteProps
 
         <Footer />
 
-        <BookingModal business={siteConfig} isOpen={isBookingOpen} onClose={() => setBookingOpen(false)} />
-        <ChatbotWidget business={siteConfig} />
+        <BookingModal
+          business={siteConfig}
+          isOpen={isBookingOpen}
+          onClose={() => setBookingOpen(false)}
+          primaryGradient={theme.primaryGradient}
+        />
+        <ChatbotWidget business={siteConfig} primaryGradient={theme.primaryGradient} glowShadow={theme.glow(0.4)} />
       </main>
     </SiteProvider>
   );

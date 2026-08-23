@@ -57,6 +57,12 @@ class ModernizationScoringEngine:
                 score += 10
                 breakdown.append(f"Legacy CMS Detected ({', '.join(audit.detected_tech_stack)}) (+10 pts)")
 
+            # 10. Missing Google Review Widget (+5 pts) — collected by the crawler
+            # (src/crawler/seo_parser.py) but previously never scored.
+            if not audit.has_review_widget:
+                score += 5
+                breakdown.append("No Dynamic Google Review Widget (+5 pts)")
+
         # Cap score at 100 max
         score = min(score, 100)
 
@@ -70,12 +76,44 @@ class ModernizationScoringEngine:
         else:
             tier = "SKIP"
 
-        logger.info(f"Lead '{lead.name}' Scored: {score}/100 -> Tier: {tier}")
+        buying_power_score = self.calculate_buying_power_score(lead)
+
+        logger.info(
+            f"Lead '{lead.name}' Scored: {score}/100 (Modernization) | "
+            f"{buying_power_score}/100 (Buying Power) -> Tier: {tier}"
+        )
 
         return ScoredLead(
             lead=lead,
             audit=audit,
             modernization_score=score,
+            buying_power_score=buying_power_score,
             tier=tier,
             score_breakdown=breakdown
         )
+
+    def calculate_buying_power_score(self, lead: PlaceLead) -> int:
+        """0-100 proxy for whether this business can comfortably afford a $1.5k-5k
+        project, from review volume (a rough stand-in for transaction volume/revenue)
+        and rating. Does not require any extra API calls — both fields already come
+        back from the Places discovery search. See leads-improve-plan.md Section 2."""
+        reviews = lead.review_count or 0
+        rating = lead.google_rating or 0.0
+
+        if reviews >= 300:
+            score = 100
+        elif reviews >= 100:
+            score = 75
+        elif reviews >= 50:
+            score = 50
+        else:
+            # Below the discovery floor (MIN_REVIEW_COUNT) this shouldn't normally occur,
+            # but score gracefully rather than assuming zero.
+            score = 25
+
+        # A high-review but currently-slipping business (low rating) is a weaker bet
+        # than the raw review count suggests.
+        if rating and rating < 4.5:
+            score = max(0, score - 15)
+
+        return min(score, 100)

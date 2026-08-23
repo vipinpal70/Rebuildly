@@ -1,6 +1,6 @@
 # Phase 4 Implementation Plan: Human-in-the-Loop Sales Studio, Admin Message Editor & Telegram Alerting Engine
 
-> **Project Name:** Opportunity Finder & Website Modernization Engine  
+> **Project Name:** Rebuildly & Website Modernization Engine  
 > **Phase:** 4 — Admin-Controlled Outreach Command Center (LinkedIn ➔ Email ➔ WhatsApp ➔ Call), Content Editor & Anti-Spam Safety  
 > **Status:** Pending User Approval  
 
@@ -42,7 +42,7 @@ For every lead, the Admin UI presents an interactive **Outreach Studio Drawer** 
 | Channel Step | Generated Content Draft | Admin Control Options | Action Trigger |
 | :--- | :--- | :--- | :--- |
 | **Step 1: LinkedIn** | Soft connection note referencing their local Google rating & mobile audit finding. | Editable Textarea for LinkedIn Note. | `[🔗 Copy LinkedIn Note & Open Profile]` |
-| **Step 2: Cold Email** | Plain-text email with audit breakdown & bespoke Next.js preview link (`http://localhost:3000/sites/[slug]`). | Editable Subject Line + Editable Body Textarea. | `[📧 Send Email Now]` *(Fires email backend)* |
+| **Step 2: Cold Email** | Plain-text email with audit breakdown & bespoke Next.js preview link (`http://localhost:3009/sites/[slug]`). | Editable Subject Line + Editable Body Textarea. | `[📧 Send Email Now]` *(Fires email backend)* |
 | **Step 3: WhatsApp** | Concise mobile follow-up text referencing the email and preview URL. | Editable WhatsApp Message Textarea. | `[💬 Send via WhatsApp Web]` *(Opens WhatsApp)* |
 | **Step 4: Phone Call** | High-touch call talking points, objection handling, & mobile audit stats. | Read-Only / Editable Call Notes. | `[📞 Call Decision Maker]` *(Initiates phone call)* |
 
@@ -93,7 +93,7 @@ Because sending is controlled directly by you through the Admin Studio, you main
 ## 📂 Directory Structure for Phase 4 Deliverables
 
 ```text
-Opportunity Finder/
+Rebuildly/
 ├── src/
 │   ├── api/
 │   │   ├── admin.py

@@ -1,6 +1,6 @@
 # 04. Modernization Scoring Matrix
 
-> **System:** Opportunity Finder  
+> **System:** Rebuildly  
 > **Document:** Mathematical Scoring Formula & Penalty Breakdown  
 > **Author:** Vipin Pal
 

@@ -10,7 +10,11 @@ interface DraftsData {
   phone: string;
   website: string;
   outreach_status: string;
+  contact_name: string | null;
+  decision_maker_role: string | null;
   contact_email: string;
+  contactability_score: number;
+  composite_lead_score: number | null;
   linkedin_draft: string;
   email_subject_draft: string;
   email_body_draft: string;
@@ -38,6 +42,7 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
   const [notification, setNotification] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Form states
+  const [contactName, setContactName] = useState<string>("");
   const [contactEmail, setContactEmail] = useState<string>("");
   const [contactPhone, setContactPhone] = useState<string>("");
   const [linkedinDraft, setLinkedinDraft] = useState<string>("");
@@ -59,6 +64,7 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
     try {
       const data: DraftsData = await adminApi.crmDrafts(businessId!);
       setDraftsData(data);
+      setContactName(data.contact_name || "");
       setContactEmail(data.contact_email || "");
       setContactPhone(data.phone || "");
       setLinkedinDraft(data.linkedin_draft || "");
@@ -104,6 +110,7 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
         email_body_draft: emailBody,
         whatsapp_draft: whatsappDraft,
         call_script_notes: callNotes,
+        contact_name: contactName,
         contact_email: contactEmail,
         contact_phone: contactPhone,
       });
@@ -164,6 +171,18 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
     }
   };
 
+  // Records an INBOUND response (they replied / booked a meeting), distinct from
+  // the OUTBOUND *_SENT statuses set by the channel buttons above — see
+  // leads-improve-plan.md Section 7 and OutreachLogModel.
+  const markOutcome = async (status: "REPLIED" | "MEETING_BOOKED" | "CONVERTED") => {
+    if (!businessId) return;
+    await updateStatus(status);
+    setDraftsData((prev) => (prev ? { ...prev, outreach_status: status } : prev));
+    const label = status === "REPLIED" ? "Marked as replied" : status === "MEETING_BOOKED" ? "Meeting booked recorded" : "Marked as converted";
+    setNotification({ type: "success", text: `✅ ${label}!` });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
   if (!businessId) return null;
 
   return (
@@ -189,6 +208,19 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
               {draftsData?.city} • Scraped Site: {draftsData?.website || "N/A"}
+            </p>
+            <p className="text-xs mt-1">
+              {draftsData?.contact_name ? (
+                <span className="text-cyan-400 font-medium">
+                  🎯 Decision-maker: {draftsData.contact_name}
+                  {draftsData.decision_maker_role ? ` (${draftsData.decision_maker_role})` : ""}
+                </span>
+              ) : (
+                <span className="text-slate-500">No named decision-maker resolved — drafts use a generic greeting</span>
+              )}
+              {draftsData?.composite_lead_score !== null && draftsData?.composite_lead_score !== undefined && (
+                <span className="text-slate-500"> • Lead Quality {draftsData.composite_lead_score}/100</span>
+              )}
             </p>
           </div>
 
@@ -218,6 +250,31 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
               : "bg-rose-950/90 text-rose-300 border-rose-800"
           }`}>
             {notification.text}
+          </div>
+        )}
+
+        {/* Inbound Outcome Tracking — distinct from the outbound *_SENT actions below */}
+        {!loading && (
+          <div className="px-6 py-3 bg-slate-950/60 border-b border-slate-800 flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-slate-500 mr-1">Record a response from {draftsData?.business_name || "this lead"}:</span>
+            <button
+              onClick={() => markOutcome("REPLIED")}
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-cyan-600/20 text-cyan-300 border border-cyan-600/30 hover:bg-cyan-600/30 transition"
+            >
+              💬 Mark as Replied
+            </button>
+            <button
+              onClick={() => markOutcome("MEETING_BOOKED")}
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-teal-600/20 text-teal-300 border border-teal-600/30 hover:bg-teal-600/30 transition"
+            >
+              📅 Mark as Meeting Booked
+            </button>
+            <button
+              onClick={() => markOutcome("CONVERTED")}
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-600/20 text-purple-300 border border-purple-600/30 hover:bg-purple-600/30 transition"
+            >
+              🎉 Mark as Converted
+            </button>
           </div>
         )}
 
@@ -347,6 +404,19 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">
+                        Decision-Maker Name {draftsData?.contact_name && <span className="text-cyan-500 normal-case font-normal">(auto-resolved from team page)</span>}
+                      </label>
+                      <input
+                        type="text"
+                        value={contactName}
+                        onChange={(e) => setContactName(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        placeholder="e.g. Sarah Mitchell (leave blank to use a generic greeting)"
+                      />
+                    </div>
+
+                    <div>
                       <label className="block text-xs font-semibold text-slate-400 mb-1">Recipient Email</label>
                       <input
                         type="email"
@@ -357,7 +427,7 @@ export default function OutreachStudioModal({ businessId, onClose, onStatusUpdat
                       />
                     </div>
 
-                    <div>
+                    <div className="md:col-span-2">
                       <label className="block text-xs font-semibold text-slate-400 mb-1">Subject Line</label>
                       <input
                         type="text"

@@ -32,7 +32,7 @@ class PreviewBuilder:
     async def async_build_preview_config(self, business: BusinessModel, audit: AuditModel, scraped_text: Optional[str] = None) -> Dict[str, Any]:
         """Asynchronously builds ultra-rich preview configuration enriched via LLM / ContentRefiner."""
         slug = self.slugify(business.name)
-        preview_url = f"http://localhost:3000/preview/{slug}"
+        preview_url = f"http://localhost:3009/preview/{slug}"
 
         # Refine content via LLM or smart rule engine
         refined = await self.refiner.refine_business_content(business, audit, scraped_text)
@@ -88,7 +88,7 @@ class PreviewBuilder:
                     "review_count": business.review_count or 150,
                     "google_maps_url": business.google_maps_url,
                     "modernization_score": audit.modernization_score if audit else 85,
-                    "preview_url": f"http://localhost:3000/preview/{slug}",
+                    "preview_url": f"http://localhost:3009/preview/{slug}",
                     "tagline": refined.get("tagline"),
                     "heroSubtitle": refined.get("heroSubtitle"),
                     "badgeText": refined.get("badgeText"),
@@ -121,7 +121,7 @@ class PreviewBuilder:
                 "review_count": business.review_count or 150,
                 "google_maps_url": business.google_maps_url,
                 "modernization_score": audit.modernization_score if audit else 85,
-                "preview_url": f"http://localhost:3000/preview/{slug}",
+                "preview_url": f"http://localhost:3009/preview/{slug}",
                 "tagline": refined.get("tagline"),
                 "heroSubtitle": refined.get("heroSubtitle"),
                 "badgeText": refined.get("badgeText"),

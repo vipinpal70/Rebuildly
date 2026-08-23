@@ -18,7 +18,7 @@ export const sampleBusiness: BusinessData = {
   heroSubtitle: 'Combining state-of-the-art 3D digital dentistry with gentle, painless care for a radiant smile that lasts a lifetime.',
   hours: 'Mon - Fri: 8:00 AM - 6:00 PM | Sat: 9:00 AM - 2:00 PM',
   modernization_score: 88,
-  preview_url: 'http://localhost:3000/preview/deansgate-dental-studio',
+  preview_url: 'http://localhost:3009/preview/deansgate-dental-studio',
   
   stats: [
     { number: '99.8%', label: 'PATIENT SATISFACTION RATE' },

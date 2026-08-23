@@ -1,3 +1,5 @@
+import hashlib
+import random
 import re
 import logging
 from typing import Dict, Any, List, Optional
@@ -15,30 +17,46 @@ ALLOWED_ICONS = ["sparkles", "clock", "shield", "zap", "award", "heart"]
 # Curated high-resolution photography per niche. The old client sites usually have
 # low-quality / dated photos, so we keep their real *text* (names, taglines) but
 # upgrade the *visuals* to professional stock — that's the "redesign" the client pays for.
-NICHE_GALLERY = {
-    "COSMETIC_DENTISTRY": [
+# Stock photo fallback pools, organized by broad sector (see _industry_sector) rather
+# than narrow niche. Previously these were split into near-identical per-niche lists
+# (e.g. COSMETIC_DENTISTRY and IMPLANT_ORTHODONTICS shared 5 of 6 photos) with a
+# single deterministic HERO_IMAGES[niche] lookup — meaning EVERY business sharing a
+# niche got the exact same hero photo, no variation at all. This is now a real,
+# de-duplicated pool per sector, and _select_imagery (below) tries the business's
+# OWN real scraped photos first — this stock pool is only the fallback for sites
+# too bare to have usable photography of their own. IDs are real, previously-used
+# Unsplash photos consolidated from across the old per-niche lists (plus a few
+# recovered from the now-unused DesignEngine.CATEGORY_MEDIA_MAP) — never invented,
+# since a fabricated ID would just be a broken image.
+SECTOR_STOCK_PHOTOS: Dict[str, List[tuple]] = {
+    "DENTAL": [
         ("1606811841689-23dfddce3e95", "Modern treatment suite"),
-        ("1588776814546-1ffcf47267a5", "Precision cosmetic work"),
+        ("1588776814546-1ffcf47267a5", "Precision, guided treatment"),
         ("1629909613654-28e377c37b09", "A confident new smile"),
         ("1609840114035-3c981b782dfe", "Calm, contemporary interior"),
         ("1598256989800-fe5f95da9787", "Natural, radiant results"),
         ("1583912267550-d6c2ac3196c0", "State-of-the-art equipment"),
-    ],
-    "IMPLANT_ORTHODONTICS": [
-        ("1588776814546-1ffcf47267a5", "Guided implant surgery"),
-        ("1606811841689-23dfddce3e95", "3D-planned treatment"),
-        ("1629909613654-28e377c37b09", "Full-arch restoration"),
         ("1581056771107-24ca5f033842", "Digital scanning suite"),
-        ("1609840114035-3c981b782dfe", "Relaxed recovery lounge"),
-        ("1598256989800-fe5f95da9787", "Life-changing outcomes"),
+        ("1579684385127-1ef15d508118", "Modern dental care"),
     ],
-    "MEDSPA_WELLNESS": [
+    "BEAUTY": [
         ("1540555700478-4be289fbecef", "Serene treatment rooms"),
         ("1570172619644-dfd03ed5d881", "Advanced skin therapies"),
         ("1512290923902-8a9f81dc236c", "Relaxing wellness lounge"),
         ("1519494026892-80bbd2d6fd0d", "Boutique reception"),
         ("1596755094514-f87e34085b2c", "Radiant, natural results"),
         ("1571019613454-1cb2f99b2d8b", "Expert-led aesthetics"),
+    ],
+    "LEGAL": [
+        ("1486406146926-c627a92ad1ab", "Professional consultation"),
+        ("1589829545856-d10d557cf95f", "A dedicated legal team"),
+        ("1505664194779-8beaceb93744", "Focused case preparation"),
+        ("1450133064473-71024230f91b", "Client-first legal advice"),
+    ],
+    "TRADES": [
+        ("1621905251189-08b45d6a269e", "Professional installation"),
+        ("1581094288338-2314dddb7ece", "Skilled, reliable technicians"),
+        ("1504328345606-18bbc8c9d7d1", "Quality workmanship"),
     ],
     "DEFAULT": [
         ("1497366216548-37526070297c", "Our welcoming space"),
@@ -47,8 +65,12 @@ NICHE_GALLERY = {
         ("1521737711867-e3b97375f902", "Consultations that listen"),
         ("1519494026892-80bbd2d6fd0d", "Contemporary interior"),
         ("1600607687939-ce8a6c25118c", "Comfort-first care"),
+        ("1522071820081-009f0129c71c", "A modern, professional space"),
     ],
 }
+# Sectors without dedicated real photography fall back to the neutral DEFAULT pool
+# rather than borrowing another vertical's themed stock.
+_SECTOR_STOCK_FALLBACK = {"FINANCE": "DEFAULT", "MEDICAL": "DEFAULT", "GENERAL": "DEFAULT"}
 
 # Professional portrait photography for team cards.
 PORTRAITS = [
@@ -56,16 +78,6 @@ PORTRAITS = [
     "1594824476967-48c8b964273f", "1559839734-2b71ea197ec2",
     "1651008376811-b90baee60c1f", "1582750433449-648ed127bb54",
 ]
-
-HERO_IMAGES = {
-    "COSMETIC_DENTISTRY": "1629909613654-28e377c37b09",
-    "GENERAL_DENTISTRY": "1629909613654-28e377c37b09",
-    "IMPLANT_ORTHODONTICS": "1588776814546-1ffcf47267a5",
-    "LEGAL_SERVICES": "1486406146926-c627a92ad1ab",
-    "HVAC_CLIMATE": "1621905251189-08b45d6a269e",
-    "MEDSPA_WELLNESS": "1540555700478-4be289fbecef",
-    "DEFAULT": "1497366216548-37526070297c",
-}
 
 
 def _img(photo_id: str, w: int = 1200) -> str:
@@ -80,7 +92,8 @@ class BusinessResearcher:
         self.scraper = WebContentScraper()
         self.llm = FlexibleLLMClient()
 
-    async def research_business(self, business: BusinessModel, audit: AuditModel) -> Dict[str, Any]:
+    async def research_business(self, business: BusinessModel, audit: AuditModel, feedback_notes: str = "",
+                                 image_overrides: Optional[Dict[str, List[str]]] = None) -> Dict[str, Any]:
         scraped = {}
         if business.website and business.website.startswith("http"):
             scraped = await self.scraper.scrape_website(business.website)
@@ -104,7 +117,7 @@ class BusinessResearcher:
         # LLM is unavailable the industry-specific sections stay empty and only truly
         # industry-neutral scaffolding (workflow/stats/generic USPs) is filled.
         context = await self._gather_context(business, scraped)
-        enriched = await self._enrich_content(business, scraped, name, category, city, rating, reviews_n, context)
+        enriched = await self._enrich_content(business, scraped, name, category, city, rating, reviews_n, context, feedback_notes)
         industry = (enriched.get("industry") or category or "Local Business").strip()
 
         # Team is researched separately: it often lives on a dedicated /team or /about
@@ -113,7 +126,10 @@ class BusinessResearcher:
 
         # Imagery is chosen from the reliable LLM-derived industry, so dental/medspa stock
         # can never land on a law/accounting/etc. site (the "wrong images" bug).
-        hero_image, gallery = self._select_imagery(industry, niche, scraped)
+        hero_urls = (image_overrides or {}).get("hero") or []
+        hero_image, hero_image_secondary, gallery = self._select_imagery(
+            industry, niche, scraped, seed_key=str(business.id), hero_urls=hero_urls
+        )
 
         return {
             "business_id": str(business.id),
@@ -135,6 +151,7 @@ class BusinessResearcher:
             "scraped_summary": scraped.get("raw_text_summary", ""),
             "scraped_tagline": self._pick_scraped_tagline(scraped),
             "hero_image": hero_image,
+            "hero_image_secondary": hero_image_secondary,
             "services": self._sanitize_services(enriched.get("services")),
             "usps": self._sanitize_usps(enriched.get("usps")) or self._neutral_usps(city),
             "faqs": self._sanitize_faqs(enriched.get("faqs")),
@@ -186,7 +203,11 @@ class BusinessResearcher:
 
     async def _gather_context(self, business: BusinessModel, scraped: Dict[str, Any]) -> str:
         """Read a few of the client's OWN key pages (about / services / prices) so the
-        enrichment is grounded in what they actually do — not just the homepage."""
+        enrichment is grounded in what they actually do — not just the homepage.
+        Manually-added pages (business.additional_urls — team/contact-us/about-us/any
+        URL an operator attaches via the CRM) are always included on top of whatever
+        this auto-discovery finds, so a page the heuristics miss can still be
+        guaranteed to reach the enrichment LLM call."""
         parts = [scraped.get("raw_text_summary", "")]
         base = (business.website or "").rstrip("/").lower()
         scored = []
@@ -208,12 +229,23 @@ class BusinessResearcher:
             picked.append(url)
             if len(picked) >= 3:
                 break
+
+        manual_labels: Dict[str, str] = {}
+        for entry in (business.additional_urls or [])[:5]:
+            url = (entry.get("url") or "").strip()
+            key = url.rstrip("/").lower()
+            if url and key not in seen:
+                seen.add(key)
+                manual_labels[url] = entry.get("label") or "Manually added page"
+                picked.append(url)
+
         for url in picked:
             try:
                 sub = await self.scraper.scrape_website(url, max_items=25)
                 block = " | ".join(sub.get("headings", [])) + "\n" + " ".join(sub.get("paragraphs", []))
                 if block.strip():
-                    parts.append(f"PAGE {url}:\n{block[:1600]}")
+                    tag = f" ({manual_labels[url]})" if url in manual_labels else ""
+                    parts.append(f"PAGE{tag} {url}:\n{block[:1600]}")
             except Exception as e:
                 logger.warning(f"Context page scrape failed {url}: {e}")
         return "\n\n".join(p for p in parts if p and p.strip())[:6500]
@@ -221,13 +253,26 @@ class BusinessResearcher:
     # ------------------------- grounded LLM enrichment ---------------------
     async def _enrich_content(self, business: BusinessModel, scraped: Dict[str, Any],
                               name: str, category: str, city: str,
-                              rating: float, reviews_n: int, context: str = "") -> Dict[str, Any]:
+                              rating: float, reviews_n: int, context: str = "",
+                              feedback_notes: str = "") -> Dict[str, Any]:
         """Single LLM call that writes the whole content package STRICTLY for this
         business's real industry (inferred from its own website + category). Returns
         {} when the LLM is unavailable so the caller applies neutral fallbacks — it
-        never substitutes another industry's content."""
+        never substitutes another industry's content.
+
+        feedback_notes: admin feedback from a previous regeneration (see
+        feedback_interpreter.py), e.g. "add a pricing table", "remove testimonials
+        section", "mention weekend appointments" — addressed where it doesn't
+        conflict with the grounding rules below (never fabricates unsupported facts
+        just because it was asked to)."""
         summary = (context or scraped.get("raw_text_summary") or "").strip()
         headings = " | ".join(scraped.get("headings", [])[:12])
+        feedback_block = (
+            f"\nADMIN FEEDBACK FROM A PREVIOUS VERSION — address these requests where possible,\n"
+            f"but NEVER violate the grounding rules below (e.g. don't invent a price or service\n"
+            f"that doesn't exist just because it was requested):\n{feedback_notes}\n"
+            if feedback_notes.strip() else ""
+        )
 
         prompt = f"""You are creating landing-page content for ONE specific local business.
 Everything you write MUST be about this business's real industry ONLY, and grounded in the
@@ -239,7 +284,7 @@ BUSINESS
 - Listing category: {category or "(unknown — infer from the website)"}
 - Location: {city}, {business.country}
 - Google rating: {rating} from {reviews_n} reviews
-
+{feedback_block}
 THEIR OWN WEBSITE (scraped from several of their pages — the source of truth):
 {summary or "(no website content could be scraped)"}
 
@@ -437,11 +482,6 @@ Return ONLY this JSON object:
                 "blank", "spinner", "loader", "badge", "rosette", ".svg", "avatar", "cookie",
                 "flag-", "payment", "visa-", "mastercard")
 
-    _SECTOR_HERO = {
-        "DENTAL": "GENERAL_DENTISTRY", "BEAUTY": "MEDSPA_WELLNESS", "LEGAL": "LEGAL_SERVICES",
-        "TRADES": "HVAC_CLIMATE", "FINANCE": "DEFAULT", "MEDICAL": "DEFAULT", "GENERAL": "DEFAULT",
-    }
-
     def _industry_sector(self, industry: str, niche: str) -> str:
         s = f"{industry} {niche}".lower()
         if any(k in s for k in ["dent", "orthodont", "implant", "endodon"]):
@@ -458,23 +498,64 @@ Return ONLY this JSON object:
             return "MEDICAL"
         return "GENERAL"
 
-    def _select_imagery(self, industry: str, niche: str, scraped: Dict[str, Any]):
-        """Return (hero_image, gallery) as professional stock chosen for the REAL industry.
-        Themed dental/medspa stock is gated behind the DENTAL/BEAUTY sectors so it can never
-        appear on a legal, financial, trades or other site."""
-        sector = self._industry_sector(industry, niche)
-        if sector == "DENTAL":
-            hero_key = niche if niche in HERO_IMAGES else "GENERAL_DENTISTRY"
-            gallery_key = niche if niche in NICHE_GALLERY else "COSMETIC_DENTISTRY"
-        elif sector == "BEAUTY":
-            hero_key = gallery_key = "MEDSPA_WELLNESS"
+    def _select_imagery(self, industry: str, niche: str, scraped: Dict[str, Any], seed_key: str = "",
+                         hero_urls: Optional[List[str]] = None):
+        """Return (hero_image, hero_image_secondary, gallery). hero_urls are exact
+        URLs an admin pasted in regeneration feedback (see feedback_interpreter.
+        _extract_image_overrides) — when given, they win outright over every other
+        selection path below: the first becomes the hero image, and a second (if
+        given) becomes hero_image_secondary so the Hero component can crossfade
+        between the two instead of silently ignoring the admin's exact request.
+
+        Otherwise prefers the business's OWN real photos — genuinely unique per
+        business, and a real photo of their actual space reads as more credible and
+        premium than any stock image, no matter how large the stock pool. Falls back
+        to a randomized (not fixed-single-image) sector stock pool only when the site
+        has too little usable photography of its own — which is common on exactly
+        the bare-bones, outdated sites this system targets.
+        seed_key (typically the business id) keeps the choice stable across
+        re-generations of the same site rather than reshuffling every run."""
+        rng = random.Random(hashlib.md5((seed_key or industry or "seed").encode()).hexdigest())
+
+        real_photos = self._usable_photos(scraped.get("scraped_images", []))
+        if len(real_photos) >= 4:
+            pool = list(real_photos)
+            rng.shuffle(pool)
+            hero = pool[0]["src"]
+            gallery = [
+                {"src": p["src"], "caption": (p.get("alt") or "").strip() or "Inside our practice"}
+                for p in pool[1:7]
+            ]
+            if len(gallery) < 4:
+                # Not quite enough real shots for a full gallery — top up with stock
+                # rather than showing a sparse 1-3 image gallery.
+                stock = self._stock_photo_pool(industry, niche)
+                rng.shuffle(stock)
+                for pid, cap in stock:
+                    if len(gallery) >= 6:
+                        break
+                    gallery.append({"src": _img(pid, 900), "caption": cap})
         else:
-            hero_key = self._SECTOR_HERO.get(sector, "DEFAULT")
-            gallery_key = "DEFAULT"  # neutral, industry-agnostic — never dental
-        hero = _img(HERO_IMAGES.get(hero_key, HERO_IMAGES["DEFAULT"]), 1600)
-        base = NICHE_GALLERY.get(gallery_key, NICHE_GALLERY["DEFAULT"])
-        gallery = [{"src": _img(pid, 900), "caption": cap} for pid, cap in base]
-        return hero, gallery
+            # No usable real photography — randomized sector-appropriate stock fallback.
+            stock = self._stock_photo_pool(industry, niche)
+            rng.shuffle(stock)
+            hero = _img(stock[0][0], 1600)
+            gallery = [{"src": _img(pid, 900), "caption": cap} for pid, cap in stock[:6]]
+
+        if hero_urls:
+            # Explicit admin request wins outright over everything computed above —
+            # the gallery selection still stands, only the hero image is overridden.
+            hero = hero_urls[0]
+            hero_secondary = hero_urls[1] if len(hero_urls) > 1 else None
+        else:
+            hero_secondary = None
+        return hero, hero_secondary, gallery
+
+    def _stock_photo_pool(self, industry: str, niche: str) -> List[tuple]:
+        """The sector-appropriate stock pool, as a fresh copy (callers shuffle it)."""
+        sector = self._industry_sector(industry, niche)
+        key = _SECTOR_STOCK_FALLBACK.get(sector, sector)
+        return list(SECTOR_STOCK_PHOTOS.get(key, SECTOR_STOCK_PHOTOS["DEFAULT"]))
 
     def _usable_photos(self, images: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Real content photos only — drops logos, icons, SVGs, banners, payment badges."""
@@ -551,19 +632,36 @@ Return ONLY this JSON object:
                 best, best_score = l.get("url"), score
         return best
 
+    @staticmethod
+    def _manual_team_url(business: BusinessModel) -> Optional[str]:
+        """A manually-added page explicitly labeled as the team page (see
+        additional_urls) always wins over the link-scoring guess below — the
+        operator knows their own discovery better than a heuristic, especially
+        for JS-driven nav menus or unusually-named URLs the heuristic misses."""
+        for entry in (business.additional_urls or []):
+            if "team" in (entry.get("label") or "").lower():
+                url = (entry.get("url") or "").strip()
+                if url:
+                    return url
+        return None
+
     async def _scrape_team_page(self, business: BusinessModel, scraped: Dict[str, Any]) -> Dict[str, Any]:
-        link = self._pick_team_link(scraped.get("links", []), business.website)
+        manual_link = self._manual_team_url(business)
+        link = manual_link or self._pick_team_link(scraped.get("links", []), business.website)
         if not link:
             return {}
-        logger.info(f"Following team/about page for '{business.name}': {link}")
+        logger.info(f"Following team/about page for '{business.name}': {link}" + (" (manually added)" if manual_link else ""))
         # Team headshots are usually lazy-loaded via JS, so render the page in a headless
         # browser first (scrolling to materialise the images). Fall back to a plain HTTP
-        # fetch if a browser isn't available or rendering fails.
-        rendered = await self.scraper.scrape_rendered(link, max_items=40)
+        # fetch if a browser isn't available or rendering fails. deep_headings=True since
+        # many page-builder themes render names as h4/h5/h6 "sub-headline" widgets rather
+        # than real paragraphs — h1-h3-only extraction silently returns zero people despite
+        # a page full of real team members (see leads-improve-plan.md-adjacent bug report).
+        rendered = await self.scraper.scrape_rendered(link, max_items=40, deep_headings=True)
         if rendered and (rendered.get("scraped_images") or rendered.get("headings")):
             return rendered
         try:
-            return await self.scraper.scrape_website(link, max_items=40)
+            return await self.scraper.scrape_website(link, max_items=40, deep_headings=True)
         except Exception as e:
             logger.warning(f"Failed to scrape team page {link}: {e}")
             return {}
@@ -670,9 +768,6 @@ If no real named people are present, return {{"team": []}}."""
             {"number": "FAST", "label": "RESPONSE TIME"},
             {"number": "100%", "label": "UPFRONT PRICING"},
         ]
-
-    def _get_hero_image_for_niche(self, niche: str) -> str:
-        return _img(HERO_IMAGES.get(niche, HERO_IMAGES["DEFAULT"]), 1600)
 
     def _detect_sub_niche(self, name: str, category: str, scraped: Dict[str, Any]) -> str:
         combined = f"{name} {category} {scraped.get('raw_text_summary', '')}".lower()

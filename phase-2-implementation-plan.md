@@ -1,6 +1,6 @@
 # Phase 2 Implementation Plan: Database Migrations, Task Architecture & Async Queue Engine
 
-> **Project Name:** Opportunity Finder & Website Modernization Engine  
+> **Project Name:** Rebuildly & Website Modernization Engine  
 > **Phase:** 2 — Database Schema, Celery/Redis Async Workers & Outreach Pipeline  
 > **Status:** Awaiting User Approval  
 
@@ -8,7 +8,7 @@
 
 ## 🎯 Phase 2 Objectives
 
-Phase 2 transitions the system from synchronous pipeline execution to a **distributed, highly scalable, asynchronous background architecture**. This enables the Opportunity Finder engine to continuously process hundreds of business leads across multiple cities concurrently without blocking execution or hitting API rate limits.
+Phase 2 transitions the system from synchronous pipeline execution to a **distributed, highly scalable, asynchronous background architecture**. This enables the Rebuildly engine to continuously process hundreds of business leads across multiple cities concurrently without blocking execution or hitting API rate limits.
 
 ---
 
@@ -55,7 +55,7 @@ graph TD
 ## 📂 Proposed Directory Structure Additions for Phase 2
 
 ```text
-Opportunity Finder/
+Rebuildly/
 ├── alembic/
 │   ├── versions/
 │   │   └── 001_initial_schema.py

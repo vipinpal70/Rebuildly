@@ -23,8 +23,8 @@ export function TrustRibbon() {
       <Stagger className="grid grid-cols-2 md:grid-cols-4 gap-5" stagger={0.07}>
         {stats.map((s: any, i: number) => (
           <StaggerItem key={i}>
-            <Card className="p-8 text-center h-full">
-              <div className="text-3xl sm:text-5xl font-extrabold" style={{ fontFamily: t.serifFamily, color: t.accent }}>{s.number}</div>
+            <Card className="p-5 text-center h-full">
+              <div className="text-xl sm:text-3xl font-extrabold" style={{ fontFamily: t.serifFamily, color: t.accent }}>{s.number}</div>
               <div className="text-[11px] font-bold uppercase tracking-widest mt-3" style={{ color: t.subtext }}>{s.label}</div>
             </Card>
           </StaggerItem>
@@ -43,14 +43,14 @@ export function Usps() {
   return (
     <Section id="why-us" tint>
       <Reveal><SectionHeading eyebrow="Why us" title={`Why ${audienceTitle} Trust`} accent={c.name} /></Reveal>
-      <Stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <Stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {usps.map((u: any, i: number) => (
           <StaggerItem key={i}>
-            <Card className="p-8 h-full">
-              <div className="w-12 h-12 rounded-2xl border flex items-center justify-center mb-6" style={{ borderColor: t.border, backgroundColor: t.badgeBg, color: t.accent }}>
+            <Card className="p-5 h-full">
+              <div className="w-12 h-12 rounded-2xl border flex items-center justify-center mb-4" style={{ borderColor: t.border, backgroundColor: t.badgeBg, color: t.accent }}>
                 {ICONS[u.icon] || <Sparkles className="w-6 h-6" />}
               </div>
-              <h3 className="text-xl font-bold mb-3" style={{ fontFamily: t.serifFamily, color: t.text }}>{u.title}</h3>
+              <h3 className="text-base font-bold mb-3" style={{ fontFamily: t.serifFamily, color: t.text }}>{u.title}</h3>
               <p className="text-sm leading-relaxed" style={{ color: t.subtext }}>{u.description}</p>
             </Card>
           </StaggerItem>

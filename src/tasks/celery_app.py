@@ -1,7 +1,7 @@
 from celery import Celery
 from config.settings import settings
 
-celery_app = Celery("opportunity_finder")
+celery_app = Celery("rebuildly")
 celery_app.config_from_object("config.celery_config")
 
 # Autodiscover tasks across src modules

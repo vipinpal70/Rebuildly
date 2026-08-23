@@ -11,9 +11,21 @@ interface Message {
 
 interface ChatbotWidgetProps {
   business: BusinessData;
+  // Theme-aware button styling from DynamicClientSite (site/theme.ts). Optional
+  // and defaulted so the older, provider-less /preview/[slug] route (which
+  // renders this component directly, with no SiteProvider) still works — the
+  // previous "gradient-button" CSS class it relied on was never actually
+  // defined anywhere, which is why the button was invisible.
+  primaryGradient?: string;
+  glowShadow?: string;
 }
 
-export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ business }) => {
+const DEFAULT_GRADIENT = 'linear-gradient(135deg, #4f46e5, #06b6d4)';
+const DEFAULT_GLOW = 'rgba(79, 70, 229, 0.4)';
+
+export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ business, primaryGradient, glowShadow }) => {
+  const gradient = primaryGradient || DEFAULT_GRADIENT;
+  const glow = glowShadow || DEFAULT_GLOW;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -64,7 +76,8 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ business }) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="gradient-button text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform"
+          style={{ background: gradient, boxShadow: `0 14px 40px ${glow}` }}
+          className="text-white w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform"
         >
           <MessageSquare className="w-6 h-6 animate-pulse" />
         </button>
@@ -146,7 +159,8 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ business }) => {
                 />
                 <button
                   type="submit"
-                  className="w-full gradient-button text-white py-2 rounded-lg text-xs font-bold"
+                  style={{ background: gradient }}
+                  className="w-full text-white py-2 rounded-lg text-xs font-bold"
                 >
                   Submit Callback Request
                 </button>
@@ -166,7 +180,8 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ business }) => {
             />
             <button
               onClick={handleSend}
-              className="gradient-button text-white p-2.5 rounded-xl flex items-center justify-center shadow-md"
+              style={{ background: gradient }}
+              className="text-white p-2.5 rounded-xl flex items-center justify-center shadow-md"
             >
               <Send className="w-4 h-4" />
             </button>

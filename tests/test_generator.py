@@ -29,4 +29,4 @@ def test_preview_builder_slugify_and_config():
     assert config["name"] == "Manchester Dental Clinic"
     assert config["modernization_score"] == 85
     assert "preview_url" in config
-    assert "http://localhost:3000/preview/manchester-dental-clinic" in config["preview_url"]
+    assert "http://localhost:3009/preview/manchester-dental-clinic" in config["preview_url"]

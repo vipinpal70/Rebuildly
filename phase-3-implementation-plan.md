@@ -1,6 +1,6 @@
 # Phase 3 Implementation Plan: Client Modernization Stack & Frontend Template Framework
 
-> **Project Name:** Opportunity Finder & Website Modernization Engine  
+> **Project Name:** Rebuildly & Website Modernization Engine  
 > **Phase:** 3 — Client Web Templates, Automated Preview Generator, Dynamic SEO & AI Chatbot  
 > **Status:** Awaiting User Approval  
 
@@ -51,7 +51,7 @@ graph TD
 ## 📂 Proposed Directory Structure for Phase 3
 
 ```text
-Opportunity Finder/
+Rebuildly/
 ├── client-template/             # Next.js 14 Client App Template
 │   ├── app/
 │   │   ├── layout.tsx

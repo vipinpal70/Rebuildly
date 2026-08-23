@@ -1,11 +1,13 @@
 import os
 import json
+import shutil
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from src.storage.models import BusinessModel, AuditModel
 from src.scraper.business_researcher import BusinessResearcher
 from src.generator.layout_engine import LayoutEngine
+from src.generator.feedback_interpreter import interpret_feedback
 from src.llm.client import FlexibleLLMClient
 
 logger = logging.getLogger(__name__)
@@ -26,19 +28,63 @@ class ClientSiteGenerator:
         text = re.sub(r'[^\w\s-]', '', text)
         return re.sub(r'[\s_-]+', '-', text)
 
-    async def generate_client_website(self, business: BusinessModel, audit: AuditModel) -> Dict[str, Any]:
-        """Generates a unique client landing page in its own dedicated directory with custom layout & content."""
+    async def generate_client_website(
+        self,
+        business: BusinessModel,
+        audit: AuditModel,
+        feedback_history: Optional[List[str]] = None,
+        current_layout_tree: Optional[Dict[str, Any]] = None,
+        regen_salt: int = 0,
+    ) -> Dict[str, Any]:
+        """Generates a unique client landing page in its own dedicated directory with custom layout & content.
+
+        feedback_history: accumulated admin notes from past regenerations ("I don't
+        like the colors", "add a pricing section", ...) — see feedback_interpreter.py.
+        current_layout_tree/regen_salt: on a regeneration, the CURRENT design is
+        excluded from re-selection and the RNG is reseeded, so "Regenerate" is
+        guaranteed to actually produce something different (previously it was a
+        pure function of business_id+name and was identical every time)."""
         slug = self.slugify(business.name)
         logger.info(f"🚀 Researching & Generating custom site for: '{business.name}' ({slug})")
 
+        interpreted = await interpret_feedback(feedback_history or [])
+        style_hint = interpreted["style_hint"]
+        content_notes = interpreted["content_notes"]
+        color_overrides = interpreted["color_overrides"]
+        variant_picks = interpreted["variant_picks"]
+        image_overrides = interpreted["image_overrides"]
+        if feedback_history:
+            logger.info(
+                f"   Regenerating with {len(feedback_history)} feedback note(s) — "
+                f"style_hint={style_hint!r}, color_overrides={color_overrides!r}, "
+                f"variant_picks={variant_picks!r}, image_overrides={image_overrides!r}"
+            )
+
         # 1. Deep Business Research
-        research = await self.researcher.research_business(business, audit)
+        research = await self.researcher.research_business(
+            business, audit, feedback_notes=content_notes, image_overrides=image_overrides
+        )
 
         # 2. UI/UX Pro Max Custom Layout & Palette Generation
+        current_palette = (current_layout_tree or {}).get("palette") or {}
         layout_tree = self.layout_engine.generate_layout_tree(
             business_id=str(business.id),
             business_name=business.name,
-            niche=research["niche"]
+            niche=research["niche"],
+            industry=research.get("industry") or business.category or "",
+            exclude_archetype=current_palette.get("archetype"),
+            exclude_variants=(current_layout_tree or {}).get("variants"),
+            style_hint=style_hint,
+            regen_salt=regen_salt,
+            color_overrides=color_overrides,
+            variant_picks=variant_picks,
+            # A senior designer only touches what was actually asked about. Once
+            # this site has ANY feedback on file, ever, an axis with no explicit
+            # signal (no style_hint, no variant_pick) stays exactly as it is
+            # instead of being randomly reshuffled — e.g. feedback about only the
+            # hero image must never silently change the color theme too.
+            preserve_unspecified=bool(feedback_history),
+            current_section_order=(current_layout_tree or {}).get("section_order"),
         )
         palette = layout_tree["palette"]
         variants = layout_tree["variants"]
@@ -67,6 +113,11 @@ class ClientSiteGenerator:
         # and it is hard-constrained to stay inside that same industry.
         industry = research.get("industry") or business.category or "local business"
         audience = research.get("audience_noun") or "clients"
+        feedback_block = (
+            f"\nADMIN FEEDBACK FROM A PREVIOUS VERSION — address these where relevant to the\n"
+            f"tagline/subtitle (e.g. tone requests like \"less salesy\", \"more confident\"):\n{content_notes}\n"
+            if content_notes.strip() else ""
+        )
         prompt = f"""
 You are an award-winning agency copywriter. Write a hero tagline and subtitle that read
 as if a real human wrote them for THIS specific business — never generic template filler,
@@ -77,7 +128,7 @@ Industry: {industry}
 Listing category: {business.category}
 City: {business.city}, {business.country}
 Their own website says: {research.get('scraped_summary', '')[:800]}
-
+{feedback_block}
 VOICE FOR THIS SITE: {tone}.
 
 HARD RULES:
@@ -133,7 +184,7 @@ Return JSON matching:
             "google_rating": float(business.google_rating or 4.9),
             "review_count": business.review_count or 150,
             "modernization_score": audit.modernization_score if audit else 85,
-            "preview_url": f"http://localhost:3000/sites/{slug}",
+            "preview_url": f"http://localhost:3009/sites/{slug}",
             "layout_tree": layout_tree,
             "design_system": {
                 "archetype": palette["archetype"],
@@ -143,6 +194,7 @@ Return JSON matching:
                 "google_fonts_url": palette["google_fonts_url"],
                 "colors": palette,
                 "hero_image": research.get("hero_image"),
+                "hero_image_secondary": research.get("hero_image_secondary"),
                 "card_radius": layout_tree["card_radius"],
                 "btn_radius": layout_tree["btn_radius"]
             },
@@ -166,7 +218,7 @@ Return JSON matching:
         }
 
         # 4. Export Dedicated Site Folder
-        site_folder = self._export_to_dedicated_folder(slug, site_config)
+        site_folder = self._export_to_dedicated_folder(slug, site_config, is_regeneration=current_layout_tree is not None)
         logger.info(f"✨ Dedicated client site generated at: 📁 {site_folder}")
 
         # 5. Persist a client_sites record so the admin dashboard tracks every
@@ -208,7 +260,7 @@ Return JSON matching:
         except Exception as e:
             logger.warning(f"Could not persist client_site record for {site_config.get('slug')}: {e}")
 
-    def _export_to_dedicated_folder(self, slug: str, site_config: Dict[str, Any]) -> str:
+    def _export_to_dedicated_folder(self, slug: str, site_config: Dict[str, Any], is_regeneration: bool = False) -> str:
         """Export website to dedicated generated_sites/[slug] directory and client-template app folder."""
         # 1. Root generated_sites folder
         generated_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../generated_sites", slug))
@@ -242,14 +294,29 @@ Return JSON matching:
 
         # 3. Create Next.js page route folder app/sites/[slug]/
         app_sites_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), f"../../client-template/app/sites/{slug}"))
-        os.makedirs(app_sites_dir, exist_ok=True)
 
-        # json.dumps produces safely-escaped JS string literals — critical because
-        # AI-generated titles/taglines contain apostrophes and em-dashes that would
-        # otherwise break a raw single-quoted string in the generated TSX.
-        meta_title = json.dumps(f"{site_config['name']} | Custom Web Preview")
-        meta_desc = json.dumps(site_config.get('tagline', '') or '')
-        page_tsx_content = f"""import React from 'react';
+        if is_regeneration:
+            # This is a REGENERATION, not a first-time publish. A prior
+            # `npm run build` may already have "promoted" this slug to a
+            # prerendered static page — in production (`next start`) that
+            # compiled build is frozen and can't see the fresh JSON we just
+            # wrote no matter what we do to files on disk, since Next.js
+            # always prefers a matching static app/sites/{slug}/ folder over
+            # the app/sites/[slug]/ dynamic fallback route. Remove the static
+            # folder so that dynamic route (which reads public/previews/{slug}.json
+            # at REQUEST time) takes over immediately — the regenerated design
+            # is then live with zero rebuild. The next full `npm run build`
+            # naturally re-promotes the slug back to a static page on its own.
+            if os.path.isdir(app_sites_dir):
+                shutil.rmtree(app_sites_dir)
+        else:
+            os.makedirs(app_sites_dir, exist_ok=True)
+            # json.dumps produces safely-escaped JS string literals — critical because
+            # AI-generated titles/taglines contain apostrophes and em-dashes that would
+            # otherwise break a raw single-quoted string in the generated TSX.
+            meta_title = json.dumps(f"{site_config['name']} | Custom Web Preview")
+            meta_desc = json.dumps(site_config.get('tagline', '') or '')
+            page_tsx_content = f"""import React from 'react';
 import siteConfig from '../../../public/previews/{slug}.json';
 import DynamicClientSite from '../../../components/DynamicClientSite';
 
@@ -262,7 +329,7 @@ export default function DedicatedPage() {{
   return <DynamicClientSite siteConfig={{siteConfig as any}} />;
 }}
 """
-        with open(os.path.join(app_sites_dir, "page.tsx"), "w", encoding="utf-8") as f:
-            f.write(page_tsx_content)
+            with open(os.path.join(app_sites_dir, "page.tsx"), "w", encoding="utf-8") as f:
+                f.write(page_tsx_content)
 
         return generated_dir

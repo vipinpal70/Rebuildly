@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, User, LogIn, ShieldCheck, Loader2 } from 'lucide-react';
 import { adminApi, setToken } from '../../lib/adminApi';
 
 export default function LoginPage() {
+  useEffect(() => { document.title = 'Rebuildly | Admin Login'; }, []);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,7 +40,7 @@ export default function LoginPage() {
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Opportunity Finder</h1>
+              <h1 className="text-xl font-bold text-white">Rebuildly</h1>
               <p className="text-xs text-slate-400">Admin Control Center</p>
             </div>
           </div>

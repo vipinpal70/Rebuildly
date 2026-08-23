@@ -120,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({ business }) => {
         <p className="flex items-center gap-1 text-slate-500">
           <span>Modernized with</span>
           <Heart className="w-3 h-3 text-rose-500 fill-rose-500" />
-          <span>by Opportunity Finder Engine</span>
+          <span>by Rebuildly</span>
         </p>
       </div>
     </footer>

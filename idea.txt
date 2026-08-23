@@ -87,7 +87,7 @@ That's a completely different proposition.
 
 ---
 
-# 3. Build your own "Website Opportunity Finder"
+# 3. Build your own "Website Rebuildly"
 
 This is where your Python skills become extremely useful.
 
@@ -716,7 +716,7 @@ Then you could have a dashboard:
 
 ```text
 ============================================
-       WEBSITE OPPORTUNITY FINDER
+       WEBSITE REBUILDLY
 ============================================
 
 Country      UK

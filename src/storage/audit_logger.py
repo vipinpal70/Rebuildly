@@ -27,7 +27,7 @@ class AuditLogManager:
                 "job_id": "system-init",
                 "level": "SUCCESS",
                 "stage": "SYSTEM",
-                "business_name": "Opportunity Finder Engine",
+                "business_name": "Rebuildly Engine",
                 "message": "PostgreSQL & Redis Audit Engine initialized successfully.",
                 "details": {"status": "healthy", "redis_port": 6379, "postgres_port": 5432}
             },
@@ -59,7 +59,7 @@ class AuditLogManager:
                 "stage": "GENERATOR",
                 "business_name": "Clarity Dental Clinic",
                 "message": "Generated dedicated client route /sites/clarity-dental-clinic (CYBER_GLOW_TECH).",
-                "details": {"preview_url": "http://localhost:3000/sites/clarity-dental-clinic"}
+                "details": {"preview_url": "http://localhost:3009/sites/clarity-dental-clinic"}
             }
         ]
         self.logs.extend(sample_logs)

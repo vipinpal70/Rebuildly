@@ -1,6 +1,6 @@
-# Engineering & Product Roadmap: Opportunity Finder & Modernization System
+# Engineering & Product Roadmap: Rebuildly & Modernization System
 
-> **Project Name:** Opportunity Finder & Website Modernization Engine  
+> **Project Name:** Rebuildly & Website Modernization Engine  
 > **System Architect:** Vipin Pal  
 > **Target Release Model:** 5-Phase Incremental Deployment  
 > **Tech Stack:** Python 3.11+ (FastAPI, Playwright, Celery), PostgreSQL, Redis, Node.js (Next.js, Tailwind/Vanilla CSS), Docker, AWS (EC2/S3).

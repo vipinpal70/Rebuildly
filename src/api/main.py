@@ -7,7 +7,7 @@ from src.storage import init_db
 from src.security import seed_admin_user
 
 app = FastAPI(
-    title="Opportunity Finder & Web Modernization API",
+    title="Rebuildly & Web Modernization API",
     description="Backend API for Lead Discovery, Technical Auditing, AI Receptionist & Outreach Pipeline.",
     version="1.0.0"
 )
@@ -35,7 +35,7 @@ async def on_startup():
 @app.get("/")
 async def root():
     return {
-        "system": "Opportunity Finder API Engine",
+        "system": "Rebuildly API Engine",
         "status": "online",
         "docs": "/docs"
     }

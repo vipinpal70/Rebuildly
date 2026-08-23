@@ -27,16 +27,20 @@ class RedisQueueManager:
             cls._instance.client = get_sync_redis_client()
         return cls._instance
 
-    def enqueue_job(self, job_id: str, category: str, cities: List[str], max_per_city: int) -> Dict[str, Any]:
-        """Push a new lead generation job into the Redis task queue."""
+    def enqueue_job(self, job_id: str, categories: List[str], cities: List[str], countries: List[str], max_per_city: int) -> Dict[str, Any]:
+        """Push a new lead generation campaign job into the Redis task queue."""
+        categories = categories or ["Dentist"]
+        countries = countries or ["UK"]
         job_data = {
             "job_id": job_id,
-            "category": category,
+            "category": ", ".join(categories),  # kept for backward-compat display
+            "categories": categories,
+            "countries": countries,
             "cities": cities or ["Manchester", "Birmingham", "Leeds"],
             "max_per_city": max_per_city,
             "status": "queued",
             "progress": "0%",
-            "message": f"Queued lead discovery for {category}",
+            "message": f"Queued lead discovery for {', '.join(categories)}",
             "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
         }
 

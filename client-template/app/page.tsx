@@ -8,10 +8,51 @@ import {
   Layers, RotateCw, Trash2, Filter, Activity, LayoutDashboard, Send, Eye, CheckCircle2,
   AlertTriangle, PhoneCall, MessageSquare, Mail, Terminal, ChevronRight, ChevronLeft, Settings,
   Zap, Award, BarChart3, Building2, MousePointerClick, Sun, Moon, Lock, Key, EyeOff, Save,
-  CheckCircle, AlertCircle, ArrowUpDown, ArrowDown, ArrowUp
+  CheckCircle, AlertCircle, ArrowUpDown, ArrowDown, ArrowUp, Link2, History
 } from 'lucide-react';
 import OutreachStudioModal from '@/components/OutreachStudioModal';
+import ManagePagesModal from '@/components/ManagePagesModal';
+import RegenerateFeedbackModal from '@/components/RegenerateFeedbackModal';
+import VersionHistoryModal from '@/components/VersionHistoryModal';
+import MultiSelectCombo from '@/components/MultiSelectCombo';
 import { adminApi, clearToken, getToken } from '../lib/adminApi';
+
+/* ------------------- Discovery Launcher: predefined option sets -------------------
+ * Curated from leads-improve-plan.md's category priority table and country expansion
+ * strategy — a starting point the admin can pick from, not a hard limit (custom text
+ * is always accepted too). Cities are scoped per selected country so picking "USA"
+ * doesn't leave UK cities suggested (or vice versa). */
+const CATEGORY_OPTIONS = [
+  'Dentist', 'Orthodontist', 'Chiropractor', 'Med Spa', 'Physiotherapist',
+  'Solicitor', 'Attorney', 'Immigration Lawyer', 'Family Law Attorney', 'Estate Planning Attorney',
+  'Accountant', 'CPA', 'Financial Advisor', 'Mortgage Broker',
+  'Plumber', 'Electrician', 'HVAC Contractor', 'Roofing Contractor', 'Pest Control',
+  'Boutique Gym', 'Yoga Studio',
+];
+// UK/Ireland use "Solicitor"; the USA uses "Attorney"/"Lawyer" — flag the mismatch
+// inline rather than let a "Solicitor in Austin" query silently return nothing useful.
+const CATEGORY_HINTS: Record<string, string> = {
+  Solicitor: 'UK / Ireland term',
+  Attorney: 'USA term',
+};
+
+const CITY_OPTIONS_BY_COUNTRY: Record<string, string[]> = {
+  UK: ['Manchester', 'Leeds', 'Bristol', 'Birmingham', 'London', 'Sheffield', 'Liverpool', 'Newcastle', 'Nottingham', 'Edinburgh', 'Glasgow'],
+  Ireland: ['Dublin', 'Cork', 'Galway', 'Limerick'],
+  USA: ['Austin', 'Nashville', 'Charlotte', 'Raleigh', 'Columbus', 'Tampa', 'San Antonio', 'Denver', 'Indianapolis', 'Phoenix'],
+  Australia: ['Brisbane', 'Perth', 'Adelaide', 'Sydney', 'Melbourne'],
+  Germany: ['Berlin', 'Munich', 'Hamburg'],
+  Canada: ['Toronto', 'Calgary', 'Ottawa'],
+};
+const COUNTRY_OPTIONS = Object.keys(CITY_OPTIONS_BY_COUNTRY);
+// Both have soft opt-in / lower-risk cold email rules; the rest need a caution flag
+// so the choice to include them is deliberate, not accidental — see
+// leads-improve-plan.md Section 5 for the full compliance rationale per country.
+const COUNTRY_HINTS: Record<string, string> = {
+  Germany: '⚠ email restricted — LinkedIn/phone only',
+  Canada: '⚠ CASL — opt-in only',
+  Australia: '⚠ consent-based — LinkedIn-first',
+};
 
 /* --------------------------------- Compact Stat Card --------------------------------- */
 function StatCard({ icon, label, value, subtext, accent, onClick, isLight }: {
@@ -85,12 +126,14 @@ function LeadRow({
   lead,
   onAction,
   onOpenOutreach,
+  onManagePages,
   busy,
   isLight
 }: {
   lead: any;
   onAction: (id: string, act: 'enrich' | 'site') => void;
   onOpenOutreach: (id: string) => void;
+  onManagePages: (lead: any) => void;
   busy: string;
   isLight: boolean;
 }) {
@@ -173,6 +216,18 @@ function LeadRow({
               <Zap className="w-3 h-3 text-cyan-300" /> AI Sales Copy
             </button>
             <button
+              onClick={() => onManagePages(lead)}
+              title="Add team page, contact-us, about-us, or any URL for Enrich to read"
+              className={`relative text-[11px] font-medium px-2.5 py-1 rounded-lg border inline-flex items-center gap-1 cursor-pointer ${isLight ? 'border-slate-300 text-slate-700 hover:bg-slate-100' : 'border-white/10 text-slate-300 hover:bg-white/5'}`}
+            >
+              <Link2 className="w-3 h-3 text-slate-400" /> Pages
+              {!!lead.additional_urls?.length && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-cyan-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {lead.additional_urls.length}
+                </span>
+              )}
+            </button>
+            <button
               onClick={() => onAction(lead.id, 'enrich')}
               disabled={!!busy}
               className={`text-[11px] font-medium px-2.5 py-1 rounded-lg border inline-flex items-center gap-1 disabled:opacity-40 cursor-pointer ${isLight ? 'border-slate-300 text-slate-700 hover:bg-slate-100' : 'border-white/10 text-slate-300 hover:bg-white/5'}`}
@@ -229,6 +284,10 @@ function LeadRow({
 
 /* ------------------------------- Main Dashboard ------------------------------- */
 export default function Dashboard() {
+  // Client component — can't export Next.js `metadata` (that's server-only), and the
+  // root layout's default title is a neutral placeholder shared with prospect-facing
+  // /preview/[slug] links, so it's deliberately left alone rather than branded here.
+  useEffect(() => { document.title = 'Rebuildly | Admin Dashboard'; }, []);
   const [ready, setReady] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'crm' | 'sites' | 'audits' | 'settings'>('overview');
   
@@ -258,6 +317,9 @@ export default function Dashboard() {
   const [busy, setBusy] = useState('');
   const [toast, setToast] = useState<{ msg: string; type: 'info' | 'success' | 'error' } | null>(null);
   const [outreachLeadId, setOutreachLeadId] = useState<string | null>(null);
+  const [managePagesLead, setManagePagesLead] = useState<any | null>(null);
+  const [regenTarget, setRegenTarget] = useState<any | null>(null);
+  const [historyTarget, setHistoryTarget] = useState<any | null>(null);
 
   // Filters for Lead Pipeline API Call
   const [page, setPage] = useState(1);
@@ -279,11 +341,29 @@ export default function Dashboard() {
   // CRM Kanban Filter
   const [crmStatusFilter, setCrmStatusFilter] = useState('ALL');
 
-  // Discovery Launcher inputs
-  const [categoryInput, setCategoryInput] = useState('Dentist');
-  const [citiesInput, setCitiesInput] = useState('Manchester, Bristol');
+  // Discovery Launcher inputs — each a multi-select so one job can run a full
+  // category x city x country campaign matrix (see DiscoveryEngine.run_campaign).
+  const [categoriesSelected, setCategoriesSelected] = useState<string[]>(['Dentist']);
+  const [citiesSelected, setCitiesSelected] = useState<string[]>(['Manchester', 'Bristol']);
+  const [countriesSelected, setCountriesSelected] = useState<string[]>(['UK']);
+  const [minBuyingPower, setMinBuyingPower] = useState(0);
   const [maxPer, setMaxPer] = useState(15);
   const [job, setJob] = useState<{ id: string; status: string } | null>(null);
+
+  // Category suggestions: curated list merged with whatever's actually in the DB.
+  const categoryOptions = useMemo(
+    () => Array.from(new Set([...CATEGORY_OPTIONS, ...allCategories])),
+    [allCategories]
+  );
+  // City suggestions are scoped to the currently-selected countries (so picking "USA"
+  // doesn't leave Manchester/Leeds suggested) — falls back to every curated city when
+  // no country is picked yet, always merged with real cities already in the DB.
+  const cityOptions = useMemo(() => {
+    const fromCountries = countriesSelected.length
+      ? countriesSelected.flatMap((c) => CITY_OPTIONS_BY_COUNTRY[c] || [])
+      : Object.values(CITY_OPTIONS_BY_COUNTRY).flat();
+    return Array.from(new Set([...fromCountries, ...allCities]));
+  }, [countriesSelected, allCities]);
 
   // Settings State: Password Update
   const [currentPassword, setCurrentPassword] = useState('');
@@ -341,7 +421,7 @@ export default function Dashboard() {
       // Fetch logs
       const token = getToken();
       if (token) {
-        const logRes = await fetch('http://localhost:8000/api/v1/admin/audit/logs?limit=50', {
+        const logRes = await fetch('http://localhost:8009/api/v1/admin/audit/logs?limit=50', {
           headers: { Authorization: `Bearer ${token}` }
         }).then(r => r.json()).catch(() => ({ logs: [] }));
         if (logRes && logRes.logs) setLogs(logRes.logs);
@@ -388,18 +468,6 @@ export default function Dashboard() {
     setBusy('');
   };
 
-  const regenerate = async (slug: string) => {
-    setBusy(slug + ':regen');
-    try {
-      const r = await adminApi.regenerateSite(slug);
-      setToast({ msg: `Regenerated ${r.slug} (${r.archetype})`, type: 'success' });
-      await load();
-    } catch (e: any) {
-      setToast({ msg: e.message || 'Regenerate failed', type: 'error' });
-    }
-    setBusy('');
-  };
-
   const removeSite = async (slug: string) => {
     if (!window.confirm(`Delete site "${slug}"?`)) return;
     setBusy(slug + ':del');
@@ -414,15 +482,25 @@ export default function Dashboard() {
   };
 
   const runPipeline = async () => {
+    const categories = categoriesSelected;
+    const cities = citiesSelected;
+    const countries = countriesSelected;
+    if (!categories.length || !cities.length || !countries.length) {
+      setToast({ msg: 'Enter at least one category, city, and country.', type: 'error' });
+      return;
+    }
     setBusy('pipeline');
     try {
       const r = await adminApi.generateLeads({
-        category: categoryInput,
-        cities: citiesInput.split(',').map((c) => c.trim()).filter(Boolean),
-        max_per_city: maxPer
+        categories,
+        cities,
+        countries,
+        max_per_city: maxPer,
+        min_buying_power: minBuyingPower,
       });
       setJob({ id: r.job_id, status: r.status });
-      setToast({ msg: 'Lead discovery engine launched...', type: 'info' });
+      const combos = categories.length * cities.length * countries.length;
+      setToast({ msg: `Discovery campaign launched: ${combos} quer${combos === 1 ? 'y' : 'ies'} across ${categories.length} categor${categories.length === 1 ? 'y' : 'ies'} × ${cities.length} cit${cities.length === 1 ? 'y' : 'ies'} × ${countries.length} countr${countries.length === 1 ? 'y' : 'ies'}...`, type: 'info' });
     } catch (e: any) {
       setToast({ msg: e.message || 'Failed to start lead discovery', type: 'error' });
     }
@@ -508,7 +586,7 @@ export default function Dashboard() {
               <ShieldCheck className="w-4.5 h-4.5 text-white" />
             </div>
             <div>
-              <div className={`font-extrabold text-xs tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Opportunity Finder</div>
+              <div className={`font-extrabold text-xs tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Rebuildly</div>
               <div className="text-[9px] font-bold text-cyan-500 uppercase tracking-wider mt-0.5">Enterprise CRM</div>
             </div>
           </div>
@@ -737,33 +815,80 @@ export default function Dashboard() {
                   <Rocket className="w-4 h-4 text-cyan-500" />
                   <h2 className={`font-bold text-sm ${isLight ? 'text-slate-900' : 'text-white'}`}>Lead Discovery Engine & Technical Auditor</h2>
                 </div>
-                <div className="grid sm:grid-cols-4 gap-2.5">
-                  <input
-                    value={categoryInput}
-                    onChange={(e) => setCategoryInput(e.target.value)}
-                    placeholder="Category (e.g. Dentist)"
-                    className={`px-3 py-1.5 rounded-lg border text-xs outline-none focus:border-indigo-500/50 ${
-                      isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
-                    }`}
+                <div className="grid sm:grid-cols-3 gap-2.5">
+                  <MultiSelectCombo
+                    label="Categories"
+                    options={categoryOptions}
+                    value={categoriesSelected}
+                    onChange={setCategoriesSelected}
+                    placeholder="Select or type a category..."
+                    isLight={isLight}
+                    hints={CATEGORY_HINTS}
                   />
-                  <input
-                    value={citiesInput}
-                    onChange={(e) => setCitiesInput(e.target.value)}
-                    placeholder="Cities (comma separated)"
-                    className={`px-3 py-1.5 rounded-lg border text-xs outline-none sm:col-span-2 focus:border-indigo-500/50 ${
-                      isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
-                    }`}
+                  <MultiSelectCombo
+                    label="Cities"
+                    options={cityOptions}
+                    value={citiesSelected}
+                    onChange={setCitiesSelected}
+                    placeholder="Select or type a city..."
+                    isLight={isLight}
                   />
+                  <MultiSelectCombo
+                    label="Countries"
+                    options={COUNTRY_OPTIONS}
+                    value={countriesSelected}
+                    onChange={setCountriesSelected}
+                    placeholder="Select or type a country..."
+                    isLight={isLight}
+                    hints={COUNTRY_HINTS}
+                  />
+                </div>
+                <div className="flex items-center gap-2.5 mt-2.5">
+                  <label className={`text-[11px] whitespace-nowrap ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Max leads / query:
+                  </label>
                   <input
                     type="number"
+                    min={1}
                     value={maxPer}
                     onChange={(e) => setMaxPer(+e.target.value)}
-                    placeholder="Max / city"
-                    className={`px-3 py-1.5 rounded-lg border text-xs outline-none focus:border-indigo-500/50 ${
+                    className={`w-20 px-3 py-1 rounded-lg border text-xs outline-none focus:border-indigo-500/50 ${
                       isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
                     }`}
                   />
                 </div>
+                <div className="flex items-center gap-2 mt-2.5">
+                  <label className={`text-[11px] whitespace-nowrap ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Min. buying power (skip low-value leads before auditing):
+                  </label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={5}
+                    value={minBuyingPower}
+                    onChange={(e) => setMinBuyingPower(+e.target.value)}
+                    className="flex-1 accent-indigo-600"
+                  />
+                  <span className={`text-[11px] font-mono w-8 text-right ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{minBuyingPower}</span>
+                </div>
+                {(() => {
+                  const nCat = categoriesSelected.length;
+                  const nCity = citiesSelected.length;
+                  const nCountry = countriesSelected.length;
+                  const combos = nCat * nCity * nCountry;
+                  return combos > 0 ? (
+                    <p className={`text-[11px] mt-1.5 ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>
+                      This will run <span className="font-semibold text-indigo-500">{combos}</span> quer{combos === 1 ? 'y' : 'ies'}
+                      {combos > 1 ? ` (${nCat} × ${nCity} × ${nCountry})` : ''}
+                      {maxPer ? <> — up to <span className="font-semibold text-indigo-500">{combos * maxPer}</span> leads.</> : '.'}
+                    </p>
+                  ) : (
+                    <p className={`text-[11px] mt-1.5 ${isLight ? 'text-amber-600' : 'text-amber-500'}`}>
+                      Select at least one category, city, and country to run a campaign.
+                    </p>
+                  );
+                })()}
                 <div className={`flex items-center justify-between mt-3 pt-2.5 border-t ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
                   <button
                     onClick={runPipeline}
@@ -979,7 +1104,7 @@ export default function Dashboard() {
                     </thead>
                     <tbody>
                       {leadsData.leads.map((l) => (
-                        <LeadRow key={l.id} lead={l} onAction={action} onOpenOutreach={setOutreachLeadId} busy={busy} isLight={isLight} />
+                        <LeadRow key={l.id} lead={l} onAction={action} onOpenOutreach={setOutreachLeadId} onManagePages={setManagePagesLead} busy={busy} isLight={isLight} />
                       ))}
                     </tbody>
                   </table>
@@ -1152,8 +1277,15 @@ export default function Dashboard() {
                           </span>
                         </div>
 
-                        <div className={`text-[10px] font-mono px-2 py-0.5 rounded border self-start ${isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-900 border-slate-800 text-slate-400'}`}>
-                          Archetype: {s.archetype}
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <div className={`text-[10px] font-mono px-2 py-0.5 rounded border ${isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-900 border-slate-800 text-slate-400'}`}>
+                            Archetype: {s.archetype}
+                          </div>
+                          {!!s.regeneration_count && (
+                            <div className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" title="Regenerations with feedback applied">
+                              {s.regeneration_count}x regenerated
+                            </div>
+                          )}
                         </div>
 
                         <div className={`flex items-center gap-1.5 pt-2 border-t ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
@@ -1172,12 +1304,20 @@ export default function Dashboard() {
                             <ExternalLink className="w-3 h-3" /> View
                           </a>
                           <button
-                            onClick={() => regenerate(s.slug)}
+                            onClick={() => setRegenTarget(s)}
                             disabled={!!busy}
                             className={`p-1.5 rounded-lg border disabled:opacity-40 cursor-pointer ${isLight ? 'border-slate-300 text-slate-600 hover:bg-slate-200' : 'border-slate-800 text-slate-300 hover:bg-slate-900'}`}
                             title="Regenerate Site"
                           >
-                            <RotateCw className={`w-3 h-3 ${busy === s.slug + ':regen' ? 'animate-spin' : ''}`} />
+                            <RotateCw className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => setHistoryTarget(s)}
+                            disabled={!!busy}
+                            className={`p-1.5 rounded-lg border disabled:opacity-40 cursor-pointer ${isLight ? 'border-slate-300 text-slate-600 hover:bg-slate-200' : 'border-slate-800 text-slate-300 hover:bg-slate-900'}`}
+                            title="Version History"
+                          >
+                            <History className="w-3 h-3" />
                           </button>
                           <button
                             onClick={() => removeSite(s.slug)}
@@ -1395,6 +1535,38 @@ export default function Dashboard() {
           businessId={outreachLeadId}
           onClose={() => setOutreachLeadId(null)}
           onStatusUpdated={load}
+        />
+      )}
+
+      {managePagesLead && (
+        <ManagePagesModal
+          businessId={managePagesLead.id}
+          businessName={managePagesLead.name}
+          initialUrls={managePagesLead.additional_urls || []}
+          onClose={() => setManagePagesLead(null)}
+          onSaved={() => load()}
+        />
+      )}
+
+      {regenTarget && (
+        <RegenerateFeedbackModal
+          slug={regenTarget.slug}
+          siteName={regenTarget.name}
+          currentArchetype={regenTarget.archetype}
+          pastFeedback={regenTarget.regeneration_feedback || []}
+          onClose={() => setRegenTarget(null)}
+          onRegenerated={(r) => {
+            setToast({ msg: `Regenerated ${r.slug} (${r.archetype})`, type: 'success' });
+            load();
+          }}
+        />
+      )}
+
+      {historyTarget && (
+        <VersionHistoryModal
+          slug={historyTarget.slug}
+          siteName={historyTarget.name}
+          onClose={() => setHistoryTarget(null)}
         />
       )}
 

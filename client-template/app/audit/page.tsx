@@ -32,6 +32,7 @@ function HealthCard({ title, pct, icon, accent }: { title: string; pct: number |
 
 /* --------------------------------- Audit Log Console Component --------------------------------- */
 export default function AuditDashboard() {
+  useEffect(() => { document.title = 'Rebuildly | Live Logs Console'; }, []);
   const [ready, setReady] = useState(false);
   const [summary, setSummary] = useState<any>(null);
   const [logs, setLogs] = useState<any[]>([]);
@@ -59,8 +60,8 @@ export default function AuditDashboard() {
 
       // Fetch Live Audit Summary, Audit Logs, and Leads List
       const [sumRes, logsRes, leadsRes] = await Promise.all([
-        fetch('http://localhost:8000/api/v1/admin/audit/summary', { headers }).then(r => r.json()).catch(() => null),
-        fetch(`http://localhost:8000/api/v1/admin/audit/logs?limit=200&level=${logLevel}&stage=${logStage}&search=${encodeURIComponent(logSearch)}`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
+        fetch('http://localhost:8009/api/v1/admin/audit/summary', { headers }).then(r => r.json()).catch(() => null),
+        fetch(`http://localhost:8009/api/v1/admin/audit/logs?limit=200&level=${logLevel}&stage=${logStage}&search=${encodeURIComponent(logSearch)}`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
         adminApi.leads({ limit: 100 }).catch(() => ({ leads: [] }))
       ]);
 

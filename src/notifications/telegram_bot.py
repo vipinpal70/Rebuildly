@@ -59,25 +59,47 @@ class TelegramAlertService:
 
         return False
 
-    async def send_click_alert(self, business_name: str, slug: str) -> bool:
-        """Sends instant Telegram push alert when a prospect clicks their preview link."""
-        preview_url = f"http://localhost:3000/sites/{slug}"
+    async def send_click_alert(
+        self,
+        business_name: str,
+        slug: str,
+        whatsapp_draft: Optional[str] = None,
+        phone: Optional[str] = None,
+        is_hot: bool = False,
+    ) -> bool:
+        """Sends instant Telegram push alert when a prospect clicks their preview link.
+
+        When a WhatsApp draft is already on file (whatsapp_draft) this doubles as the
+        fast-follow dispatch: the ready-to-send text is embedded directly in the alert,
+        with a one-tap wa.me link when a phone number is known, so the message can go
+        out within minutes instead of waiting for a manual CRM lookup. See
+        leads-improve-plan.md Section 3 / src/outreach/click_tracker.py."""
+        preview_url = f"http://localhost:3009/sites/{slug}"
+        headline = "🔥🔥 <b>REPEAT VISIT — LEAD IS HOT!</b>" if is_hot else "🔥 <b>PROSPECT IS VIEWING THEIR PREVIEW SITE!</b>"
         msg = (
-            f"🔥 <b>PROSPECT IS VIEWING THEIR PREVIEW SITE!</b>\n\n"
+            f"{headline}\n\n"
             f"🏢 <b>Business:</b> {business_name}\n"
             f"🌐 <b>Preview URL:</b> <a href='{preview_url}'>{preview_url}</a>\n"
-            f"⏱️ <b>Intent Signal:</b> High Interest (Real-time Link Click)\n\n"
-            f"👉 <i>Recommendation: Prepare follow-up call or check CRM pipeline.</i>"
+            f"⏱️ <b>Intent Signal:</b> High Interest (Real-time Link Click)\n"
         )
-        payload_extra = {
-            "reply_markup": {
-                "inline_keyboard": [
-                    [
-                        {"text": "🌐 View Preview Site", "url": preview_url},
-                    ]
-                ]
-            }
-        }
+
+        buttons = [{"text": "🌐 View Preview Site", "url": preview_url}]
+
+        if whatsapp_draft:
+            digits = "".join(ch for ch in (phone or "") if ch.isdigit())
+            msg += (
+                f"\n📲 <b>Fast-follow ready to send</b> "
+                f"({'tap below to open WhatsApp' if digits else 'no phone number on file — send manually'}):\n"
+                f"<i>{whatsapp_draft}</i>\n"
+            )
+            if digits:
+                from urllib.parse import quote
+                wa_url = f"https://wa.me/{digits}?text={quote(whatsapp_draft)}"
+                buttons.append({"text": "📲 Send WhatsApp Fast-Follow Now", "url": wa_url})
+        else:
+            msg += "\n👉 <i>Recommendation: Prepare follow-up call or check CRM pipeline.</i>"
+
+        payload_extra = {"reply_markup": {"inline_keyboard": [buttons]}}
         return await self._post_telegram(msg, extra_payload=payload_extra)
 
     async def send_manual_email_alert(self, business_name: str, recipient_email: str, subject: str) -> bool:

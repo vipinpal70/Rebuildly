@@ -18,9 +18,9 @@ const NAV = [
 export function TopStrip() {
   const { config: c, theme: t, openBooking } = useSite();
   return (
-    <div className="text-xs py-2.5 px-4 sm:px-8" style={{ backgroundColor: withAlpha(t.isDark ? '#000' : t.primary, t.isDark ? 0.3 : 0.04), color: t.subtext, borderBottom: `1px solid ${t.hairline}` }}>
+    <div className="text-xs py-2.5 px-4 sm:px-5" style={{ backgroundColor: withAlpha(t.isDark ? '#000' : t.primary, t.isDark ? 0.3 : 0.04), color: t.subtext, borderBottom: `1px solid ${t.hairline}` }}>
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" style={{ color: t.accent }} />{c.city}, {c.country}</span>
           {c.phone && <a href={`tel:${c.phone}`} className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" style={{ color: t.accent }} />{c.phone}</a>}
         </div>
@@ -48,18 +48,18 @@ export function Header() {
       animate={{ height: shrink ? 64 : 80 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 h-full flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-5 h-full flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg" style={{ background: t.primaryGradient, color: '#fff', fontFamily: t.serifFamily }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg" style={{ background: t.primaryGradient, color: '#fff', fontFamily: t.serifFamily }}>
             {c.name?.charAt(0)}
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg tracking-tight leading-none" style={{ fontFamily: t.serifFamily, color: t.text }}>{c.name}</span>
+            <span className="font-bold text-base tracking-tight leading-none" style={{ fontFamily: t.serifFamily, color: t.text }}>{c.name}</span>
             <span className="text-[11px] font-medium tracking-wide uppercase" style={{ color: t.subtext }}>{c.category} · {c.city}</span>
           </div>
         </a>
 
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium" style={{ color: t.text }}>
+        <nav className="hidden md:flex items-center gap-5 text-sm font-medium" style={{ color: t.text }}>
           {NAV.map((n) => <a key={n.href} href={n.href} className="hover:opacity-70 transition-opacity">{n.label}</a>)}
         </nav>
 
@@ -92,7 +92,7 @@ export function Header() {
 export function Footer() {
   const { config: c, theme: t } = useSite();
   return (
-    <footer className="py-14 px-4 text-center text-xs" style={{ color: t.subtext, borderTop: `1px solid ${t.hairline}` }}>
+    <footer className="py-8 px-4 text-center text-xs" style={{ color: t.subtext, borderTop: `1px solid ${t.hairline}` }}>
       <div className="max-w-7xl mx-auto space-y-3">
         <p className="font-semibold text-sm" style={{ color: t.text, fontFamily: t.serifFamily }}>{c.name}</p>
         <p>{c.address ? `${c.address}, ` : ''}{c.city}, {c.country}</p>

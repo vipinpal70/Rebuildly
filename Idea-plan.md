@@ -1,4 +1,4 @@
-# Master Strategic Plan: Automated Lead Opportunity Finder & Website Modernization Freelance System
+# Master Strategic Plan: Automated Lead Rebuildly & Website Modernization Freelance System
 
 > **Owner:** Vipin Pal (Python Developer & System Architect)  
 > **Target Markets:** USA, UK, Australia, Germany, France (Focusing on Tier-2 & Mid-Sized Cities)  
@@ -201,7 +201,7 @@ Instead of generic text proposals, create a rapid visual mockup of the prospect'
 ### A. Transition from Freelancer to Micro-Agency
 Once steady client flow is achieved, outsource standardized UI/UX design or WordPress-to-Next.js frontend slicing while keeping core system architecture, AI chatbot programming, and lead generation under Vipin's technical command.
 
-### B. SaaS Productization ("Opportunity Finder SaaS")
+### B. SaaS Productization ("Rebuildly SaaS")
 The internal Python lead scraper & auditor can be packaged into a B2B SaaS platform where other marketing agencies, SEO consultants, and web developers pay a monthly subscription ($49–$199/mo) to search for leads in their target cities.
 
 ### C. Reusable Micro-SaaS AI Widgets
@@ -235,4 +235,4 @@ Partner with local SEO agencies in the US/UK that lack technical development and
 * **Mitigation:** Strict Contract Scope definition with predefined revision rounds (max 2 rounds of visual edits) and milestone payments (50% upfront, 50% on project delivery).
 
 ---
-*Created & Maintained by Vipin Pal | Opportunity Finder System*
+*Created & Maintained by Vipin Pal | Rebuildly System*

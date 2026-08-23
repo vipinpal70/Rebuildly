@@ -30,7 +30,7 @@ class OutreachContentGenerator:
         reviews = business.review_count or 120
         contact = contact_name or f"Team at {name}"
         slug = preview_slug or self._clean_slug(name)
-        preview_url = f"http://localhost:3000/sites/{slug}"
+        preview_url = f"http://localhost:3009/sites/{slug}"
 
         # Extract audit metrics
         pagespeed = audit.pagespeed_score if audit else 48
@@ -119,7 +119,7 @@ class OutreachContentGenerator:
         fallback = self.generate_all_drafts(business, audit, contact_name, preview_slug)
 
         slug = preview_slug or self._clean_slug(business.name)
-        preview_url = f"http://localhost:3000/sites/{slug}"
+        preview_url = f"http://localhost:3009/sites/{slug}"
 
         findings = []
         if audit:

@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, Text, JSON, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, Text, JSON, ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -23,6 +23,10 @@ class BusinessModel(Base):
     review_count = Column(Integer, default=0)
     google_maps_url = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    # Operator-curated extra pages (team, contact-us, about-us, or any URL) that
+    # enrich_lead always reads on top of whatever BusinessResearcher auto-discovers —
+    # [{"url": str, "label": str}, ...]. See src/scraper/business_researcher.py.
+    additional_urls = Column(JSON, nullable=True)
 
     audits = relationship("AuditModel", back_populates="business", cascade="all, delete-orphan")
     outreach = relationship("OutreachLeadModel", back_populates="business", uselist=False, cascade="all, delete-orphan")
@@ -54,8 +58,38 @@ class ClientSiteModel(Base):
     status = Column(String(50), default="GENERATED", nullable=False, index=True)
     site_config = Column(JSON, nullable=True)
     generated_at = Column(DateTime, default=datetime.utcnow)
+    # Accumulated admin feedback from past regenerations — [{"text": str, "created_at": str}, ...].
+    # Every regeneration re-reads the FULL history (not just the latest note), so
+    # earlier feedback keeps being honored rather than getting overwritten each time.
+    regeneration_feedback = Column(JSON, nullable=True)
+    # Extra entropy for the archetype/layout hash seed. Without this, regenerating
+    # a site is a pure function of business_id+name and produces an IDENTICAL
+    # design every time — clicking "Regenerate" silently did nothing visually.
+    regeneration_count = Column(Integer, default=0, nullable=False)
 
     business = relationship("BusinessModel")
+
+
+class ClientSiteVersionModel(Base):
+    """Immutable snapshot of a client site archived right before a regeneration
+    overwrites it, so every past design stays browsable — by the admin and, via
+    a public /sites/{slug}/v/{n} URL, by the client too — instead of only ever
+    being able to see the latest version."""
+    __tablename__ = "client_site_versions"
+    __table_args__ = (
+        UniqueConstraint("site_id", "version_number", name="uq_client_site_versions_site_version"),
+    )
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    site_id = Column(String, ForeignKey("client_sites.id", ondelete="CASCADE"), nullable=False, index=True)
+    slug = Column(String(255), nullable=False, index=True)
+    version_number = Column(Integer, nullable=False)
+    archetype = Column(String(100), nullable=True)
+    site_config = Column(JSON, nullable=False)
+    # regeneration_feedback as it stood when THIS version was the live one — lets
+    # the history view show which admin note produced which design.
+    feedback_snapshot = Column(JSON, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 class AuditModel(Base):
@@ -76,6 +110,7 @@ class AuditModel(Base):
     has_ai_chatbot = Column(Boolean, default=False)
     has_review_widget = Column(Boolean, default=False)
     modernization_score = Column(Integer, nullable=False)
+    buying_power_score = Column(Integer, default=0, nullable=False)
     tier = Column(String(50), nullable=False)
     score_breakdown = Column(JSON, nullable=True)
     audited_at = Column(DateTime, default=datetime.utcnow)
@@ -94,9 +129,22 @@ class OutreachLeadModel(Base):
     contact_email = Column(String(255), nullable=True)
     contact_phone = Column(String(50), nullable=True)
     linkedin_url = Column(String(500), nullable=True)
-    
+    # Job title of contact_name (e.g. "Owner", "Practice Manager"), set when auto-resolved
+    # from the scraped team page — see src/outreach/contact_resolver.py.
+    decision_maker_role = Column(String(255), nullable=True)
+
+    # 0-100: how confidently we can reach a real decision-maker (name/email/LinkedIn found).
+    contactability_score = Column(Integer, default=0, nullable=False)
+    # Weighted blend of modernization + buying power + contactability — see contact_resolver.py.
+    composite_lead_score = Column(Integer, nullable=True)
+
     outreach_status = Column(String(50), default="NEW", nullable=False, index=True)
-    # Statuses: NEW, LINKEDIN_SENT, EMAIL_SENT, WA_SENT, CALLED, CONVERTED, OPTED_OUT
+    # Statuses: NEW, VIEWED, LINKEDIN_SENT, EMAIL_SENT, WA_SENT, CALLED, HOT_ENGAGED,
+    # REPLIED, MEETING_BOOKED, CONVERTED, OPTED_OUT
+    # HOT_ENGAGED is set automatically (see src/outreach/click_tracker.py) when a prospect
+    # revisits their preview link after being contacted. REPLIED/MEETING_BOOKED are set
+    # manually via POST /admin/crm/leads/{id}/status to record inbound response, distinct
+    # from the outbound *_SENT statuses.
 
     linkedin_draft = Column(Text, nullable=True)
     email_subject_draft = Column(String(500), nullable=True)

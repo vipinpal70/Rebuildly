@@ -51,7 +51,7 @@ export function Team() {
         <SectionHeading eyebrow="Meet the team" icon={<Users className="w-4 h-4" />} title="The People Behind" accent={c.name}
           subtitle={`Experienced, friendly, and genuinely invested in your outcome.`} />
       </Reveal>
-      <Stagger className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <Stagger className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {team.map((m: any, i: number) => (
           <StaggerItem key={i}>
             <Card className="overflow-hidden h-full flex flex-col">
@@ -59,8 +59,8 @@ export function Team() {
                 <img src={m.photo} alt={m.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
                 <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: `linear-gradient(to top, ${t.surfaceSolid}, transparent)` }} />
               </div>
-              <div className="p-6 pt-3 flex-1 flex flex-col">
-                <h3 className="text-lg font-bold" style={{ fontFamily: t.serifFamily, color: t.text }}>{m.name}</h3>
+              <div className="p-4 pt-3 flex-1 flex flex-col">
+                <h3 className="text-base font-bold" style={{ fontFamily: t.serifFamily, color: t.text }}>{m.name}</h3>
                 {m.role && <div className="text-xs font-semibold mb-2" style={{ color: t.accent }}>{m.role}</div>}
                 {m.credentials && (
                   <div className="inline-flex items-center gap-1.5 text-[11px] mb-3" style={{ color: t.subtext }}>
@@ -89,10 +89,10 @@ export function LocationMap() {
         <SectionHeading eyebrow="Find us" icon={<MapPin className="w-4 h-4" />} title="Visit Us in" accent={c.city} center={false}
           subtitle="Easy to reach, with free parking and step-free access." />
       </Reveal>
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-5">
         <Reveal>
           <div className="space-y-4">
-            <Card hover={false} className="p-6 flex items-start gap-4">
+            <Card hover={false} className="p-4 flex items-start gap-4">
               <span className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: t.primaryGradient }}><MapPin className="w-5 h-5 text-white" /></span>
               <div>
                 <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: t.subtext }}>Address</div>
@@ -106,17 +106,17 @@ export function LocationMap() {
             </Card>
 
             {c.phone && (
-              <Card hover={false} className="p-6 flex items-start gap-4">
+              <Card hover={false} className="p-4 flex items-start gap-4">
                 <span className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: t.primaryGradient }}><Phone className="w-5 h-5 text-white" /></span>
                 <div>
                   <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: t.subtext }}>Call us</div>
-                  <a href={`tel:${c.phone}`} className="text-lg font-bold" style={{ color: t.text }}>{c.phone}</a>
+                  <a href={`tel:${c.phone}`} className="text-base font-bold" style={{ color: t.text }}>{c.phone}</a>
                 </div>
               </Card>
             )}
 
             {hours.length > 0 && (
-            <Card hover={false} className="p-6">
+            <Card hover={false} className="p-4">
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: t.primaryGradient }}><Clock className="w-5 h-5 text-white" /></span>
                 <div className="text-xs font-bold uppercase tracking-wider" style={{ color: t.subtext }}>Opening hours</div>

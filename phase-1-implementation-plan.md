@@ -1,6 +1,6 @@
 # Phase 1 Implementation Plan: Discovery & Audit Engine
 
-> **Document Purpose:** Complete technical blueprint for Phase 1 execution, project directory setup, coding standards, and documentation architecture for the Opportunity Finder system.
+> **Document Purpose:** Complete technical blueprint for Phase 1 execution, project directory setup, coding standards, and documentation architecture for the Rebuildly system.
 
 ---
 
@@ -15,7 +15,7 @@ Phase 1 focuses on building the **automated core engine** that discovers high-ti
 We follow a modular, production-ready Python project structure.
 
 ```text
-Opportunity Finder/
+Rebuildly/
 ├── config/                     # Application configuration & env settings
 │   ├── __init__.py
 │   └── settings.py             # Pydantic BaseSettings for env loading
@@ -131,7 +131,7 @@ playwright install chromium
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Opportunity Finder Engine"
+    APP_NAME: str = "Rebuildly Engine"
     ENVIRONMENT: str = "development"
     
     # API Keys

@@ -8,9 +8,15 @@ interface BookingModalProps {
   business: BusinessData;
   isOpen: boolean;
   onClose: () => void;
+  // See ChatbotWidget.tsx — optional and defaulted so the provider-less
+  // /preview/[slug] route (no SiteProvider) still renders correctly.
+  primaryGradient?: string;
 }
 
-export const BookingModal: React.FC<BookingModalProps> = ({ business, isOpen, onClose }) => {
+const DEFAULT_GRADIENT = 'linear-gradient(135deg, #4f46e5, #06b6d4)';
+
+export const BookingModal: React.FC<BookingModalProps> = ({ business, isOpen, onClose, primaryGradient }) => {
+  const gradient = primaryGradient || DEFAULT_GRADIENT;
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -109,7 +115,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ business, isOpen, on
 
               <button
                 type="submit"
-                className="w-full mt-4 gradient-button text-white py-3.5 rounded-xl font-bold text-sm shadow-lg"
+                style={{ background: gradient }}
+                className="w-full mt-4 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg"
               >
                 Confirm Appointment Request
               </button>

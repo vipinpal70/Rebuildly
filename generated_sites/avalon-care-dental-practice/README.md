@@ -4,9 +4,9 @@
 - **Category**: Dentist
 - **Niche**: COSMETIC_DENTISTRY
 - **City**: Manchester
-- **Design Archetype**: `CORPORATE_HIGH_TRUST`
-- **Hero Variant**: `HERO_SPLIT_SHOWCASE`
+- **Design Archetype**: `LUXURY_GLASSMORPHISM`
+- **Hero Variant**: `HERO_BENTO_GRID`
 - **Services Variant**: `SERVICES_BENTO_TILES`
-- **Heading Font**: `Merriweather`
-- **Body Font**: `Inter`
-- **Preview URL**: [http://localhost:3000/sites/avalon-care-dental-practice](http://localhost:3000/sites/avalon-care-dental-practice)
+- **Heading Font**: `Playfair Display`
+- **Body Font**: `Plus Jakarta Sans`
+- **Preview URL**: [http://localhost:3009/sites/avalon-care-dental-practice](http://localhost:3009/sites/avalon-care-dental-practice)

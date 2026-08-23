@@ -1,6 +1,6 @@
 # 01. Architecture Overview
 
-> **System:** Opportunity Finder & Modernization System  
+> **System:** Rebuildly & Modernization System  
 > **Document:** High-level System Topology & Data Flow  
 > **Author:** Vipin Pal
 
@@ -8,7 +8,7 @@
 
 ## 1. System Overview
 
-The Opportunity Finder system is designed as an end-to-end, data-driven diagnostic engine for discovering high-trust, high-value small businesses across target countries (US, UK, AU, DE, FR), auditing their digital presence automatically, scoring their modernization need (0–100), and driving high-converting outbound sales outreach.
+The Rebuildly system is designed as an end-to-end, data-driven diagnostic engine for discovering high-trust, high-value small businesses across target countries (US, UK, AU, DE, FR), auditing their digital presence automatically, scoring their modernization need (0–100), and driving high-converting outbound sales outreach.
 
 ---
 

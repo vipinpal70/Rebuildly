@@ -18,12 +18,17 @@ interface CRMLead {
   preview_url: string;
   slug: string;
   outreach_status: string;
+  contact_name: string | null;
+  decision_maker_role: string | null;
   contact_email: string;
+  contactability_score: number;
+  composite_lead_score: number | null;
   preview_clicked: boolean;
   click_count: number;
 }
 
 export default function CRMPage() {
+  useEffect(() => { document.title = 'Rebuildly | Sales & Outreach Studio'; }, []);
   const [leads, setLeads] = useState<CRMLead[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
@@ -37,7 +42,7 @@ export default function CRMPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token") || "";
-      const res = await fetch(`http://localhost:8000/admin/crm/leads?status=${selectedStatus}`, {
+      const res = await fetch(`http://localhost:8009/admin/crm/leads?status=${selectedStatus}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -58,6 +63,20 @@ export default function CRMPage() {
   const convertedCount = leads.filter(l => l.outreach_status === "CONVERTED").length;
 
   const getStatusBadge = (status: string, previewClicked: boolean) => {
+    // Terminal / inbound-response statuses always win, even if the prospect also
+    // clicked their preview link — those are more decision-relevant than "viewed".
+    switch (status) {
+      case "CONVERTED":
+        return <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">🎉 CONVERTED</span>;
+      case "OPTED_OUT":
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-700/50 text-slate-400 border border-slate-600">🚫 OPTED OUT</span>;
+      case "HOT_ENGAGED":
+        return <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse">🔥 HOT — REPEAT VISIT</span>;
+      case "MEETING_BOOKED":
+        return <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">📅 MEETING BOOKED</span>;
+      case "REPLIED":
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">💬 REPLIED</span>;
+    }
     if (previewClicked || status === "VIEWED") {
       return <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">👁️ PREVIEW VIEWED</span>;
     }
@@ -70,8 +89,6 @@ export default function CRMPage() {
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">💬 WA SENT</span>;
       case "CALLED":
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">📞 CALLED</span>;
-      case "CONVERTED":
-        return <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">🎉 CONVERTED</span>;
       default:
         return <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-800 text-slate-400 border border-slate-700">NEW LEAD</span>;
     }
@@ -84,7 +101,7 @@ export default function CRMPage() {
       <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">
-            OF
+            R
           </div>
           <div>
             <h1 className="text-lg font-bold text-white tracking-tight">Sales & Outreach Command Studio</h1>
@@ -140,7 +157,7 @@ export default function CRMPage() {
         {/* Filters & Pipeline Controls */}
         <div className="flex items-center justify-between flex-wrap gap-3 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
           <div className="flex items-center gap-2 overflow-x-auto">
-            {["ALL", "NEW", "LINKEDIN_SENT", "EMAIL_SENT", "WA_SENT", "CALLED", "CONVERTED"].map((status) => (
+            {["ALL", "NEW", "LINKEDIN_SENT", "EMAIL_SENT", "WA_SENT", "CALLED", "HOT_ENGAGED", "REPLIED", "MEETING_BOOKED", "CONVERTED"].map((status) => (
               <button
                 key={status}
                 onClick={() => setSelectedStatus(status)}
@@ -181,6 +198,7 @@ export default function CRMPage() {
                     <th className="px-6 py-4">Business & City</th>
                     <th className="px-4 py-4">Google Score</th>
                     <th className="px-4 py-4">Audit Score</th>
+                    <th className="px-4 py-4">Lead Quality</th>
                     <th className="px-4 py-4">Outreach Status</th>
                     <th className="px-4 py-4">Preview Clicks</th>
                     <th className="px-6 py-4 text-right">Actions</th>
@@ -192,6 +210,13 @@ export default function CRMPage() {
                       <td className="px-6 py-4">
                         <div className="font-semibold text-white">{lead.name}</div>
                         <div className="text-xs text-slate-400">{lead.category} • {lead.city}</div>
+                        {lead.contact_name ? (
+                          <div className="text-xs text-cyan-400 mt-0.5">
+                            🎯 {lead.contact_name}{lead.decision_maker_role ? ` · ${lead.decision_maker_role}` : ""}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-slate-600 mt-0.5">No named contact resolved yet</div>
+                        )}
                       </td>
 
                       <td className="px-4 py-4">
@@ -207,6 +232,25 @@ export default function CRMPage() {
                         }`}>
                           {lead.modernization_score}/100
                         </span>
+                      </td>
+
+                      <td className="px-4 py-4">
+                        {lead.composite_lead_score !== null && lead.composite_lead_score !== undefined ? (
+                          <>
+                            <span className={`px-2.5 py-1 text-xs font-bold rounded-lg ${
+                              lead.composite_lead_score >= 70
+                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                                : lead.composite_lead_score >= 40
+                                ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                                : "bg-slate-700/30 text-slate-400 border border-slate-600"
+                            }`}>
+                              {lead.composite_lead_score}/100
+                            </span>
+                            <div className="text-[10px] text-slate-500 mt-1">Contactability: {lead.contactability_score}/100</div>
+                          </>
+                        ) : (
+                          <span className="text-xs text-slate-600">Not enriched yet</span>
+                        )}
                       </td>
 
                       <td className="px-4 py-4">

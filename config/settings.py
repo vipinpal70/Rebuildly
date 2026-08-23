@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Opportunity Finder Engine"
+    APP_NAME: str = "Rebuildly Engine"
     ENVIRONMENT: str = "development"
     LOG_LEVEL: str = "INFO"
 
@@ -30,6 +30,19 @@ class Settings(BaseSettings):
     DEFAULT_MAX_LEADS_PER_CITY: int = 50
     MIN_GOOGLE_RATING: float = 4.2
     MIN_REVIEW_COUNT: int = 30
+
+    # Discovery Engine: concurrency & resilience
+    DISCOVERY_MAX_CONCURRENT_QUERIES: int = 3  # parallel category x city x country queries
+    PLACES_API_MAX_RETRIES: int = 3
+    PLACES_API_RETRY_BASE_DELAY_SECONDS: float = 2.0  # exponential backoff: 2s, 4s, 8s...
+
+    # Discovery Engine: API budget guardrail (Idea-plan.md Section 9 names Places API
+    # cost as an explicit risk). Approximate per-call USD costs below are a rough
+    # guardrail for spend estimation only, NOT a source of truth for billing — verify
+    # against current Google Cloud Places API pricing before relying on the estimate.
+    MAX_PLACES_API_CALLS_PER_JOB: int = 500
+    PLACES_TEXT_SEARCH_COST_USD: float = 0.032
+    PLACES_DETAILS_COST_USD: float = 0.017
 
     model_config = SettingsConfigDict(
         env_file=".env",

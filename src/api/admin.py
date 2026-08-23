@@ -4,9 +4,11 @@ All read endpoints are Redis-cached; mutations invalidate the cache. Long-runnin
 lead generation runs as a background job tracked in-memory; per-lead enrich and
 site generation run inline (they finish in a few seconds)."""
 import asyncio
+import json
 import os
 import shutil
 import uuid
+from datetime import datetime
 from typing import Optional, List, Dict, Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, BackgroundTasks
@@ -16,11 +18,12 @@ from sqlalchemy.future import select
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
 from src.storage.db_session import AsyncSessionLocal
-from src.storage.models import BusinessModel, AuditModel, AdminUserModel, ClientSiteModel
+from src.storage.models import BusinessModel, AuditModel, AdminUserModel, ClientSiteModel, ClientSiteVersionModel, OutreachLeadModel
 from src.storage.cache import cache_get, cache_set, cache_delete_prefix
 from src.security import verify_password, hash_password, create_token, verify_token
 from src.scraper.business_researcher import BusinessResearcher
 from src.generator.site_generator import ClientSiteGenerator
+from src.outreach.contact_resolver import contact_resolver
 from src.storage.audit_logger import audit_logger
 from src.utils.logger import logger
 
@@ -51,9 +54,41 @@ class ChangePasswordRequest(BaseModel):
 
 
 class GenerateLeadsRequest(BaseModel):
+    # Singular fields are kept for backward compatibility with older clients —
+    # used only when the plural list isn't provided.
     category: str = "Dentist"
+    country: str = "UK"
+    categories: Optional[List[str]] = None
+    countries: Optional[List[str]] = None
     cities: Optional[List[str]] = None
     max_per_city: int = 20
+    # 0-100 discovery-time floor (review volume/rating heuristic) — leads below
+    # this never reach the paid crawl/audit stage. Default 0 = no filtering.
+    min_buying_power: int = 0
+
+
+class AdditionalUrlEntry(BaseModel):
+    url: str
+    # Free text — "Team Page", "Contact Us", "About Us", "Custom", or anything else.
+    # A label containing "team" (case-insensitive) is treated as authoritative for
+    # team-page detection in BusinessResearcher, overriding the link-scoring guess.
+    label: str = "Custom"
+
+
+class SaveAdditionalUrlsRequest(BaseModel):
+    # Replaces the full list — the CRM sends the edited set back on every save
+    # rather than diffing individual adds/removes.
+    urls: List[AdditionalUrlEntry] = []
+
+
+MAX_ADDITIONAL_URLS = 5
+
+
+class RegenerateSiteRequest(BaseModel):
+    # Free text — "I don't like the colors, too flashy. Add a pricing section."
+    # Optional: clicking Regenerate with no feedback still works (just excludes
+    # the current design from re-selection so it's guaranteed to actually change).
+    feedback: Optional[str] = None
 
 
 # -------------------------------- helpers ---------------------------------
@@ -88,7 +123,9 @@ def _serialize_lead(b: BusinessModel, a: Optional[AuditModel], site: Optional[Cl
         "google_rating": b.google_rating,
         "review_count": b.review_count,
         "google_maps_url": b.google_maps_url,
+        "additional_urls": b.additional_urls or [],
         "score": (a.modernization_score if a else None),
+        "buying_power_score": (a.buying_power_score if a else None),
         "tier": (a.tier if a else None),
         "pagespeed": (a.pagespeed_score if a else None),
         "findings": (_audit_findings(a) if a else []),
@@ -97,9 +134,15 @@ def _serialize_lead(b: BusinessModel, a: Optional[AuditModel], site: Optional[Cl
         "site": ({"slug": site.slug, "preview_url": site.preview_url, "archetype": site.archetype, "status": site.status} if site else None),
         "outreach": ({
             "status": outreach.outreach_status if outreach else "NEW",
+            "contact_name": outreach.contact_name if outreach else None,
+            "decision_maker_role": outreach.decision_maker_role if outreach else None,
+            "contactability_score": outreach.contactability_score if outreach else 0,
+            "composite_lead_score": outreach.composite_lead_score if outreach else None,
             "preview_clicked": outreach.preview_clicked if outreach else False,
             "click_count": outreach.click_count if outreach else 0,
-        } if outreach else {"status": "NEW", "preview_clicked": False, "click_count": 0}),
+        } if outreach else {"status": "NEW", "contact_name": None, "decision_maker_role": None,
+                             "contactability_score": 0, "composite_lead_score": None,
+                             "preview_clicked": False, "click_count": 0}),
     }
 
 
@@ -292,6 +335,12 @@ async def list_leads(
         serialized_leads.sort(key=lambda r: (r["created_at"] or ""), reverse=is_desc)
     elif sort_by == "name":
         serialized_leads.sort(key=lambda r: (r["name"] or "").lower(), reverse=is_desc)
+    elif sort_by == "lead_quality":
+        # Composite score (modernization + buying power + contactability) — surfaces
+        # leads that are actually reachable, not just technically needy. See
+        # leads-improve-plan.md Section 2 / src/outreach/contact_resolver.py.
+        composite = lambda r: r["outreach"]["composite_lead_score"]
+        serialized_leads.sort(key=lambda r: (composite(r) if composite(r) is not None else -1), reverse=is_desc)
     else:  # default score
         serialized_leads.sort(key=lambda r: (r["score"] or -1), reverse=is_desc)
 
@@ -391,22 +440,29 @@ async def get_audit_summary(admin=Depends(require_admin)):
 
 
 # ------------------------- lead generation (job) --------------------------
-def _exec_pipeline_sync(category: str, cities: Optional[List[str]], max_per_city: int):
+def _exec_pipeline_sync(categories: List[str], cities: List[str], countries: List[str], max_per_city: int, job_id: str, min_buying_power: int):
     from scripts.run_audit_pipeline import run_pipeline
-    asyncio.run(run_pipeline(target_category=category, target_cities=cities, max_results_per_city=max_per_city))
+    asyncio.run(run_pipeline(
+        target_categories=categories, target_cities=cities, target_countries=countries,
+        max_results_per_city=max_per_city, job_id=job_id, min_buying_power=min_buying_power,
+    ))
 
 
-async def _run_pipeline_job(job_id: str, category: str, cities: Optional[List[str]], max_per_city: int):
+async def _run_pipeline_job(job_id: str, categories: List[str], cities: List[str], countries: List[str], max_per_city: int, min_buying_power: int):
     from src.storage.queue import redis_queue
     JOBS[job_id]["status"] = "running"
-    redis_queue.update_job_status(job_id, "running", "Lead discovery pipeline active...", progress="25%")
-    audit_logger.log_event("INFO", "DISCOVERY", f"Pipeline started: {category} in {cities or ['Manchester']}", job_id=job_id)
+    redis_queue.update_job_status(job_id, "running", "Discovery campaign starting...", progress="5%")
+    audit_logger.log_event(
+        "INFO", "DISCOVERY",
+        f"Pipeline started: {categories} in {cities} across {countries}.",
+        job_id=job_id
+    )
     try:
-        await asyncio.to_thread(_exec_pipeline_sync, category, cities, max_per_city)
+        await asyncio.to_thread(_exec_pipeline_sync, categories, cities, countries, max_per_city, job_id, min_buying_power)
         JOBS[job_id]["status"] = "completed"
         JOBS[job_id]["message"] = "Lead discovery + audit pipeline finished."
         redis_queue.update_job_status(job_id, "completed", "Lead discovery + audit pipeline finished.", progress="100%")
-        audit_logger.log_event("SUCCESS", "AUDITOR", f"Lead discovery & technical audit finished for {category}.", job_id=job_id)
+        audit_logger.log_event("SUCCESS", "AUDITOR", f"Lead discovery & technical audit finished for {categories}.", job_id=job_id)
     except Exception as e:
         logger.error(f"Pipeline job {job_id} failed: {e}")
         JOBS[job_id]["status"] = "failed"
@@ -419,11 +475,19 @@ async def _run_pipeline_job(job_id: str, category: str, cities: Optional[List[st
 @router.post("/leads/generate")
 async def generate_leads(req: GenerateLeadsRequest, background: BackgroundTasks, admin=Depends(require_admin)):
     from src.storage.queue import redis_queue
+    categories = req.categories or [req.category]
+    countries = req.countries or [req.country]
+    cities = req.cities or ["Manchester"]
+
     job_id = str(uuid.uuid4())
-    JOBS[job_id] = {"status": "queued", "message": "Queued", "category": req.category}
-    redis_queue.enqueue_job(job_id, req.category, req.cities or ["Manchester"], req.max_per_city)
-    audit_logger.log_event("INFO", "SYSTEM", f"Queued discovery job for '{req.category}' across {len(req.cities or [])} cities.", job_id=job_id)
-    background.add_task(_run_pipeline_job, job_id, req.category, req.cities, req.max_per_city)
+    JOBS[job_id] = {"status": "queued", "message": "Queued", "category": ", ".join(categories)}
+    redis_queue.enqueue_job(job_id, categories, cities, countries, req.max_per_city)
+    audit_logger.log_event(
+        "INFO", "SYSTEM",
+        f"Queued discovery job for {len(categories)} categories × {len(cities)} cities × {len(countries)} countries.",
+        job_id=job_id
+    )
+    background.add_task(_run_pipeline_job, job_id, categories, cities, countries, req.max_per_city, req.min_buying_power)
     return {"job_id": job_id, "status": "queued"}
 
 
@@ -437,6 +501,40 @@ async def job_status(job_id: str, admin=Depends(require_admin)):
     return {"job_id": job_id, **job}
 
 
+# ------------------------- manually-added pages ----------------------------
+@router.put("/leads/{business_id}/urls")
+async def save_additional_urls(business_id: str, req: SaveAdditionalUrlsRequest, admin=Depends(require_admin)):
+    """Save the operator-curated extra pages (team, contact-us, about-us, or any
+    URL) that enrich_lead reads on top of whatever it auto-discovers. Replaces the
+    full list. Capped so a runaway list can't balloon enrichment time/LLM context."""
+    if len(req.urls) > MAX_ADDITIONAL_URLS:
+        raise HTTPException(status_code=400, detail=f"Maximum {MAX_ADDITIONAL_URLS} additional pages per lead.")
+
+    cleaned = []
+    for entry in req.urls:
+        url = entry.url.strip()
+        if not url:
+            continue
+        if not (url.startswith("http://") or url.startswith("https://")):
+            raise HTTPException(status_code=400, detail=f"Not a valid URL (must start with http:// or https://): {url}")
+        cleaned.append({"url": url, "label": (entry.label or "Custom").strip() or "Custom"})
+
+    async with AsyncSessionLocal() as session:
+        async with session.begin():
+            b = (await session.execute(select(BusinessModel).where(BusinessModel.id == business_id))).scalars().first()
+            if not b:
+                raise HTTPException(status_code=404, detail="Lead not found")
+            b.additional_urls = cleaned
+
+    await cache_delete_prefix("admin:")
+    audit_logger.log_event(
+        "INFO", "SYSTEM",
+        f"Saved {len(cleaned)} manually-added page(s) for '{b.name}': {', '.join(e['label'] for e in cleaned) or '(none)'}.",
+        business_name=b.name
+    )
+    return {"business_id": business_id, "additional_urls": cleaned}
+
+
 # ----------------------------- enrich + build -----------------------------
 @router.post("/leads/{business_id}/enrich")
 async def enrich_lead(business_id: str, admin=Depends(require_admin)):
@@ -448,13 +546,22 @@ async def enrich_lead(business_id: str, admin=Depends(require_admin)):
     audit = _best_audit(audits)
 
     audit_logger.log_event("INFO", "CRAWLER", f"Initiated business enrichment & website crawling for '{b.name}' ({b.city}).", business_name=b.name)
+    if b.additional_urls:
+        labels = ", ".join(e.get("label", "Custom") for e in b.additional_urls)
+        audit_logger.log_event("INFO", "CRAWLER", f"Including {len(b.additional_urls)} manually-added page(s) for '{b.name}': {labels}.", business_name=b.name)
 
     research = await BusinessResearcher().research_business(b, audit)
 
     audit_logger.log_event("INFO", "AUDITOR", f"Crawled website '{b.website or 'N/A'}' — extracted services, team members & Google ratings.", business_name=b.name)
     audit_logger.log_event("INFO", "LLM_SYNTHESIS", f"Synthesized business profile & niche market positioning for sub-niche '{research['niche']}'.", business_name=b.name)
 
-    # Persist any freshly-discovered website / maps / phone back to the business row.
+    # Resolve a real decision-maker contact from the team page we just scraped
+    # (leads-improve-plan.md Section 1) — without this, every outreach draft
+    # defaults to the generic "Team at {business}" opener.
+    decision_maker = contact_resolver.resolve_decision_maker(research["team"])
+
+    # Persist any freshly-discovered website / maps / phone back to the business row,
+    # and the resolved contact + composite lead-quality score onto the outreach record.
     async with AsyncSessionLocal() as session:
         async with session.begin():
             fresh = (await session.execute(select(BusinessModel).where(BusinessModel.id == business_id))).scalars().first()
@@ -462,7 +569,43 @@ async def enrich_lead(business_id: str, admin=Depends(require_admin)):
                 fresh.phone = research["phone"]
             if not fresh.website and research.get("website"):
                 fresh.website = research["website"]
+
+            lead = (await session.execute(select(OutreachLeadModel).where(OutreachLeadModel.business_id == business_id))).scalars().first()
+            if not lead:
+                lead = OutreachLeadModel(business_id=business_id, outreach_status="NEW")
+                session.add(lead)
+                await session.flush()
+
+            # Never clobber a name the admin already set/edited manually — only fill
+            # when it's genuinely empty, matching the phone/website behavior above.
+            if decision_maker and not lead.contact_name:
+                lead.contact_name = decision_maker["name"]
+                lead.decision_maker_role = decision_maker["role"] or None
+
+            lead.contactability_score = contact_resolver.compute_contactability_score(
+                lead.contact_name, lead.contact_email, lead.linkedin_url
+            )
+            if audit:
+                lead.composite_lead_score = contact_resolver.compute_composite_score(
+                    audit.modernization_score, audit.buying_power_score, lead.contactability_score
+                )
+
     await cache_delete_prefix("admin:")
+
+    if decision_maker:
+        role_suffix = f" ({decision_maker['role']})" if decision_maker["role"] else ""
+        audit_logger.log_event(
+            "SUCCESS", "OUTREACH",
+            f"🎯 Resolved decision-maker contact for '{b.name}': {decision_maker['name']}{role_suffix} "
+            f"— outreach drafts will now be personalized to them.",
+            business_name=b.name
+        )
+    else:
+        audit_logger.log_event(
+            "INFO", "OUTREACH",
+            f"No named decision-maker found on '{b.name}''s site — outreach will fall back to a generic greeting until one is added manually.",
+            business_name=b.name
+        )
 
     audit_logger.log_event("SUCCESS", "AUDITOR", f"Enrichment completed for '{b.name}': {len(research['services'])} services, {len(research['team'])} team members.", business_name=b.name)
 
@@ -480,10 +623,16 @@ async def enrich_lead(business_id: str, admin=Depends(require_admin)):
         },
         "team": [m["name"] for m in research["team"]],
         "scraped_tagline": research.get("scraped_tagline"),
+        "decision_maker": decision_maker,
     }
 
 
-async def _generate_and_persist(business_id: str) -> Dict[str, Any]:
+async def _generate_and_persist(
+    business_id: str,
+    feedback_history: Optional[List[str]] = None,
+    current_layout_tree: Optional[Dict[str, Any]] = None,
+    regen_salt: int = 0,
+) -> Dict[str, Any]:
     """Run the site generator for a business. The generator persists the
     client_sites row itself; here we just fetch inputs and invalidate the cache."""
     async with AsyncSessionLocal() as session:
@@ -493,7 +642,9 @@ async def _generate_and_persist(business_id: str) -> Dict[str, Any]:
         audits = (await session.execute(select(AuditModel).where(AuditModel.business_id == business_id))).scalars().all()
     audit = _best_audit(audits)
 
-    site_config = await ClientSiteGenerator().generate_client_website(b, audit)
+    site_config = await ClientSiteGenerator().generate_client_website(
+        b, audit, feedback_history=feedback_history, current_layout_tree=current_layout_tree, regen_salt=regen_salt
+    )
     await cache_delete_prefix("admin:")
     return {
         "business_id": business_id,
@@ -504,11 +655,13 @@ async def _generate_and_persist(business_id: str) -> Dict[str, Any]:
 
 
 def _remove_site_files(slug: str) -> None:
-    """Delete the generated artifacts for a slug (Next route, preview JSON, export)."""
+    """Delete the generated artifacts for a slug (Next route, preview JSON, export,
+    archived version snapshots)."""
     targets = [
         os.path.join(PROJECT_ROOT, "generated_sites", slug),
         os.path.join(PROJECT_ROOT, "client-template", "app", "sites", slug),
         os.path.join(PROJECT_ROOT, "client-template", "public", "previews", f"{slug}.json"),
+        os.path.join(PROJECT_ROOT, "client-template", "public", "previews", "versions", slug),
     ]
     for path in targets:
         try:
@@ -518,6 +671,21 @@ def _remove_site_files(slug: str) -> None:
                 os.remove(path)
         except Exception as e:
             logger.warning(f"Could not remove {path}: {e}")
+
+
+def _write_version_snapshot_file(slug: str, version_number: int, site_config: Dict[str, Any], archived_at: str) -> None:
+    """Writes an archived version's config to public/previews/versions/{slug}/v{n}.json
+    so app/sites/[slug]/v/[version]/page.tsx can read it live at request time — the
+    same technique the current live JSON already uses, so old versions are viewable
+    (by the admin AND the client, since it's an unauthenticated static route) with
+    zero rebuild, exactly like the live site. _archived_at is injected because the
+    raw site_config has no timestamp of its own — the frontend route reads it
+    straight from this file without a DB round-trip."""
+    versions_dir = os.path.join(PROJECT_ROOT, "client-template", "public", "previews", "versions", slug)
+    os.makedirs(versions_dir, exist_ok=True)
+    snapshot = {**site_config, "_archived_at": archived_at}
+    with open(os.path.join(versions_dir, f"v{version_number}.json"), "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, indent=2)
 
 
 @router.post("/leads/{business_id}/generate-site")
@@ -544,17 +712,109 @@ async def list_sites(admin=Depends(require_admin)):
             "google_maps_url": s.google_maps_url,
             "status": s.status,
             "generated_at": (s.generated_at.isoformat() if s.generated_at else None),
+            "regeneration_feedback": s.regeneration_feedback or [],
+            "regeneration_count": s.regeneration_count or 0,
         })
     return {"sites": out}
 
 
-@router.post("/sites/{slug}/regenerate")
-async def regenerate_site(slug: str, admin=Depends(require_admin)):
+@router.get("/sites/{slug}/versions")
+async def list_site_versions(slug: str, admin=Depends(require_admin)):
+    """Full version history for a site — every archived design plus the current
+    live one, newest first. preview_url for an archived version points at the
+    public, unauthenticated /sites/{slug}/v/{n} route, so this same list can be
+    shared with the client to let them browse past designs too."""
     async with AsyncSessionLocal() as session:
         site = (await session.execute(select(ClientSiteModel).where(ClientSiteModel.slug == slug))).scalars().first()
-    if not site:
-        raise HTTPException(status_code=404, detail="Site not found")
-    return await _generate_and_persist(site.business_id)
+        if not site:
+            raise HTTPException(status_code=404, detail="Site not found")
+        archived = (await session.execute(
+            select(ClientSiteVersionModel)
+            .where(ClientSiteVersionModel.site_id == site.id)
+            .order_by(ClientSiteVersionModel.version_number.desc())
+        )).scalars().all()
+
+    versions = [{
+        "version_number": (site.regeneration_count or 0),
+        "is_current": True,
+        "archetype": site.archetype,
+        "created_at": (site.generated_at.isoformat() if site.generated_at else None),
+        "feedback_snapshot": site.regeneration_feedback or [],
+        "preview_url": site.preview_url,
+    }]
+    for v in archived:
+        versions.append({
+            "version_number": v.version_number,
+            "is_current": False,
+            "archetype": v.archetype,
+            "created_at": (v.created_at.isoformat() if v.created_at else None),
+            "feedback_snapshot": v.feedback_snapshot or [],
+            "preview_url": f"http://localhost:3009/sites/{slug}/v/{v.version_number}",
+        })
+    return {"slug": slug, "versions": versions}
+
+
+@router.post("/sites/{slug}/regenerate")
+async def regenerate_site(slug: str, req: Optional[RegenerateSiteRequest] = None, admin=Depends(require_admin)):
+    """Regenerate a site, optionally with admin feedback about what to change
+    (colors/theme, font, layout, animation, content — anything). The CURRENT
+    archetype and every section variant are excluded from re-selection so this is
+    guaranteed to actually change (previously regeneration was a pure function of
+    business_id+name and silently produced an identical result every time). All
+    PAST feedback for this site keeps being honored too, not just this note."""
+    archived_version_number: Optional[int] = None
+    archived_site_config: Optional[Dict[str, Any]] = None
+    async with AsyncSessionLocal() as session:
+        async with session.begin():
+            site = (await session.execute(select(ClientSiteModel).where(ClientSiteModel.slug == slug))).scalars().first()
+            if not site:
+                raise HTTPException(status_code=404, detail="Site not found")
+
+            # Archive the design that's about to be replaced — version_number
+            # equals the CURRENT regeneration_count (0 for the original,
+            # never-regenerated design), so numbering lines up with how many
+            # times "Regenerate" has been clicked before this one.
+            archived_at: Optional[str] = None
+            if site.site_config:
+                archived_version_number = site.regeneration_count or 0
+                archived_site_config = site.site_config
+                archived_at = datetime.utcnow()
+                session.add(ClientSiteVersionModel(
+                    site_id=site.id,
+                    slug=site.slug,
+                    version_number=archived_version_number,
+                    archetype=site.archetype,
+                    site_config=site.site_config,
+                    feedback_snapshot=list(site.regeneration_feedback or []),
+                    created_at=archived_at,
+                ))
+
+            feedback_text = (req.feedback or "").strip() if req else ""
+            history = list(site.regeneration_feedback or [])
+            if feedback_text:
+                history.append({"text": feedback_text, "created_at": datetime.utcnow().isoformat()})
+            site.regeneration_feedback = history
+            site.regeneration_count = (site.regeneration_count or 0) + 1
+
+            business_id = site.business_id
+            current_layout_tree = (site.site_config or {}).get("layout_tree")
+            regen_salt = site.regeneration_count
+            feedback_history = [h["text"] for h in history if h.get("text")]
+
+    if archived_version_number is not None and archived_site_config is not None:
+        _write_version_snapshot_file(slug, archived_version_number, archived_site_config, archived_at.isoformat())
+
+    if feedback_text:
+        audit_logger.log_event(
+            "INFO", "GENERATOR",
+            f"Regenerating '{slug}' with admin feedback: \"{feedback_text}\" ({len(feedback_history)} note(s) total on file).",
+        )
+    else:
+        audit_logger.log_event("INFO", "GENERATOR", f"Regenerating '{slug}' (no new feedback, {len(feedback_history)} past note(s) still applied).")
+
+    return await _generate_and_persist(
+        business_id, feedback_history=feedback_history, current_layout_tree=current_layout_tree, regen_salt=regen_salt
+    )
 
 
 @router.delete("/sites/{slug}")

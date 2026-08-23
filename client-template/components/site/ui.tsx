@@ -1,11 +1,38 @@
 'use client';
 
-import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useReducedMotion, useMotionValue, useSpring } from 'framer-motion';
 import { Star, ArrowRight, Calendar } from 'lucide-react';
-import { fadeUp, staggerParent, staggerChild, springHover } from './motion';
+import { fadeUp, staggerParent, staggerChild, springHover, springMagnetic, wordReveal, wordRevealParent, splitWords } from './motion';
 import { useSite } from './SiteProvider';
 import { withAlpha } from './theme';
+
+/** Cursor-follow "magnetic" offset — the element eases toward the pointer within a
+ * capped radius, then springs back on leave. A common premium-agency-site button
+ * micro-interaction; disabled under prefers-reduced-motion. */
+function useMagnetic(strength = 0.35, max = 14) {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, springMagnetic);
+  const springY = useSpring(y, springMagnetic);
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (reduce || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const relX = e.clientX - (rect.left + rect.width / 2);
+    const relY = e.clientY - (rect.top + rect.height / 2);
+    x.set(Math.max(-max, Math.min(max, relX * strength)));
+    y.set(Math.max(-max, Math.min(max, relY * strength)));
+  };
+  const onMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return { ref, style: { x: springX, y: springY }, onMouseMove, onMouseLeave };
+}
 
 /* ---------------------------------- motion --------------------------------- */
 
@@ -94,14 +121,18 @@ export function PrimaryButton({
   full?: boolean;
 }) {
   const { theme: t } = useSite();
+  const mag = useMagnetic();
   return (
     <motion.button
+      ref={mag.ref as any}
       onClick={onClick}
+      onMouseMove={mag.onMouseMove}
+      onMouseLeave={mag.onMouseLeave}
+      style={{ ...mag.style, background: t.primaryGradient, color: '#fff', boxShadow: `0 14px 40px ${t.glow(0.35)}` }}
       whileHover={{ y: -3 }}
       whileTap={{ scale: 0.97 }}
       transition={springHover}
-      className={`group ${full ? 'w-full justify-center' : ''} px-8 py-4 ${t.btnRadius} text-sm font-bold uppercase tracking-wider inline-flex items-center gap-3 cursor-pointer ${className}`}
-      style={{ background: t.primaryGradient, color: '#fff', boxShadow: `0 14px 40px ${t.glow(0.35)}` }}
+      className={`group ${full ? 'w-full justify-center' : ''} px-5 py-4 ${t.btnRadius} text-sm font-bold uppercase tracking-wider inline-flex items-center gap-3 cursor-pointer ${className}`}
     >
       {icon && <Calendar className="w-4 h-4" />}
       <span>{children}</span>
@@ -122,14 +153,24 @@ export function GhostButton({
   className?: string;
 }) {
   const { theme: t } = useSite();
-  const cls = `px-7 py-4 ${t.btnRadius} text-sm font-bold uppercase tracking-wider inline-flex items-center gap-2 transition-colors ${className}`;
-  const style: React.CSSProperties = {
+  const mag = useMagnetic();
+  const cls = `px-5 py-4 ${t.btnRadius} text-sm font-bold uppercase tracking-wider inline-flex items-center gap-2 transition-colors ${className}`;
+  const style: any = {
+    ...mag.style,
     border: `1px solid ${t.border}`,
     color: t.text,
     background: withAlpha(t.text, 0.03),
   };
-  if (href) return <a href={href} className={cls} style={style}>{children}</a>;
-  return <button onClick={onClick} className={cls} style={style}>{children}</button>;
+  if (href) return (
+    <motion.a ref={mag.ref as any} href={href} onMouseMove={mag.onMouseMove} onMouseLeave={mag.onMouseLeave} className={cls} style={style}>
+      {children}
+    </motion.a>
+  );
+  return (
+    <motion.button ref={mag.ref as any} onClick={onClick} onMouseMove={mag.onMouseMove} onMouseLeave={mag.onMouseLeave} className={cls} style={style}>
+      {children}
+    </motion.button>
+  );
 }
 
 /* ---------------------------------- chrome --------------------------------- */
@@ -179,15 +220,57 @@ export function SectionHeading({
 }) {
   const { theme: t } = useSite();
   return (
-    <div className={`${center ? 'text-center mx-auto' : ''} max-w-3xl mb-14`}>
+    <div className={`${center ? 'text-center mx-auto' : ''} max-w-3xl mb-8`}>
       {eyebrow && <Eyebrow icon={icon}>{eyebrow}</Eyebrow>}
-      <h2 className="text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: t.serifFamily, color: t.text }}>
+      <h2 className="text-xl sm:text-3xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: t.serifFamily, color: t.text }}>
         {title}{' '}
         {accent && <span style={{ color: t.accent, fontStyle: t.isEditorial ? 'italic' : 'normal' }}>{accent}</span>}
         {tail ? ` ${tail}` : ''}
       </h2>
-      {subtitle && <p className="mt-5 text-sm sm:text-base leading-relaxed" style={{ color: t.subtext }}>{subtitle}</p>}
+      {subtitle && <p className="mt-5 text-sm leading-relaxed" style={{ color: t.subtext }}>{subtitle}</p>}
     </div>
+  );
+}
+
+/** Word-by-word clip-reveal for display headlines (hero H1s, big section quotes).
+ * Each word sits in its own overflow-hidden mask and rises into view on its own
+ * beat, rather than the whole line fading in as one flat block — the difference
+ * between a template scroll-reveal and something that reads as actually designed.
+ * Falls back to plain static text under prefers-reduced-motion. */
+export function TextReveal({
+  text,
+  delay = 0,
+  stagger = 0.05,
+  as: Tag = 'span',
+  className = '',
+}: {
+  text: string;
+  delay?: number;
+  stagger?: number;
+  as?: 'span' | 'div';
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
+  if (reduce) return <Tag className={className}>{text}</Tag>;
+  const words = splitWords(text);
+  return (
+    <motion.span
+      className={`inline ${className}`}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: '-80px' }}
+      variants={wordRevealParent(stagger, delay)}
+      aria-label={text}
+    >
+      {words.map((w, i) => (
+        <span key={i} className="inline-block overflow-hidden align-bottom" aria-hidden>
+          <motion.span className="inline-block" variants={wordReveal}>
+            {w}
+            {i < words.length - 1 ? ' ' : ''}
+          </motion.span>
+        </span>
+      ))}
+    </motion.span>
   );
 }
 
@@ -214,15 +297,26 @@ export function AmbientGlow({
   );
 }
 
-// A soft multi-stop mesh + fine grid that reads correctly on light AND dark.
+// A soft multi-stop mesh + fine grid that reads correctly on light AND dark. The
+// two colour blobs drift slowly and continuously — barely perceptible frame to
+// frame, but it's the difference between a backdrop that feels alive and one
+// that's just a static image; disabled under prefers-reduced-motion.
 export function MeshBackdrop({ grid = true }: { grid?: boolean }) {
   const { theme: t } = useSite();
+  const reduce = useReducedMotion();
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-      <div className="absolute inset-0" style={{
-        background: `radial-gradient(60% 55% at 15% 0%, ${withAlpha(t.primary, t.isDark ? 0.18 : 0.10)}, transparent 60%),
-                     radial-gradient(50% 50% at 90% 20%, ${withAlpha(t.accent, t.isDark ? 0.16 : 0.09)}, transparent 55%)`,
-      }} />
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(60% 55% at 15% 0%, ${withAlpha(t.primary, t.isDark ? 0.18 : 0.10)}, transparent 60%),
+                       radial-gradient(50% 50% at 90% 20%, ${withAlpha(t.accent, t.isDark ? 0.16 : 0.09)}, transparent 55%)`,
+        }}
+        animate={reduce ? undefined : {
+          backgroundPosition: ['0% 0%, 0% 0%', '4% 3%, -3% 4%', '0% 0%, 0% 0%'],
+        }}
+        transition={reduce ? undefined : { duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
       {grid && (
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, ${withAlpha(t.text, t.isDark ? 0.06 : 0.05)} 1px, transparent 0)`,
@@ -276,7 +370,7 @@ export function Section({
   return (
     <section
       id={id}
-      className={`relative py-20 sm:py-28 px-4 sm:px-8 ${className}`}
+      className={`relative py-10 sm:py-12 px-4 sm:px-5 ${className}`}
       style={{
         borderTop: `1px solid ${t.hairline}`,
         backgroundColor: tint ? withAlpha(t.isDark ? '#000000' : t.primary, t.isDark ? 0.22 : 0.03) : 'transparent',
@@ -291,17 +385,40 @@ export function Card({
   children,
   className = '',
   hover = true,
+  spotlight = true,
   style = {},
 }: {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  /** Soft radial glow that tracks the cursor within the card — a common premium
+   * SaaS-site micro-interaction. Set via direct style writes on mousemove (not
+   * React state) so it stays smooth without a re-render per pixel of movement. */
+  spotlight?: boolean;
   style?: React.CSSProperties;
 }) {
   const { theme: t } = useSite();
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const showSpotlight = spotlight && hover && !reduce;
+
+  const onMouseMove = showSpotlight
+    ? (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        ref.current!.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+        ref.current!.style.setProperty('--my', `${e.clientY - rect.top}px`);
+        ref.current!.style.setProperty('--mo', '1');
+      }
+    : undefined;
+  const onMouseLeave = showSpotlight ? () => ref.current?.style.setProperty('--mo', '0') : undefined;
+
   return (
     <div
-      className={`${t.cardRadius} border ${hover ? 'transition-all duration-300 hover:-translate-y-1.5' : ''} ${className}`}
+      ref={ref}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      className={`relative ${t.cardRadius} border ${showSpotlight ? 'overflow-hidden' : ''} ${hover ? 'transition-all duration-300 hover:-translate-y-1.5' : ''} ${className}`}
       style={{
         backgroundColor: t.surface,
         borderColor: t.border,
@@ -310,6 +427,20 @@ export function Card({
         ...style,
       }}
     >
+      {/* Absolutely positioned, so it's excluded from flex/grid layout — callers
+          that use Card as a direct flex/grid container of `children` (e.g.
+          `flex flex-col justify-between`) are unaffected; children stay direct
+          children of the root rather than being wrapped in an extra element. */}
+      {showSpotlight && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300"
+          style={{
+            opacity: 'var(--mo, 0)',
+            background: `radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), ${withAlpha(t.accent, t.isDark ? 0.14 : 0.08)}, transparent 70%)`,
+          }}
+        />
+      )}
       {children}
     </div>
   );

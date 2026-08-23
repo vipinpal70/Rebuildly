@@ -26,8 +26,15 @@ class PageSpeedClient:
         }
 
         try:
+            # PageSpeed runs a full Lighthouse audit server-side before responding —
+            # the MOBILE strategy throttles CPU/network to simulate a slow device, so
+            # 30-45s+ is routine on real sites and common on exactly the slow,
+            # unoptimized sites this system is looking for. A too-tight timeout here
+            # silently biases every timed-out lead toward the 45 fallback score
+            # instead of a real measurement (observed ~58% timeout rate at 20s
+            # against a mixed batch of real small-business sites).
             async with aiohttp.ClientSession() as session:
-                async with session.get(self.PAGESPEED_URL, params=params, timeout=20) as resp:
+                async with session.get(self.PAGESPEED_URL, params=params, timeout=45) as resp:
                     if resp.status == 200:
                         data = await resp.json()
                         score_float = (
@@ -38,6 +45,8 @@ class PageSpeedClient:
                         )
                         return int(score_float * 100)
         except Exception as err:
-            logger.error(f"PageSpeed API call failed for {target_url}: {err}")
+            # str(asyncio.TimeoutError()) is "" — always show the exception type too,
+            # or a timeout looks like a silent blank failure in the logs.
+            logger.error(f"PageSpeed API call failed for {target_url}: {type(err).__name__}: {err}")
 
         return 45

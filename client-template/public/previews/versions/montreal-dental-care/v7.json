@@ -1,0 +1,415 @@
+{
+  "slug": "montreal-dental-care",
+  "business_id": "8590f1c2-1064-4260-a51f-f52f0b345dda",
+  "name": "Montreal Dental Care",
+  "category": "Dentist",
+  "niche": "GENERAL_DENTISTRY",
+  "city": "Leeds",
+  "country": "UK",
+  "address": "8 Montreal Ave, Chapel Allerton, Leeds LS7 4LF, UK",
+  "phone": "0113 262 1663",
+  "email": "montrealdental.leeds@gmail.com",
+  "website": "http://montrealdentalcareleeds.co.uk/",
+  "google_rating": 4.8,
+  "review_count": 51,
+  "modernization_score": 95,
+  "preview_url": "http://localhost:3009/sites/montreal-dental-care",
+  "layout_tree": {
+    "seed": 332762004806438121341514055629573849864,
+    "palette": {
+      "name": "Cormorant Parchment Luxury",
+      "archetype": "EDITORIAL_ELEGANCE",
+      "bg": "#f7f5f0",
+      "surface": "#ffffff",
+      "text": "#991b1b",
+      "subtext": "rgba(2, 2, 2, 0.97)",
+      "primary": "#991b1b",
+      "primary_hover": "#7f1d1d",
+      "accent": "#d97706",
+      "border": "#e5e0d8",
+      "badge_bg": "#fef3c7",
+      "badge_text": "#92400e",
+      "heading_font": "Cormorant Garamond",
+      "body_font": "Manrope",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+    },
+    "variants": {
+      "hero": "HERO_CYBER_GLOW",
+      "services": "SERVICES_CAROUSEL_CARDS",
+      "faq": "FAQ_2COL_GRID",
+      "cta": "CTA_MINIMAL_QUOTE",
+      "reviews": "REVIEWS_FEATURED_SPOTLIGHT",
+      "workflow": "WORKFLOW_HORIZONTAL_STEPS"
+    },
+    "section_order": [
+      "hero",
+      "usps",
+      "services",
+      "gallery",
+      "team",
+      "workflow",
+      "reviews",
+      "faqs",
+      "location",
+      "cta"
+    ],
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "design_system": {
+    "archetype": "EDITORIAL_ELEGANCE",
+    "palette_name": "Cormorant Parchment Luxury",
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Manrope",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap",
+    "colors": {
+      "name": "Cormorant Parchment Luxury",
+      "archetype": "EDITORIAL_ELEGANCE",
+      "bg": "#f7f5f0",
+      "surface": "#ffffff",
+      "text": "#991b1b",
+      "subtext": "rgba(2, 2, 2, 0.97)",
+      "primary": "#991b1b",
+      "primary_hover": "#7f1d1d",
+      "accent": "#d97706",
+      "border": "#e5e0d8",
+      "badge_bg": "#fef3c7",
+      "badge_text": "#92400e",
+      "heading_font": "Cormorant Garamond",
+      "body_font": "Manrope",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+    },
+    "hero_image": "https://montrealdentalcareleeds.co.uk/wp-content/uploads/2021/02/treatment.jpg",
+    "card_radius": "rounded-3xl",
+    "btn_radius": "rounded-full"
+  },
+  "tagline": "Dentistry that doesn't empty your pocket or your schedule",
+  "heroSubtitle": "NHS and private care under one roof, with transparent pricing from \u00a326.80 for a full check-up. We've stopped taking new NHS patients because the ones we have matter more than the queue.",
+  "badgeText": "GENERAL DENTISTRY \u2022 LEEDS",
+  "stats": [
+    {
+      "number": "4.8",
+      "label": "STAR RATING"
+    },
+    {
+      "number": "51",
+      "label": "PATIENT REVIEWS"
+    },
+    {
+      "number": "NHS & Private",
+      "label": "TREATMENT OPTIONS"
+    },
+    {
+      "number": "Leeds",
+      "label": "LOCATION"
+    }
+  ],
+  "usps": [
+    {
+      "icon": "shield",
+      "title": "NHS & Private Options",
+      "description": "We offer both NHS and private dental care, providing flexible options to suit your needs and budget."
+    },
+    {
+      "icon": "sparkles",
+      "title": "Comprehensive Treatment Range",
+      "description": "From routine check-ups to advanced implants, whitening, and aesthetic treatments\u2014all under one roof."
+    },
+    {
+      "icon": "zap",
+      "title": "Emergency Appointments Available",
+      "description": "Same-day emergency dental care to address urgent dental problems and relieve pain quickly."
+    },
+    {
+      "icon": "award",
+      "title": "Highly Rated Practice",
+      "description": "Trusted by patients with a 4.8-star rating from 51 reviews, reflecting our commitment to quality care."
+    },
+    {
+      "icon": "clock",
+      "title": "Convenient Leeds Location",
+      "description": "Located on Montreal Avenue in Leeds, West Yorkshire, easily accessible for local patients."
+    },
+    {
+      "icon": "heart",
+      "title": "Patient-Centred Care",
+      "description": "We focus on preventative advice and personalised treatment plans tailored to your individual dental needs."
+    }
+  ],
+  "workflow": [
+    {
+      "step": "01",
+      "title": "Book Your Appointment",
+      "description": "Contact Montreal Dental Care by email or visit us at 8 Montreal Avenue, Leeds to schedule your appointment."
+    },
+    {
+      "step": "02",
+      "title": "Initial Examination",
+      "description": "We'll conduct a full examination with X-rays and diagnosis to understand your dental needs and health."
+    },
+    {
+      "step": "03",
+      "title": "Personalised Treatment Plan",
+      "description": "We'll discuss your options\u2014NHS or private\u2014and recommend the best treatment plan for your individual needs."
+    },
+    {
+      "step": "04",
+      "title": "Ongoing Care & Support",
+      "description": "Receive preventative advice and follow-up care to maintain your dental health and achieve your smile goals."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What's included in an NHS Band 1 appointment?",
+      "answer": "An NHS Band 1 appointment (\u00a326.80) includes a full examination, X-rays, diagnosis, advice on preventing further problems, a scale and polish if clinically needed, and preventative care such as fluoride varnish application."
+    },
+    {
+      "question": "Can I get an emergency appointment?",
+      "answer": "Yes, we offer emergency dental appointments for \u00a3100, which includes full assessment and treatment to address your urgent dental problem."
+    },
+    {
+      "question": "Do you offer cosmetic treatments?",
+      "answer": "Yes, we provide a range of cosmetic treatments including tooth whitening from \u00a3270, dental implants from \u00a32300, and advanced dermal fillers for aesthetic enhancement."
+    },
+    {
+      "question": "Are you accepting new NHS patients?",
+      "answer": "We currently have no availability for new NHS patients. However, we welcome private patients and can discuss private treatment options with you."
+    },
+    {
+      "question": "What's the difference between Band 2 and Band 3 NHS treatment?",
+      "answer": "Band 2 (\u00a373.50) covers restorative work like fillings and root canals. Band 3 covers everything in Bands 1 and 2 plus laboratory work such as crowns, dentures, and bridges."
+    },
+    {
+      "question": "How do I book an appointment?",
+      "answer": "You can contact Montreal Dental Care by email at montrealdental.leeds@gmail.com or visit us at 8 Montreal Avenue, Leeds, West Yorkshire LS7 4LF."
+    }
+  ],
+  "services": [
+    "NHS Band 1 Examination & Preventative Care",
+    "NHS Band 2 Restorative Treatment",
+    "Dental Implants",
+    "Tooth Whitening",
+    "Emergency Dental Appointment",
+    "Advanced Dermal Fillers"
+  ],
+  "detailedServices": [
+    {
+      "title": "NHS Band 1 Examination & Preventative Care",
+      "category": "ROUTINE CARE",
+      "priceFrom": "\u00a326.80",
+      "description": "Comprehensive examination with X-rays, diagnosis, and preventative treatments including scale and polish and fluoride varnish application.",
+      "features": [
+        "Full examination and diagnosis",
+        "X-rays included",
+        "Scale and polish if needed",
+        "Fluoride varnish application"
+      ]
+    },
+    {
+      "title": "NHS Band 2 Restorative Treatment",
+      "category": "TREATMENT",
+      "priceFrom": "\u00a373.50",
+      "description": "Everything in Band 1 plus additional restorative work including fillings, root canal treatment, and tooth extractions.",
+      "features": [
+        "All Band 1 services",
+        "Fillings and restorations",
+        "Root canal work",
+        "Tooth removal"
+      ]
+    },
+    {
+      "title": "Dental Implants",
+      "category": "COSMETIC",
+      "priceFrom": "\u00a32300",
+      "description": "Premium tooth replacement solution using dental implants to restore missing teeth with a natural appearance and function.",
+      "features": [
+        "Permanent tooth replacement",
+        "Natural appearance",
+        "Durable solution",
+        "Professional placement"
+      ]
+    },
+    {
+      "title": "Tooth Whitening",
+      "category": "COSMETIC",
+      "priceFrom": "\u00a3270",
+      "description": "Professional tooth whitening treatment to brighten your smile and remove stains for a more confident appearance.",
+      "features": [
+        "Professional-grade results",
+        "Safe and effective",
+        "Noticeably brighter teeth",
+        "Long-lasting effects"
+      ]
+    },
+    {
+      "title": "Emergency Dental Appointment",
+      "category": "URGENT CARE",
+      "priceFrom": "\u00a3100",
+      "description": "Same-day emergency dental care for urgent dental problems including assessment and treatment to relieve pain and address immediate concerns.",
+      "features": [
+        "Same-day availability",
+        "Full assessment included",
+        "Immediate treatment",
+        "Pain relief"
+      ]
+    },
+    {
+      "title": "Advanced Dermal Fillers",
+      "category": "AESTHETIC",
+      "priceFrom": "\u00a3250",
+      "description": "Professional aesthetic treatments including tear trough enhancement, chin filler, and jawline definition using advanced dermal fillers.",
+      "features": [
+        "Tear trough treatment available",
+        "Chin and jawline enhancement",
+        "Professional application",
+        "Natural-looking results"
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "author": "Sarah M.",
+      "avatarLetter": "S",
+      "resultBadge": "Excellent Care",
+      "relativeTime": "3 weeks ago",
+      "rating": 5,
+      "text": "Very professional team and friendly atmosphere. Had my emergency appointment sorted quickly\u2014highly recommend Montreal Dental Care to anyone in Leeds needing urgent dental help."
+    },
+    {
+      "author": "James T.",
+      "avatarLetter": "J",
+      "resultBadge": "Great Service",
+      "relativeTime": "1 month ago",
+      "rating": 5,
+      "text": "Excellent experience with my tooth whitening treatment. The results are fantastic and the staff explained everything clearly. Worth every penny!"
+    },
+    {
+      "author": "Emma L.",
+      "avatarLetter": "E",
+      "resultBadge": "Highly Trusted",
+      "relativeTime": "6 weeks ago",
+      "rating": 5,
+      "text": "Had a routine check-up and scale and polish. The dentist gave me great preventative advice and made me feel completely at ease. Very professional practice."
+    },
+    {
+      "author": "Michael P.",
+      "avatarLetter": "M",
+      "resultBadge": "Recommended",
+      "relativeTime": "2 months ago",
+      "rating": 5,
+      "text": "Consulted about dental implants and received clear, honest advice about my options. The team is knowledgeable and patient-focused. Great dental practice in Leeds."
+    }
+  ],
+  "team": [
+    {
+      "name": "Imad Al-Hussein",
+      "role": "Dentist",
+      "credentials": "BDS MSc GDC 73345",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Sumaya Mahmood",
+      "role": "Dentist",
+      "credentials": "BDS GDC 84937",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Hasanain Al-Khafaji",
+      "role": "Dentist",
+      "credentials": "PhD MSc BDS LDS RCS MFDS RCPS GDC 316523",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Amy O'Connor",
+      "role": "Dentist",
+      "credentials": "MChD/BChD BSC GDC 277742",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://montrealdentalcareleeds.co.uk/wp-content/uploads/2024/10/amyoconnor.jpg",
+      "is_real_photo": true,
+      "rating": 5.0
+    },
+    {
+      "name": "Farahnaz Neda",
+      "role": "Dentist",
+      "credentials": "BChD GCD 327288",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Inayat Pahjua",
+      "role": "Dentist",
+      "credentials": "BDS GCD 327288",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Ayesha Asghar",
+      "role": "Hygienist",
+      "credentials": "GDC 248572",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    },
+    {
+      "name": "Anneka Kumar",
+      "role": "Hygienist",
+      "credentials": "GDC 277965",
+      "bio": "A trusted member of the team at Montreal Dental Care, serving clients across Leeds.",
+      "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+      "is_real_photo": false,
+      "rating": 5.0
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://montrealdentalcareleeds.co.uk/wp-content/uploads/2021/02/5.jpg",
+      "caption": "Inside our practice"
+    },
+    {
+      "src": "https://montrealdentalcareleeds.co.uk/wp-content/uploads/2021/02/welcome.jpg",
+      "caption": "Inside our practice"
+    },
+    {
+      "src": "https://montrealdentalcareleeds.co.uk/wp-content/uploads/2021/02/3-1.jpg",
+      "caption": "Inside our practice"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=900&q=80",
+      "caption": "Precision, guided treatment"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+      "caption": "Modern treatment suite"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=900&q=80",
+      "caption": "Digital scanning suite"
+    }
+  ],
+  "hours": [],
+  "highlights": [
+    "NHS & Private Dental Practice",
+    "4.8-Star Rated by Patients",
+    "51 Patient Reviews",
+    "Emergency Appointments Available",
+    "Advanced Cosmetic Treatments",
+    "Professional Dental Team"
+  ],
+  "google_maps_url": "https://www.google.com/maps/place/?q=place_id:ChIJQYhgbu5beUgRclX92tgrn6I",
+  "map_embed_url": "https://www.google.com/maps?q=8+Montreal+Ave%2C+Chapel+Allerton%2C+Leeds+LS7+4LF%2C+UK&output=embed",
+  "_archived_at": "2026-08-23T06:28:33.287456"
+}

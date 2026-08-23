@@ -2,7 +2,7 @@
 
 // Thin client for the FastAPI admin backend. Token is kept in a cookie (so the
 // Next middleware can gate the dashboard) and mirrored to localStorage.
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8009';
 const TOKEN_KEY = 'admin_token';
 
 export function setToken(token: string) {
@@ -78,13 +78,17 @@ export const adminApi = {
     return req(`/api/v1/admin/leads?${q.toString()}`);
   },
   leadDetail: (id: string) => req(`/api/v1/admin/leads/${id}`),
-  generateLeads: (body: { category: string; cities?: string[]; max_per_city: number }) =>
+  generateLeads: (body: { categories: string[]; countries: string[]; cities?: string[]; max_per_city: number; min_buying_power?: number }) =>
     req('/api/v1/admin/leads/generate', { method: 'POST', body: JSON.stringify(body) }),
   jobStatus: (id: string) => req(`/api/v1/admin/jobs/${id}`),
   enrich: (id: string) => req(`/api/v1/admin/leads/${id}/enrich`, { method: 'POST' }),
+  saveAdditionalUrls: (id: string, urls: { url: string; label: string }[]) =>
+    req(`/api/v1/admin/leads/${id}/urls`, { method: 'PUT', body: JSON.stringify({ urls }) }),
   generateSite: (id: string) => req(`/api/v1/admin/leads/${id}/generate-site`, { method: 'POST' }),
   sites: () => req('/api/v1/admin/sites'),
-  regenerateSite: (slug: string) => req(`/api/v1/admin/sites/${slug}/regenerate`, { method: 'POST' }),
+  siteVersions: (slug: string) => req(`/api/v1/admin/sites/${slug}/versions`),
+  regenerateSite: (slug: string, feedback?: string) =>
+    req(`/api/v1/admin/sites/${slug}/regenerate`, { method: 'POST', body: JSON.stringify({ feedback: feedback || null }) }),
   deleteSite: (slug: string) => req(`/api/v1/admin/sites/${slug}`, { method: 'DELETE' }),
   crmDrafts: (id: string) => req(`/admin/crm/leads/${id}/drafts`),
   generateAiSalesCopy: (id: string) => req(`/admin/crm/leads/${id}/generate-ai-copy`, { method: 'POST' }),

@@ -60,6 +60,7 @@ class LeadRepository:
                         has_ai_chatbot=audit.has_ai_chatbot,
                         has_review_widget=audit.has_review_widget,
                         modernization_score=scored_lead.modernization_score,
+                        buying_power_score=scored_lead.buying_power_score,
                         tier=scored_lead.tier,
                         score_breakdown=scored_lead.score_breakdown
                     )

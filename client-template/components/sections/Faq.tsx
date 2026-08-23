@@ -17,14 +17,14 @@ function AccordionItem({ q, a, open, onClick }: { q: string; a: string; open: bo
   const { theme: t } = useSite();
   return (
     <Card hover={false} className="overflow-hidden">
-      <button onClick={onClick} className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer">
-        <span className="font-semibold text-base sm:text-lg" style={{ color: t.text }}>{q}</span>
+      <button onClick={onClick} className="w-full p-4 text-left flex items-center justify-between gap-4 cursor-pointer">
+        <span className="font-semibold text-sm sm:text-base" style={{ color: t.text }}>{q}</span>
         {open ? <Minus className="w-5 h-5 shrink-0" style={{ color: t.accent }} /> : <Plus className="w-5 h-5 shrink-0" style={{ color: t.accent }} />}
       </button>
       <AnimatePresence>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }}>
-            <div className="px-6 pb-6 pt-4 text-sm leading-relaxed" style={{ borderTop: `1px solid ${t.hairline}`, color: t.subtext }}>{a}</div>
+            <div className="px-4 pb-4 pt-4 text-sm leading-relaxed" style={{ borderTop: `1px solid ${t.hairline}`, color: t.subtext }}>{a}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -57,12 +57,12 @@ function TwoColGrid() {
       <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
         {faqs.map((f: any, i: number) => (
           <Reveal key={i} delay={i * 0.05}>
-            <Card className="p-7 h-full">
+            <Card className="p-5 h-full">
               <div className="flex items-start gap-3 mb-3">
                 <HelpCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: t.accent }} />
                 <h3 className="font-bold" style={{ color: t.text }}>{f.question}</h3>
               </div>
-              <p className="text-sm leading-relaxed pl-8" style={{ color: t.subtext }}>{f.answer}</p>
+              <p className="text-sm leading-relaxed pl-5" style={{ color: t.subtext }}>{f.answer}</p>
             </Card>
           </Reveal>
         ))}
@@ -76,7 +76,7 @@ function SideBySide() {
   const [open, setOpen] = useState(0);
   return (
     <Section id="faq">
-      <div className="grid lg:grid-cols-12 gap-12">
+      <div className="grid lg:grid-cols-12 gap-7">
         <Reveal className="lg:col-span-5">
           <SectionHeading {...HEAD} center={false} subtitle={`Everything ${siteCopy(c).audience} in ${c.city} commonly ask.`} />
           <PrimaryButton onClick={openBooking}>Ask Us Directly</PrimaryButton>
@@ -101,7 +101,7 @@ function SideSearch() {
       <Reveal><SectionHeading {...HEAD} /></Reveal>
       <div className="max-w-3xl mx-auto">
         <Reveal>
-          <div className="flex items-center gap-3 px-5 py-4 mb-8 rounded-2xl border" style={{ borderColor: t.border, backgroundColor: t.surface }}>
+          <div className="flex items-center gap-3 px-5 py-4 mb-5 rounded-2xl border" style={{ borderColor: t.border, backgroundColor: t.surface }}>
             <Search className="w-5 h-5" style={{ color: t.accent }} />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search questions…"
               className="flex-1 bg-transparent outline-none text-sm" style={{ color: t.text }} />
@@ -128,14 +128,14 @@ function MinimalList() {
         {faqs.map((f: any, i: number) => (
           <Reveal key={i} delay={i * 0.04}>
             <div style={{ borderBottom: `1px solid ${t.hairline}` }}>
-              <button onClick={() => setOpen(open === i ? -1 : i)} className="w-full py-6 flex items-center justify-between gap-4 text-left cursor-pointer">
-                <span className="text-lg font-medium" style={{ fontFamily: t.serifFamily, color: t.text }}>{f.question}</span>
+              <button onClick={() => setOpen(open === i ? -1 : i)} className="w-full py-4 flex items-center justify-between gap-4 text-left cursor-pointer">
+                <span className="text-base font-medium" style={{ fontFamily: t.serifFamily, color: t.text }}>{f.question}</span>
                 {open === i ? <Minus className="w-4 h-4" style={{ color: t.accent }} /> : <Plus className="w-4 h-4" style={{ color: t.accent }} />}
               </button>
               <AnimatePresence>
                 {open === i && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }}>
-                    <p className="pb-6 text-sm leading-relaxed" style={{ color: t.subtext }}>{f.answer}</p>
+                    <p className="pb-4 text-sm leading-relaxed" style={{ color: t.subtext }}>{f.answer}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -152,7 +152,7 @@ function FloatingBubbles() {
   return (
     <Section id="faq">
       <Reveal><SectionHeading {...HEAD} /></Reveal>
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-3xl mx-auto space-y-4">
         {faqs.map((f: any, i: number) => (
           <Reveal key={i} delay={i * 0.05} className={i % 2 ? 'flex justify-end' : ''}>
             <div className="max-w-[85%]">
