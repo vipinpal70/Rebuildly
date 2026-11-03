@@ -29,6 +29,10 @@ class PlaceLead(BaseModel):
     # same heuristic as ModernizationScoringEngine.calculate_buying_power_score — lets
     # a campaign pre-filter obviously low-value leads before the expensive crawl stage.
     buying_power_score: int = Field(default=0, ge=0, le=100)
+    # Google Business Profile snapshot from Places Details:
+    # {"photo_count", "has_hours", "has_summary", "reviews": [ReviewData-shaped dicts]}.
+    # None when not fetched (OSM leads, or PLACES_FETCH_GBP_DETAILS off).
+    gbp_details: Optional[dict] = None
 
 
 class DiscoveryResult(BaseModel):

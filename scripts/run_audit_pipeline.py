@@ -10,6 +10,7 @@ sys.path.insert(0, str(project_root))
 
 from src.discovery import discovery_engine
 from src.crawler import MasterSiteCrawler
+from src.signals.service import analyze_and_save
 from src.scorer import ModernizationScoringEngine
 from src.notifications import TelegramAlertService
 from src.storage import init_db, LeadRepository
@@ -25,6 +26,7 @@ async def run_pipeline(
     job_id: Optional[str] = None,
     min_buying_power: int = 0,
     skip_known: bool = True,
+    sources: Optional[List[str]] = None,
 ):
     """Runs a full discovery campaign (category x city x country) through
     DiscoveryEngine, then audits, scores, and persists every qualified lead.
@@ -73,6 +75,7 @@ async def run_pipeline(
         job_id=job_id,
         skip_known=skip_known,
         min_buying_power=min_buying_power,
+        sources=sources,
     )
     total_discovered = len(leads)
     total_persisted = 0
@@ -89,6 +92,7 @@ async def run_pipeline(
             saved_record = await repository.save_scored_lead(scored_lead)
             if saved_record:
                 total_persisted += 1
+                await analyze_and_save(saved_record.id, lead, audit)
 
             if scored_lead.modernization_score >= 80:
                 logger.info("🔥 Priority Lead Detected! Sending Telegram Alert...")

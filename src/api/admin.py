@@ -65,6 +65,8 @@ class GenerateLeadsRequest(BaseModel):
     # 0-100 discovery-time floor (review volume/rating heuristic) — leads below
     # this never reach the paid crawl/audit stage. Default 0 = no filtering.
     min_buying_power: int = 0
+    # Discovery sources: "google" and/or "osm". None = DISCOVERY_SOURCES setting.
+    sources: Optional[List[str]] = None
 
 
 class AdditionalUrlEntry(BaseModel):
@@ -373,6 +375,17 @@ async def lead_detail(business_id: str, admin=Depends(require_admin)):
     a = _best_audit(audits)
     data = _serialize_lead(b, a, site)
     data["score_breakdown"] = (a.score_breakdown if a else None)
+
+    from src.signals import Finding, rank_offers
+    from src.storage.models import SignalFindingModel
+    async with AsyncSessionLocal() as session:
+        rows = (await session.execute(
+            select(SignalFindingModel).where(SignalFindingModel.business_id == business_id)
+        )).scalars().all()
+    findings = [Finding(detector=r.detector, signal_type=r.signal_type, severity=r.severity, title=r.title,
+                        detail=r.detail or "", evidence=r.evidence or {}, offers=r.offers or []) for r in rows]
+    data["signals"] = [f.model_dump(mode="json") for f in findings]
+    data["recommended_offers"] = [o.model_dump() for o in rank_offers(findings)]
     return data
 
 
@@ -439,16 +452,72 @@ async def get_audit_summary(admin=Depends(require_admin)):
     }
 
 
+# ------------------------- LLM provider settings --------------------------
+class LLMSettingsRequest(BaseModel):
+    provider: str                    # "anthropic" (Claude) or "openai" (ChatGPT)
+    api_key: Optional[str] = None    # omit/null = keep the saved key; "" = remove it
+    model: Optional[str] = None      # blank = provider default
+
+
+async def _llm_settings_view() -> Dict[str, Any]:
+    from src.llm.config import PROVIDERS, load_llm_config, load_saved, mask_key, saved_key_previews
+    cfg = await load_llm_config(use_cache=False)
+    saved = await load_saved()
+    return {
+        "provider": cfg.provider,
+        "model": cfg.model,
+        "source": cfg.source,  # "admin" = saved here, "env" = from .env
+        "key_configured": bool(cfg.api_key),
+        # Where the active key comes from: saved in this dashboard, the server's .env, or nowhere.
+        "key_source": None if not cfg.api_key else ("admin" if saved_key_previews(saved).get(cfg.provider) else "env"),
+        "key_preview": mask_key(cfg.api_key),  # never the full key
+        "saved_keys": saved_key_previews(saved),  # per provider: masked preview or null
+        "saved_models": (saved or {}).get("models") or {},
+        "providers": [{"id": k, "label": v["label"], "default_model": v["default_model"]} for k, v in PROVIDERS.items()],
+    }
+
+
+@router.get("/settings/llm")
+async def get_llm_settings(admin=Depends(require_admin)):
+    return await _llm_settings_view()
+
+
+@router.put("/settings/llm")
+async def update_llm_settings(req: LLMSettingsRequest, admin=Depends(require_admin)):
+    from src.llm.config import PROVIDERS, save_llm_config
+    if req.provider not in PROVIDERS:
+        raise HTTPException(status_code=400, detail=f"Provider must be one of: {', '.join(PROVIDERS)}")
+    await save_llm_config(req.provider, req.api_key, req.model)
+    audit_logger.log_event("INFO", "SYSTEM", f"Admin set LLM provider to {req.provider}"
+                           + (" and updated the API key." if req.api_key else "."))
+    return await _llm_settings_view()
+
+
+@router.post("/settings/llm/test")
+async def test_llm_settings(admin=Depends(require_admin)):
+    """Makes one tiny real request with the saved config, so a bad key/model is caught
+    in Settings rather than silently falling back to templates during site generation."""
+    from src.llm.client import FlexibleLLMClient
+    client = FlexibleLLMClient()
+    if not await client.is_configured():
+        return {"ok": False, "error": "No API key configured for the selected provider."}
+    result = await client.generate_json('Reply with exactly this JSON: {"ok": true}')
+    if result is None:
+        return {"ok": False, "provider": client.provider, "model": client.model,
+                "error": client.last_error or "Request failed."}
+    return {"ok": True, "provider": client.provider, "model": client.model}
+
+
 # ------------------------- lead generation (job) --------------------------
-def _exec_pipeline_sync(categories: List[str], cities: List[str], countries: List[str], max_per_city: int, job_id: str, min_buying_power: int):
+def _exec_pipeline_sync(categories: List[str], cities: List[str], countries: List[str], max_per_city: int, job_id: str, min_buying_power: int, sources: Optional[List[str]] = None):
     from scripts.run_audit_pipeline import run_pipeline
     asyncio.run(run_pipeline(
         target_categories=categories, target_cities=cities, target_countries=countries,
-        max_results_per_city=max_per_city, job_id=job_id, min_buying_power=min_buying_power,
+        max_results_per_city=max_per_city, job_id=job_id, min_buying_power=min_buying_power, sources=sources,
     ))
 
 
-async def _run_pipeline_job(job_id: str, categories: List[str], cities: List[str], countries: List[str], max_per_city: int, min_buying_power: int):
+async def _run_pipeline_job(job_id: str, categories: List[str], cities: List[str], countries: List[str], max_per_city: int, min_buying_power: int, sources: Optional[List[str]] = None):
     from src.storage.queue import redis_queue
     JOBS[job_id]["status"] = "running"
     redis_queue.update_job_status(job_id, "running", "Discovery campaign starting...", progress="5%")
@@ -458,7 +527,7 @@ async def _run_pipeline_job(job_id: str, categories: List[str], cities: List[str
         job_id=job_id
     )
     try:
-        await asyncio.to_thread(_exec_pipeline_sync, categories, cities, countries, max_per_city, job_id, min_buying_power)
+        await asyncio.to_thread(_exec_pipeline_sync, categories, cities, countries, max_per_city, job_id, min_buying_power, sources)
         JOBS[job_id]["status"] = "completed"
         JOBS[job_id]["message"] = "Lead discovery + audit pipeline finished."
         redis_queue.update_job_status(job_id, "completed", "Lead discovery + audit pipeline finished.", progress="100%")
@@ -487,7 +556,7 @@ async def generate_leads(req: GenerateLeadsRequest, background: BackgroundTasks,
         f"Queued discovery job for {len(categories)} categories × {len(cities)} cities × {len(countries)} countries.",
         job_id=job_id
     )
-    background.add_task(_run_pipeline_job, job_id, categories, cities, countries, req.max_per_city, req.min_buying_power)
+    background.add_task(_run_pipeline_job, job_id, categories, cities, countries, req.max_per_city, req.min_buying_power, req.sources)
     return {"job_id": job_id, "status": "queued"}
 
 

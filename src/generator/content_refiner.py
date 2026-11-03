@@ -3,6 +3,7 @@ import logging
 from typing import Dict, Any, Optional
 import httpx
 from config.settings import settings
+from src.llm.client import FlexibleLLMClient
 from src.storage.models import BusinessModel, AuditModel
 
 logger = logging.getLogger(__name__)
@@ -11,23 +12,24 @@ class ContentRefiner:
     """LLM Content Refiner service that extracts & generates high-converting landing page copy."""
 
     def __init__(self):
-        self.api_key = settings.OPENAI_API_KEY
+        self.llm = FlexibleLLMClient()
 
     async def refine_business_content(self, business: BusinessModel, audit: AuditModel, scraped_text: Optional[str] = None) -> Dict[str, Any]:
-        """Refines business content using OpenAI GPT API if available, or smart domain-specific templates."""
+        """Refines business content with the admin-selected LLM (Claude or ChatGPT) if a key is
+        configured, or falls back to the industry-neutral template."""
 
-        if self.api_key:
+        if await self.llm.is_configured():
             try:
-                llm_result = await self._call_openai_api(business, audit, scraped_text)
+                llm_result = await self._call_llm(business, audit, scraped_text)
                 if llm_result:
                     return llm_result
             except Exception as e:
-                logger.warning(f"OpenAI content refinement failed, falling back to smart template engine: {e}")
+                logger.warning(f"LLM content refinement failed, falling back to smart template engine: {e}")
 
         return self._generate_smart_fallback(business, audit)
 
-    async def _call_openai_api(self, business: BusinessModel, audit: AuditModel, scraped_text: Optional[str]) -> Optional[Dict[str, Any]]:
-        """Calls OpenAI ChatGPT API to generate high-converting JSON landing page copy."""
+    async def _call_llm(self, business: BusinessModel, audit: AuditModel, scraped_text: Optional[str]) -> Optional[Dict[str, Any]]:
+        """Asks the configured LLM for high-converting JSON landing page copy."""
 
         prompt = f"""
 You are an elite conversion copywriter. Generate landing-page content in JSON for the
@@ -95,26 +97,10 @@ industry-appropriate copy — the placeholders below are structure only, not con
 }}
 """
 
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "gpt-4o-mini",
-            "messages": [
-                {"role": "system", "content": "You write landing-page content STRICTLY about the single business described and its real industry — never any other industry. Output ONLY valid JSON."},
-                {"role": "user", "content": prompt}
-            ],
-            "response_format": {"type": "json_object"},
-            "temperature": 0.7
-        }
-
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            res = await client.post("https://api.openai.com/v1/chat/completions", json=payload, headers=headers)
-            res.raise_for_status()
-            data = res.json()
-            content = data["choices"][0]["message"]["content"]
-            return json.loads(content)
+        return await self.llm.generate_json(
+            prompt,
+            "You write landing-page content STRICTLY about the single business described and its real industry — never any other industry. Output ONLY valid JSON.",
+        )
 
     def _generate_smart_fallback(self, business: BusinessModel, audit: AuditModel) -> Dict[str, Any]:
         """Industry-NEUTRAL fallback used only when no LLM is available. It contains zero

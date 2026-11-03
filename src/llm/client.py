@@ -14,10 +14,15 @@ class FlexibleLLMClient:
     """Flexible LLM Client supporting OpenAI, Groq, Ollama, Together AI, Anthropic (native) & OpenAI-compatible endpoints."""
 
     def __init__(self):
-        self.provider = settings.LLM_PROVIDER.lower()
-        self.api_key = settings.LLM_API_KEY or settings.OPENAI_API_KEY
-        self.model = settings.LLM_MODEL
-        self.base_url = settings.LLM_BASE_URL
+        env = settings
+        self._configure(env.LLM_PROVIDER.lower(), env.LLM_API_KEY or env.OPENAI_API_KEY, env.LLM_MODEL, env.LLM_BASE_URL)
+
+    def _configure(self, provider: str, api_key: Optional[str], model: Optional[str], base_url: Optional[str]) -> None:
+        self.last_error = None
+        self.provider = provider
+        self.api_key = api_key
+        self.model = model
+        self.base_url = base_url
 
         # Standard base URL / model defaults if not explicitly set.
         if not self.base_url:
@@ -42,6 +47,30 @@ class FlexibleLLMClient:
             self.model = DEFAULT_ANTHROPIC_MODEL
 
     @staticmethod
+    def _describe_error(e: Exception) -> str:
+        resp = getattr(e, "response", None)
+        if resp is not None:
+            try:
+                detail = resp.json().get("error", {})
+                msg = detail.get("message") if isinstance(detail, dict) else str(detail)
+            except Exception:
+                msg = resp.text[:200]
+            return f"HTTP {resp.status_code}: {msg}"
+        return str(e)
+
+    async def _apply_admin_config(self) -> None:
+        """Use the provider/key the admin saved in the dashboard, if any. Resolved on every
+        call so a Settings change applies immediately, without restarting workers."""
+        from src.llm.config import load_llm_config
+        cfg = await load_llm_config()
+        if cfg.source == "admin":
+            self._configure(cfg.provider, cfg.api_key, cfg.model, None)
+
+    async def is_configured(self) -> bool:
+        await self._apply_admin_config()
+        return bool(self.api_key) or self.provider == "ollama"
+
+    @staticmethod
     def _strip_fences(content: str) -> str:
         if "```json" in content:
             return content.split("```json")[1].split("```")[0].strip()
@@ -51,6 +80,8 @@ class FlexibleLLMClient:
 
     async def generate_json(self, prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """Executes an LLM request expecting a structured JSON response."""
+        await self._apply_admin_config()
+        self.last_error = None
         if not self.api_key and self.provider != "ollama":
             logger.info(f"No API key provided for {self.provider}. LLM Client will return None (falling back to smart template engine).")
             return None
@@ -83,7 +114,8 @@ class FlexibleLLMClient:
                 content = res.json()["choices"][0]["message"]["content"]
                 return json.loads(self._strip_fences(content))
         except Exception as e:
-            logger.warning(f"FlexibleLLMClient request to {self.provider} ({self.model}) failed: {e}")
+            self.last_error = self._describe_error(e)
+            logger.warning(f"FlexibleLLMClient request to {self.provider} ({self.model}) failed: {self.last_error}")
             return None
 
     async def _generate_anthropic(self, prompt: str, system_prompt: Optional[str]) -> Optional[Dict[str, Any]]:
@@ -109,5 +141,6 @@ class FlexibleLLMClient:
                 text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
                 return json.loads(self._strip_fences(text))
         except Exception as e:
-            logger.warning(f"FlexibleLLMClient (anthropic {self.model}) request failed: {e}")
+            self.last_error = self._describe_error(e)
+            logger.warning(f"FlexibleLLMClient (anthropic {self.model}) request failed: {self.last_error}")
             return None

@@ -65,25 +65,21 @@ function StatCard({ icon, label, value, subtext, accent, onClick, isLight }: {
   isLight?: boolean;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
+    <div
       onClick={onClick}
-      className={`rounded-xl border p-3 flex items-center justify-between transition-all duration-200 ${
-        onClick ? 'cursor-pointer hover:border-indigo-500/40 shadow-md' : ''
+      className={`rounded-lg border px-4 py-3.5 transition-colors ${
+        onClick ? 'cursor-pointer hover:border-indigo-500/60' : ''
       } ${
-        isLight ? 'bg-white border-slate-200/90 hover:bg-slate-50' : 'bg-slate-900/60 border-slate-800/80 hover:bg-slate-900/90'
+        isLight ? 'bg-white border-slate-200' : 'bg-[#101a15] border-slate-800'
       }`}
     >
-      <div className="space-y-0.5">
-        <div className={`text-[10px] font-bold uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>{label}</div>
-        <div className={`text-xl font-bold font-mono tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>{value}</div>
-        {subtext && <div className={`text-[10px] font-medium ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>{subtext}</div>}
+      <div className={`flex items-center gap-1.5 text-sm ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+        <span className="w-3.5 h-3.5 [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:text-indigo-500 flex items-center">{icon}</span>
+        {label}
       </div>
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-md" style={{ background: accent }}>
-        {icon}
-      </div>
-    </motion.div>
+      <div className={`font-display text-4xl font-semibold tnum mt-1 ${isLight ? 'text-slate-900' : 'text-white'}`}>{value}</div>
+      {subtext && <div className="text-xs text-slate-500 mt-0.5">{subtext}</div>}
+    </div>
   );
 }
 
@@ -372,6 +368,16 @@ export default function Dashboard() {
   const [showPassword, setShowPassword] = useState(false);
   const [updatingPassword, setUpdatingPassword] = useState(false);
 
+  // LLM provider settings (Claude / ChatGPT)
+  const [llm, setLlm] = useState<any>(null);
+  const [llmProvider, setLlmProvider] = useState<string>('anthropic');
+  const [llmKey, setLlmKey] = useState('');
+  const [llmModel, setLlmModel] = useState('');
+  const [showLlmKey, setShowLlmKey] = useState(false);
+  const [llmSaving, setLlmSaving] = useState(false);
+  const [llmTesting, setLlmTesting] = useState(false);
+  const [llmTest, setLlmTest] = useState<{ ok: boolean; error?: string; model?: string } | null>(null);
+
   // Theme Initializer
   useEffect(() => {
     const savedTheme = localStorage.getItem('admin_theme') as 'dark' | 'light';
@@ -507,6 +513,60 @@ export default function Dashboard() {
     setBusy('');
   };
 
+  const applyLlm = (d: any) => {
+    setLlm(d);
+    setLlmProvider(d.provider);
+    setLlmModel(d.saved_models?.[d.provider] || '');
+    setLlmKey('');
+  };
+
+  useEffect(() => {
+    if (activeTab !== 'settings') return;
+    adminApi.getLlmSettings().then(applyLlm).catch(() => {});
+  }, [activeTab]);
+
+  const handleSaveLlm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLlmSaving(true);
+    setLlmTest(null);
+    try {
+      // Blank key field = keep the key already saved for this provider.
+      const d = await adminApi.saveLlmSettings({
+        provider: llmProvider,
+        api_key: llmKey.trim() ? llmKey.trim() : null,
+        model: llmModel.trim(),
+      });
+      applyLlm(d);
+      setToast({ msg: `AI provider set to ${d.providers.find((p: any) => p.id === d.provider)?.label}`, type: 'success' });
+    } catch (err: any) {
+      setToast({ msg: err.message || 'Failed to save AI settings.', type: 'error' });
+    } finally {
+      setLlmSaving(false);
+    }
+  };
+
+  const handleRemoveLlmKey = async () => {
+    try {
+      applyLlm(await adminApi.saveLlmSettings({ provider: llmProvider, api_key: '' }));
+      setLlmTest(null);
+      setToast({ msg: 'Saved API key removed.', type: 'info' });
+    } catch (err: any) {
+      setToast({ msg: err.message || 'Failed to remove key.', type: 'error' });
+    }
+  };
+
+  const handleTestLlm = async () => {
+    setLlmTesting(true);
+    setLlmTest(null);
+    try {
+      setLlmTest(await adminApi.testLlmSettings());
+    } catch (err: any) {
+      setLlmTest({ ok: false, error: err.message });
+    } finally {
+      setLlmTesting(false);
+    }
+  };
+
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentPassword || !newPassword) {
@@ -559,201 +619,116 @@ export default function Dashboard() {
 
   const isLight = theme === 'light';
 
+  const NAV: { id: typeof activeTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
+    { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'leads', label: 'Leads', icon: <Gauge className="w-4 h-4" />, badge: leadsData.total },
+    { id: 'crm', label: 'Outreach', icon: <Rocket className="w-4 h-4" /> },
+    { id: 'sites', label: 'Sites', icon: <Layers className="w-4 h-4" />, badge: sites.length },
+    { id: 'audits', label: 'Audits', icon: <Terminal className="w-4 h-4" />, badge: <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> },
+    { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
+  ];
+  const TITLES: Record<typeof activeTab, string> = {
+    overview: 'Overview', leads: 'Leads', crm: 'Outreach', sites: 'Sites', audits: 'Audits', settings: 'Settings',
+  };
+
   if (!ready) {
     return (
-      <main className={`min-h-screen flex items-center justify-center ${isLight ? 'bg-slate-100 text-slate-600' : 'bg-[#050811] text-slate-400'}`}>
+      <main className={`min-h-screen flex items-center justify-center ${isLight ? 'bg-slate-100 text-slate-600' : 'bg-[#0a110e] text-slate-400'}`}>
         <div className="flex flex-col items-center gap-2">
-          <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">Loading Dashboard...</p>
+          <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+          <p className="text-sm text-slate-500">Loading your workspace…</p>
         </div>
       </main>
     );
   }
 
   return (
-    <div className={`min-h-screen flex selection:bg-cyan-500 selection:text-white ${
-      isLight ? 'bg-slate-100 text-slate-800' : 'bg-[#050811] text-slate-200'
+    <div className={`min-h-screen flex selection:bg-indigo-600 selection:text-white ${
+      isLight ? 'bg-slate-100 text-slate-800' : 'bg-[#0a110e] text-slate-200'
     }`}>
-      
-      {/* ==================================== SIDEBAR MENU ==================================== */}
-      <aside className={`w-56 flex flex-col justify-between shrink-0 sticky top-0 h-screen z-30 border-r backdrop-blur-xl ${
-        isLight ? 'bg-white border-slate-200/90' : 'bg-[#0b1120] border-slate-800/80'
+
+      {/* Sidebar: wordmark, one nav list, status + account at the foot */}
+      <aside className={`w-52 flex flex-col justify-between shrink-0 sticky top-0 h-screen z-30 border-r ${
+        isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#101a15] border-slate-800'
       }`}>
         <div>
-          {/* Logo Brand */}
-          <div className={`p-3.5 border-b flex items-center gap-2.5 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, #2563eb, #38bdf8)' }}>
-              <ShieldCheck className="w-4.5 h-4.5 text-white" />
-            </div>
-            <div>
-              <div className={`font-extrabold text-xs tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Rebuildly</div>
-              <div className="text-[9px] font-bold text-cyan-500 uppercase tracking-wider mt-0.5">Enterprise CRM</div>
-            </div>
+          <div className="px-5 pt-6 pb-7">
+            <div className={`font-display text-2xl font-semibold leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Rebuildly</div>
+            <div className="text-xs text-slate-500 mt-1.5">Rebuild local business sites</div>
           </div>
 
-          {/* Navigation Group */}
-          <nav className="p-2 space-y-1">
-            <p className={`text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1.5 ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>Workspaces</p>
-
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                activeTab === 'overview'
-                  ? isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold' : 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30'
-                  : isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                <span>Executive Overview</span>
-              </div>
-              <ChevronRight className={`w-3 h-3 transition-transform ${activeTab === 'overview' ? 'rotate-90 text-indigo-500' : 'text-slate-400'}`} />
-            </button>
-
-            <button
-              onClick={() => setActiveTab('leads')}
-              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                activeTab === 'leads'
-                  ? isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold' : 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30'
-                  : isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Gauge className="w-3.5 h-3.5" />
-                <span>Lead Pipeline</span>
-              </div>
-              <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${isLight ? 'bg-slate-200 text-slate-700' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>
-                {leadsData.total}
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('crm')}
-              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                activeTab === 'crm'
-                  ? isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold' : 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30'
-                  : isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Rocket className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Sales CRM Studio</span>
-              </div>
-              <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-500/30">
-                Outreach
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('sites')}
-              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                activeTab === 'sites'
-                  ? isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold' : 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30'
-                  : isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Layers className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Generated Live Sites</span>
-              </div>
-              <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${isLight ? 'bg-slate-200 text-slate-700' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>
-                {sites.length}
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('audits')}
-              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                activeTab === 'audits'
-                  ? isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold' : 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30'
-                  : isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Terminal className="w-3.5 h-3.5 text-amber-500" />
-                <span>Audit Console</span>
-              </div>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                activeTab === 'settings'
-                  ? isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold' : 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30'
-                  : isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Settings className="w-3.5 h-3.5 text-cyan-500" />
-                <span>Settings & Security</span>
-              </div>
-            </button>
+          <nav className="px-2 space-y-0.5" aria-label="Workspaces">
+            {NAV.map((n) => {
+              const active = activeTab === n.id;
+              return (
+                <button
+                  key={n.id}
+                  onClick={() => setActiveTab(n.id)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`relative w-full text-left pl-4 pr-3 py-2 rounded-md text-sm flex items-center justify-between cursor-pointer transition-colors ${
+                    active
+                      ? isLight ? 'bg-white text-slate-900 font-semibold shadow-sm' : 'bg-slate-800/70 text-white font-semibold'
+                      : isLight ? 'text-slate-600 hover:bg-slate-100' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200'
+                  }`}
+                >
+                  {active && <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-indigo-500" />}
+                  <span className="flex items-center gap-2.5">
+                    <span className={active ? 'text-indigo-500' : ''}>{n.icon}</span>
+                    {n.label}
+                  </span>
+                  {n.badge !== undefined && <span className="text-xs tnum text-slate-500">{n.badge}</span>}
+                </button>
+              );
+            })}
           </nav>
         </div>
 
-        {/* Sidebar Footer */}
-        <div className={`p-3 border-t space-y-2 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
-          <div className={`p-2 rounded-lg border flex items-center justify-between ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800/80'}`}>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-              <div className={`text-[10px] font-medium ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>PostgreSQL + Claude</div>
-            </div>
-            <button onClick={toggleTheme} className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 transition-colors" title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}>
-              {isLight ? <Moon className="w-3.5 h-3.5 text-indigo-600" /> : <Sun className="w-3.5 h-3.5 text-amber-400" />}
-            </button>
+        <div className={`p-3 border-t space-y-1 ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
+          <div className="px-2 py-1.5 flex items-center gap-2 text-xs text-slate-500">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" /> Database and Claude connected
           </div>
-
+          <button
+            onClick={toggleTheme}
+            className={`w-full text-left px-2 py-1.5 rounded-md text-sm flex items-center gap-2 cursor-pointer ${isLight ? 'text-slate-600 hover:bg-slate-100' : 'text-slate-400 hover:bg-slate-800/40'}`}
+          >
+            {isLight ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            {isLight ? 'Dark mode' : 'Light mode'}
+          </button>
           <button
             onClick={logout}
-            className={`w-full text-[11px] font-semibold py-1.5 rounded-lg border transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
-              isLight ? 'border-slate-300 text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200' : 'border-slate-800 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
-            }`}
+            className={`w-full text-left px-2 py-1.5 rounded-md text-sm flex items-center gap-2 cursor-pointer ${isLight ? 'text-slate-600 hover:text-rose-600 hover:bg-rose-50' : 'text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'}`}
           >
-            <LogOut className="w-3 h-3" /> Logout Admin
+            <LogOut className="w-4 h-4" /> Log out
           </button>
         </div>
       </aside>
 
-      {/* ==================================== MAIN WORKSPACE CONTENT ==================================== */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        
-        {/* Top Header */}
-        <header className={`sticky top-0 z-20 backdrop-blur-md border-b px-5 py-2.5 flex items-center justify-between ${
-          isLight ? 'bg-white/90 border-slate-200' : 'bg-[#070b14]/90 border-slate-800/80'
+
+        <header className={`sticky top-0 z-20 backdrop-blur-md border-b px-6 py-3.5 flex items-center justify-between ${
+          isLight ? 'bg-slate-100/90 border-slate-200' : 'bg-[#0a110e]/90 border-slate-800'
         }`}>
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
-            <span>Admin</span> / <span className={`font-bold capitalize ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>{activeTab}</span>
-          </div>
+          <h1 className={`font-display text-2xl font-semibold ${isLight ? 'text-slate-900' : 'text-white'}`}>{TITLES[activeTab]}</h1>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={toggleTheme}
-              className={`p-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1.5 text-xs font-semibold ${
-                isLight ? 'border-slate-300 bg-slate-50 text-slate-700 hover:bg-slate-100' : 'border-slate-800 bg-slate-900 text-slate-300 hover:bg-slate-800'
-              }`}
-              title="Toggle Theme"
-            >
-              {isLight ? <Moon className="w-3.5 h-3.5 text-indigo-600" /> : <Sun className="w-3.5 h-3.5 text-amber-400" />}
-              <span className="capitalize">{theme} Theme</span>
-            </button>
-
-            <button
               onClick={() => load()}
-              className={`p-1.5 rounded-lg border transition cursor-pointer ${
-                isLight ? 'border-slate-300 text-slate-600 hover:bg-slate-100' : 'border-slate-800 text-slate-400 hover:text-white hover:bg-slate-900'
+              className={`p-2 rounded-md border transition cursor-pointer ${
+                isLight ? 'border-slate-300 text-slate-600 hover:bg-white' : 'border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
-              title="Refresh Data"
+              title="Refresh data"
+              aria-label="Refresh data"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className="w-4 h-4" />
             </button>
-
-            <button
-              onClick={() => setActiveTab('crm')}
-              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-            >
-              <Zap className="w-3 h-3 text-cyan-300" /> Sales CRM Studio
-            </button>
+            {activeTab !== 'crm' && (
+              <button
+                onClick={() => setActiveTab('crm')}
+                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-md transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Send className="w-3.5 h-3.5" /> Start outreach
+              </button>
+            )}
           </div>
         </header>
 
@@ -765,7 +740,7 @@ export default function Dashboard() {
               {/* Stat Cards Row */}
               <section className="grid grid-cols-2 lg:grid-cols-5 gap-3">
                 <StatCard
-                  icon={<Users className="w-4 h-4 text-white" />}
+                  icon={<Users className="w-4 h-4" />}
                   label="Total Leads"
                   value={stats?.total_leads ?? '—'}
                   subtext="Discovered Businesses"
@@ -774,7 +749,7 @@ export default function Dashboard() {
                   isLight={isLight}
                 />
                 <StatCard
-                  icon={<Gauge className="w-4 h-4 text-white" />}
+                  icon={<Gauge className="w-4 h-4" />}
                   label="Avg Score"
                   value={stats?.avg_score ?? '—'}
                   subtext="Opportunity Index"
@@ -782,7 +757,7 @@ export default function Dashboard() {
                   isLight={isLight}
                 />
                 <StatCard
-                  icon={<TrendingUp className="w-4 h-4 text-white" />}
+                  icon={<TrendingUp className="w-4 h-4" />}
                   label="Top Score"
                   value={stats?.top_score ?? '—'}
                   subtext="Highest Gap Score"
@@ -790,7 +765,7 @@ export default function Dashboard() {
                   isLight={isLight}
                 />
                 <StatCard
-                  icon={<Star className="w-4 h-4 text-white" />}
+                  icon={<Star className="w-4 h-4" />}
                   label="Priority (80+)"
                   value={stats?.priority_leads ?? '—'}
                   subtext="High Potential"
@@ -799,7 +774,7 @@ export default function Dashboard() {
                   isLight={isLight}
                 />
                 <StatCard
-                  icon={<Sparkles className="w-4 h-4 text-white" />}
+                  icon={<Sparkles className="w-4 h-4" />}
                   label="Sites Built"
                   value={stats?.generated_sites ?? '—'}
                   subtext="Live Subdomains"
@@ -1417,6 +1392,128 @@ export default function Dashboard() {
                 </div>
               </section>
 
+              {/* AI Provider Card */}
+              <section className={`rounded-xl border p-5 shadow-md ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-slate-800/80'}`}>
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
+                  <Sparkles className="w-4 h-4 text-violet-500" />
+                  <h2 className={`font-bold text-sm ${isLight ? 'text-slate-900' : 'text-white'}`}>AI Provider (site content & outreach copy)</h2>
+                </div>
+
+                <form onSubmit={handleSaveLlm} className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {(llm?.providers || [{ id: 'anthropic', label: 'Claude (Anthropic)' }, { id: 'openai', label: 'ChatGPT (OpenAI)' }]).map((p: any) => {
+                      const selected = llmProvider === p.id;
+                      const saved = llm?.saved_keys?.[p.id];
+                      return (
+                        <button
+                          type="button"
+                          key={p.id}
+                          onClick={() => { setLlmProvider(p.id); setLlmModel(llm?.saved_models?.[p.id] || ''); setLlmKey(''); setLlmTest(null); }}
+                          className={`text-left p-3 rounded-lg border transition cursor-pointer ${
+                            selected
+                              ? 'border-indigo-500 bg-indigo-500/10'
+                              : isLight ? 'border-slate-200 hover:border-slate-300' : 'border-slate-800 hover:border-slate-700'
+                          }`}
+                        >
+                          <div className={`text-xs font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{p.label}</div>
+                          <div className={`text-[11px] mt-0.5 ${saved ? 'text-emerald-500' : 'text-slate-400'}`}>
+                            {saved ? `Key saved (${saved})` : 'No key saved here'}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div>
+                    <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                      API Key {llm?.saved_keys?.[llmProvider] && <span className="font-normal text-slate-400">— leave blank to keep the saved key</span>}
+                    </label>
+                    <div className="relative">
+                      <Key className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type={showLlmKey ? 'text' : 'password'}
+                        value={llmKey}
+                        onChange={(e) => setLlmKey(e.target.value)}
+                        placeholder={llmProvider === 'anthropic' ? 'sk-ant-…' : 'sk-…'}
+                        autoComplete="off"
+                        className={`w-full pl-9 pr-10 py-2 text-xs rounded-lg border outline-none focus:border-indigo-500/50 ${
+                          isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
+                        }`}
+                      />
+                      <button type="button" onClick={() => setShowLlmKey(!showLlmKey)} className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200 cursor-pointer">
+                        {showLlmKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                      Model <span className="font-normal text-slate-400">— optional, blank uses the default ({llm?.providers?.find((p: any) => p.id === llmProvider)?.default_model})</span>
+                    </label>
+                    <input
+                      value={llmModel}
+                      onChange={(e) => setLlmModel(e.target.value)}
+                      list="llm-model-suggestions"
+                      placeholder={llm?.providers?.find((p: any) => p.id === llmProvider)?.default_model || ''}
+                      className={`w-full px-3 py-2 text-xs rounded-lg border outline-none focus:border-indigo-500/50 ${
+                        isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
+                      }`}
+                    />
+                    <datalist id="llm-model-suggestions">
+                      {(llmProvider === 'anthropic'
+                        ? ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5', 'claude-haiku-4-5-20251001']
+                        : ['gpt-4o-mini', 'gpt-4o']
+                      ).map((m) => <option key={m} value={m} />)}
+                    </datalist>
+                  </div>
+
+                  {llm && (
+                    <p className={`text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Active now: <b>{llm.providers.find((p: any) => p.id === llm.provider)?.label}</b> · model <b>{llm.model}</b> ·{' '}
+                      {llm.key_configured
+                        ? <>key {llm.key_source === 'admin' ? 'saved in this dashboard' : 'from the server .env file'} ({llm.key_preview})</>
+                        : <span className="text-amber-500">no key — sites use the built-in template copy</span>}
+                    </p>
+                  )}
+
+                  {llmTest && (
+                    <div className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${
+                      llmTest.ok ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-500' : 'border-red-500/40 bg-red-500/10 text-red-400'
+                    }`}>
+                      {llmTest.ok ? <CheckCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" /> : <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />}
+                      <span>{llmTest.ok ? `Connection works (${llmTest.model}).` : llmTest.error}</span>
+                    </div>
+                  )}
+
+                  <div className="pt-1 flex items-center justify-end gap-2">
+                    {llm?.saved_keys?.[llmProvider] && (
+                      <button type="button" onClick={handleRemoveLlmKey} className="px-3 py-2 text-xs font-bold text-red-400 hover:text-red-300 cursor-pointer">
+                        Remove saved key
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleTestLlm}
+                      disabled={llmTesting || llmSaving}
+                      className={`px-3 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 disabled:opacity-50 cursor-pointer ${
+                        isLight ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-slate-950 text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      {llmTesting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
+                      <span>Test saved settings</span>
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={llmSaving}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg shadow-md flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                    >
+                      {llmSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                      <span>Save AI Settings</span>
+                    </button>
+                  </div>
+                </form>
+              </section>
+
               {/* Password Update Card */}
               <section className={`rounded-xl border p-5 shadow-md ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-slate-800/80'}`}>
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
@@ -1507,8 +1604,10 @@ export default function Dashboard() {
 
                 <div className="space-y-2 text-xs">
                   <div className={`p-2.5 rounded-lg border flex items-center justify-between ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
-                    <span className="font-semibold text-slate-400">Claude AI Sales Intelligence</span>
-                    <span className="text-emerald-500 font-bold flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Anthropic Claude 3.5 Sonnet Active</span>
+                    <span className="font-semibold text-slate-400">AI Content & Sales Intelligence</span>
+                    {llm?.key_configured
+                      ? <span className="text-emerald-500 font-bold flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {llm.providers.find((p: any) => p.id === llm.provider)?.label} · {llm.model}</span>
+                      : <span className="text-amber-500 font-bold flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> No API key — template copy only</span>}
                   </div>
 
                   <div className={`p-2.5 rounded-lg border flex items-center justify-between ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>

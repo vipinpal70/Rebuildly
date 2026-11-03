@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     LLM_BASE_URL: Optional[str] = None
     LLM_MODEL: str = "claude-3-5-sonnet-20241022"
 
+    # Fernet key (urlsafe base64, 32 bytes) protecting API keys the admin saves in the
+    # dashboard. Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+    # If unset, a key is derived from ADMIN_SECRET — set this explicitly in production.
+    SETTINGS_ENCRYPTION_KEY: Optional[str] = None
+
     # Database URIs
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/opportunity_finder"
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -30,6 +35,25 @@ class Settings(BaseSettings):
     DEFAULT_MAX_LEADS_PER_CITY: int = 50
     MIN_GOOGLE_RATING: float = 4.2
     MIN_REVIEW_COUNT: int = 30
+
+    # Free data sources
+    COMPANIES_HOUSE_API_KEY: Optional[str] = None  # https://developer.company-information.service.gov.uk
+    # Comma-separated discovery sources used when a campaign doesn't specify any:
+    # "google" (Places API, or the demo fallback without a key) and/or "osm".
+    DISCOVERY_SOURCES: str = "google"
+    # Fetch photos/hours/summary/newest reviews in the Places Details call so the GBP and
+    # review detectors have data. These fields bill under higher Places SKUs (Contact /
+    # Atmosphere) — set False to keep the cheaper Basic-only call.
+    PLACES_FETCH_GBP_DETAILS: bool = True
+
+    # Page-load limit for the mobile audit. 5s (the old hardcoded value) timed out on
+    # most real small-business sites, which then looked 'inaccessible' and scored wrongly.
+    AUDIT_NAVIGATION_TIMEOUT_MS: int = 20000
+
+    # Signals
+    SIGNALS_ENABLED: bool = True
+    ACCESSIBILITY_AXE_ENABLED: bool = True  # launches a 2nd headless browser per lead
+    ACCESSIBILITY_AXE_TIMEOUT_SECONDS: int = 20
 
     # Discovery Engine: concurrency & resilience
     DISCOVERY_MAX_CONCURRENT_QUERIES: int = 3  # parallel category x city x country queries

@@ -118,6 +118,34 @@ class AuditModel(Base):
     business = relationship("BusinessModel", back_populates="audits")
 
 
+class AppSettingModel(Base):
+    """Admin-editable runtime settings (e.g. the LLM provider/key), one JSON document per key.
+    Secrets inside `value` are Fernet-encrypted by src/llm/config.py before being stored."""
+    __tablename__ = "app_settings"
+
+    key = Column(String(100), primary_key=True)
+    value = Column(JSON, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SignalFindingModel(Base):
+    """One evidence-backed finding from a signal detector (see src/signals). Findings are
+    replaced wholesale each time a business is re-analysed, so the table always reflects
+    the latest run."""
+    __tablename__ = "signal_findings"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    business_id = Column(String, ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    detector = Column(String(50), nullable=False)
+    signal_type = Column(String(100), nullable=False, index=True)
+    severity = Column(String(20), nullable=False)
+    title = Column(String(500), nullable=False)
+    detail = Column(Text, nullable=True)
+    evidence = Column(JSON, nullable=True)
+    offers = Column(JSON, nullable=True)  # ["analytics_setup", ...]
+    detected_at = Column(DateTime, default=datetime.utcnow)
+
+
 class OutreachLeadModel(Base):
     """Tracks outreach campaigns, AI generated drafts for 4 channels (LinkedIn, Email, WhatsApp, Call),
     and CRM engagement status per lead."""

@@ -29,6 +29,7 @@ from sqlalchemy.future import select
 
 from config.settings import settings
 from src.discovery.maps_scraper import MapsFallbackScraper
+from src.discovery.osm_client import OSMDiscoveryClient
 from src.discovery.models import DiscoveryStats, PlaceLead, SearchQuery
 from src.discovery.places_client import GooglePlacesClient
 from src.storage.audit_logger import audit_logger
@@ -51,7 +52,21 @@ class DiscoveryEngine:
 
     def __init__(self):
         self.client = GooglePlacesClient() if settings.GOOGLE_PLACES_API_KEY else MapsFallbackScraper()
+        self._osm = OSMDiscoveryClient()
         self._scorer = None
+
+    def _clients_for(self, sources: Optional[List[str]]) -> list:
+        """Resolve source names ("google", "osm") to client instances; unknown names are ignored."""
+        names = sources or [s.strip() for s in settings.DISCOVERY_SOURCES.split(",")]
+        clients = []
+        for name in dict.fromkeys(n.lower() for n in names if n):
+            if name == "google":
+                clients.append(self.client)
+            elif name == "osm":
+                clients.append(self._osm)
+            else:
+                logger.warning(f"Unknown discovery source '{name}' ignored.")
+        return clients or [self.client]
 
     def _get_scorer(self):
         if self._scorer is None:
@@ -82,6 +97,7 @@ class DiscoveryEngine:
         job_id: Optional[str] = None,
         skip_known: bool = True,
         min_buying_power: int = 0,
+        sources: Optional[List[str]] = None,
     ) -> Tuple[List[PlaceLead], DiscoveryStats]:
         categories = [c.strip() for c in categories if c and c.strip()]
         cities = [c.strip() for c in cities if c and c.strip()]
@@ -101,6 +117,7 @@ class DiscoveryEngine:
             details={"categories": categories, "cities": cities, "countries": countries, "max_per_city": max_per_city}
         )
 
+        clients = self._clients_for(sources)
         known_ids = await self._load_known_place_ids() if skip_known else set()
         semaphore = asyncio.Semaphore(max(1, settings.DISCOVERY_MAX_CONCURRENT_QUERIES))
         budget_exhausted = asyncio.Event()
@@ -121,16 +138,17 @@ class DiscoveryEngine:
                     return []
 
                 query = SearchQuery(category=category, city=city, country=country, max_results=max_per_city)
-                try:
-                    leads = await self.client.search_places(query, skip_place_ids=known_ids, stats=stats)
-                except Exception as e:
-                    logger.error(f"Discovery query failed for {category}/{city}/{country}: {e}")
-                    audit_logger.log_event(
-                        "ERROR", "DISCOVERY",
-                        f"Query failed: '{category}' in {city}, {country} — {e}",
-                        job_id=job_id
-                    )
-                    return []
+                leads: List[PlaceLead] = []
+                for client in clients:
+                    try:
+                        leads.extend(await client.search_places(query, skip_place_ids=known_ids, stats=stats))
+                    except Exception as e:
+                        logger.error(f"Discovery query failed for {category}/{city}/{country} via {type(client).__name__}: {e}")
+                        audit_logger.log_event(
+                            "ERROR", "DISCOVERY",
+                            f"Query failed: '{category}' in {city}, {country} via {type(client).__name__} — {e}",
+                            job_id=job_id
+                        )
 
                 # Discovery-time Buying Power tagging (same heuristic the scoring
                 # engine uses post-audit — see leads-improve-plan.md Section 2) lets

@@ -41,7 +41,10 @@ async def generate_sales_copy_with_llm(
     """Generates hyper-personalized 4-channel sales copy using Claude API / Anthropic LLM.
     If API key is unavailable or request fails, falls back gracefully to template engine.
     """
-    api_key = settings.LLM_API_KEY or settings.ANTHROPIC_API_KEY or settings.CLAUDE_API_KEY
+    from src.llm.config import load_llm_config
+    cfg = await load_llm_config()
+    api_key = cfg.api_key
+    provider = cfg.provider
     if not api_key:
         logger.info("No Anthropic/Claude API key found in config. Using template engine fallback.")
         return fallback_drafts
@@ -60,10 +63,10 @@ Generate the JSON output now."""
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             # Check provider or default to Anthropic
-            if settings.LLM_PROVIDER.lower() == "anthropic" or api_key.startswith("sk-ant"):
+            if provider == "anthropic" or (cfg.source == "env" and api_key.startswith("sk-ant")):
                 # Call Anthropic Claude API Messages endpoint
                 # Try models in order: claude-3-5-haiku-20241022, claude-3-haiku-20240307, claude-3-5-sonnet-20241022
-                target_models = [settings.LLM_MODEL, "claude-3-5-haiku-20241022", "claude-3-haiku-20240307", "claude-3-5-sonnet-20241022"]
+                target_models = [cfg.model, "claude-3-5-haiku-20241022", "claude-3-haiku-20240307", "claude-3-5-sonnet-20241022"]
                 # Deduplicate list preserving order
                 models_to_try = []
                 for m in target_models:
@@ -100,13 +103,13 @@ Generate the JSON output now."""
                 data = response.json()
                 content_text = data["content"][0]["text"]
 
-            elif settings.LLM_PROVIDER.lower() == "openai" or api_key.startswith("sk-"):
+            elif provider == "openai" or (cfg.source == "env" and api_key.startswith("sk-")):
                 headers = {
                     "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json"
                 }
                 payload = {
-                    "model": settings.LLM_MODEL or "gpt-4o-mini",
+                    "model": (cfg.model if cfg.source == "admin" else settings.LLM_MODEL) or "gpt-4o-mini",
                     "messages": [
                         {"role": "system", "content": SALES_AGENT_SYSTEM_PROMPT},
                         {"role": "user", "content": user_prompt}
@@ -122,7 +125,7 @@ Generate the JSON output now."""
                 content_text = data["choices"][0]["message"]["content"]
 
             else:
-                logger.warning(f"Unsupported LLM provider {settings.LLM_PROVIDER}. Using fallback.")
+                logger.warning(f"Unsupported LLM provider {provider}. Using fallback.")
                 return fallback_drafts
 
             # Extract JSON from LLM response text

@@ -26,3 +26,7 @@ class TechnicalAuditResult(BaseModel):
     load_time_seconds: float = 0.0
     detected_tech_stack: List[str] = Field(default_factory=list)
     audit_errors: List[str] = Field(default_factory=list)
+
+    # Rendered page HTML, kept for the signal detectors. Excluded from model_dump() so it
+    # doesn't bloat Celery results or API responses.
+    raw_html: str = Field(default="", exclude=True)

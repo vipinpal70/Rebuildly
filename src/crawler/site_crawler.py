@@ -46,6 +46,8 @@ class MasterSiteCrawler:
             except Exception as err:
                 audit_result.audit_errors.append(f"HTTP fallback error: {err}")
 
+        audit_result.raw_html = raw_html
+
         # 2. Run SEO & Schema Parser
         if raw_html:
             seo_res = self.seo_parser.parse_html(raw_html, target_url)

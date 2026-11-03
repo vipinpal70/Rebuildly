@@ -95,6 +95,10 @@ export const adminApi = {
   saveCrmDrafts: (id: string, body: any) => req(`/admin/crm/leads/${id}/drafts`, { method: 'POST', body: JSON.stringify(body) }),
   sendCrmEmail: (id: string, body: any) => req(`/admin/crm/leads/${id}/send-email`, { method: 'POST', body: JSON.stringify(body) }),
   updateCrmStatus: (id: string, body: any) => req(`/admin/crm/leads/${id}/status`, { method: 'POST', body: JSON.stringify(body) }),
+  getLlmSettings: () => req('/api/v1/admin/settings/llm'),
+  saveLlmSettings: (body: { provider: string; api_key?: string | null; model?: string | null }) =>
+    req('/api/v1/admin/settings/llm', { method: 'PUT', body: JSON.stringify(body) }),
+  testLlmSettings: () => req('/api/v1/admin/settings/llm/test', { method: 'POST' }),
   changePassword: (body: { current_password: string; new_password: string }) =>
     req('/api/v1/admin/change-password', { method: 'POST', body: JSON.stringify(body) }),
 };

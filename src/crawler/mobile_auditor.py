@@ -1,6 +1,7 @@
 import time
 from typing import Dict, Any
 from playwright.async_api import async_playwright
+from config.settings import settings
 from src.utils.logger import logger
 
 
@@ -29,8 +30,7 @@ class PlaywrightMobileAuditor:
                 )
                 page = await context.new_page()
 
-                # Set timeout (5 seconds for fast throughput)
-                page.set_default_navigation_timeout(5000)
+                page.set_default_navigation_timeout(settings.AUDIT_NAVIGATION_TIMEOUT_MS)
 
                 logger.info(f"Rendering Playwright mobile viewport for: {target_url}")
                 response = await page.goto(target_url, wait_until="domcontentloaded")

@@ -4,6 +4,7 @@ from src.discovery.models import PlaceLead
 from src.crawler.models import TechnicalAuditResult
 from src.crawler import MasterSiteCrawler
 from src.scorer import ModernizationScoringEngine
+from src.signals.service import analyze_and_save
 from src.notifications import TelegramAlertService
 from src.storage import init_db, LeadRepository
 from src.utils.logger import logger
@@ -29,6 +30,8 @@ def process_lead_batch_task(self, lead_dict: dict):
 
         # Persist to PostgreSQL
         saved = await repository.save_scored_lead(scored_lead)
+        if saved:
+            await analyze_and_save(saved.id, lead, audit)
 
         # Telegram Alert if Tier 1 Priority
         if scored_lead.modernization_score >= 80:

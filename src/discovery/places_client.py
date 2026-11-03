@@ -14,6 +14,20 @@ _RETRYABLE_STATUSES = {"OVER_QUERY_LIMIT", "UNKNOWN_ERROR"}
 _NON_RETRYABLE_STATUSES = {"REQUEST_DENIED", "INVALID_REQUEST"}
 
 
+def extract_gbp_details(details: dict) -> dict:
+    """Normalize a Places Details result into the GBP snapshot the signal detectors read.
+    Places returns at most 10 photos and 5 reviews, and no owner-reply data."""
+    return {
+        "photo_count": len(details.get("photos") or []),
+        "has_hours": bool(details.get("opening_hours")),
+        "has_summary": bool((details.get("editorial_summary") or {}).get("overview")),
+        "reviews": [
+            {"rating": r.get("rating", 0), "text": r.get("text", ""), "published_epoch": r.get("time")}
+            for r in (details.get("reviews") or [])
+        ],
+    }
+
+
 class GooglePlacesClient:
     """Official Google Places API Wrapper using Async HTTP requests.
 
@@ -128,6 +142,7 @@ class GooglePlacesClient:
                         google_maps_url=f"https://www.google.com/maps/place/?q=place_id:{place_id}",
                         business_status=business_status,
                         types=place.get("types", []),
+                        gbp_details=extract_gbp_details(details) if settings.PLACES_FETCH_GBP_DETAILS else None,
                     )
                     leads.append(lead)
                     if len(leads) >= query.max_results:
@@ -187,5 +202,8 @@ class GooglePlacesClient:
             "fields": "name,website,formatted_phone_number",
             "key": self.api_key
         }
+        if settings.PLACES_FETCH_GBP_DETAILS:
+            params["fields"] += ",photos,opening_hours,editorial_summary,reviews"
+            params["reviews_sort"] = "newest"
         data = await self._get_json_with_retry(session, self.DETAILS_URL, params)
         return (data or {}).get("result", {})
